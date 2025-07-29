@@ -32,6 +32,21 @@ export const routes: Routes = [
     canActivate: [GuestGuard]
   },
   {
+    path: 'books',
+    loadComponent: () => import('./components/book/book-catalog/book-catalog.component').then(m => m.BookCatalogComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'books/:id',
+    loadComponent: () => import('./components/book/book-details/book-details.component').then(m => m.BookDetailsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'library',
+    loadComponent: () => import('./components/library/personal-library/personal-library.component').then(m => m.PersonalLibraryComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '**',
     redirectTo: '/home'
   }

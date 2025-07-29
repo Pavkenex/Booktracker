@@ -69,7 +69,7 @@ describe('LoginComponent', () => {
     component.onSubmit();
 
     expect(authServiceSpy.login).toHaveBeenCalledWith({
-      username: 'testuser',
+      usernameOrEmail: 'testuser',
       password: 'password123'
     });
   });

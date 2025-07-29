@@ -1,0 +1,44 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ApiService } from './api.service';
+import { UserBook, LibraryStats, AddBookToLibraryRequest, UpdateBookStatusRequest } from '../models/library.model';
+import { PagedResponse } from '../models/book.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class LibraryService {
+
+  constructor(private apiService: ApiService) { }
+
+  getLibrary(): Observable<UserBook[]> {
+    return this.apiService.get<PagedResponse<UserBook>>('/library?size=1000')
+      .pipe(map(response => response.content));
+  }
+
+  getLibraryStats(): Observable<LibraryStats> {
+    return this.apiService.get<{success: boolean, data: LibraryStats}>('/library/stats')
+      .pipe(map(response => response.data));
+  }
+
+  addBookToLibrary(request: AddBookToLibraryRequest): Observable<UserBook> {
+    return this.apiService.post<{success: boolean, data: UserBook}>('/library/books', request)
+      .pipe(map(response => response.data));
+  }
+
+  updateBookStatus(bookId: number, request: UpdateBookStatusRequest): Observable<UserBook> {
+    return this.apiService.put<{success: boolean, data: UserBook}>(`/library/books/${bookId}`, request)
+      .pipe(map(response => response.data));
+  }
+
+  removeBookFromLibrary(bookId: number): Observable<void> {
+    return this.apiService.delete<{success: boolean}>(`/library/books/${bookId}`)
+      .pipe(map(() => void 0));
+  }
+
+  toggleFavorite(bookId: number): Observable<UserBook> {
+    return this.apiService.put<{success: boolean, data: UserBook}>(`/library/books/${bookId}/favorite`, {})
+      .pipe(map(response => response.data));
+  }
+}

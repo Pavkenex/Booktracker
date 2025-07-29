@@ -25,7 +25,7 @@ import { Observable } from 'rxjs';
                 <a class="nav-link" routerLink="/library" routerLinkActive="active">My Library</a>
               </li>
               <li class="nav-item" *ngIf="isAuthenticated$ | async">
-                <a class="nav-link" routerLink="/catalog" routerLinkActive="active">Book Catalog</a>
+                <a class="nav-link" routerLink="/books" routerLinkActive="active">Book Catalog</a>
               </li>
             </ul>
             <ul class="navbar-nav ms-auto">

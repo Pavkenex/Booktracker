@@ -36,7 +36,7 @@ describe('AuthService', () => {
 
   it('should login successfully', () => {
     const loginRequest: LoginRequest = {
-      username: 'testuser',
+      usernameOrEmail: 'testuser',
       password: 'password123'
     };
 

@@ -80,7 +80,12 @@
   - Add JWT token interceptor for API calls
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 10. Develop book catalog frontend components
+- [x] 10. Develop book catalog frontend components
+
+
+
+
+
 
   - Create BookCatalog component with pagination and search functionality
   - Implement BookCard component for displaying book information
@@ -89,7 +94,12 @@
   - Implement responsive design using Bootstrap
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 11. Build personal library frontend components
+- [x] 11. Build personal library frontend components
+
+
+
+
+
 
   - Create PersonalLibrary component organized by reading status
   - Implement LibraryStats component for reading statistics

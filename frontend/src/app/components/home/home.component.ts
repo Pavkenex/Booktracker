@@ -23,11 +23,11 @@ import { Observable } from 'rxjs';
           <div class="d-flex gap-2">
             <ng-container *ngIf="!(isAuthenticated$ | async); else authenticatedButtons">
               <a routerLink="/register" class="btn btn-primary btn-lg">Get Started</a>
-              <a routerLink="/catalog" class="btn btn-outline-secondary btn-lg">Browse Books</a>
+              <a routerLink="/books" class="btn btn-outline-secondary btn-lg">Browse Books</a>
             </ng-container>
             <ng-template #authenticatedButtons>
               <a routerLink="/library" class="btn btn-primary btn-lg">My Library</a>
-              <a routerLink="/catalog" class="btn btn-outline-secondary btn-lg">Browse Books</a>
+              <a routerLink="/books" class="btn btn-outline-secondary btn-lg">Browse Books</a>
             </ng-template>
           </div>
         </div>
