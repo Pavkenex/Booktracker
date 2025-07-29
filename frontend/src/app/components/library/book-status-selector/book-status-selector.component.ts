@@ -70,13 +70,14 @@ export class BookStatusSelectorComponent {
     this.updating = true;
     
     const updateRequest = {
+      bookId: this.userBook.book.id,
       status: newStatus,
       rating: this.userBook.rating,
       review: this.userBook.review,
       isFavourite: this.userBook.isFavourite
     };
 
-    this.libraryService.updateBookStatus(this.userBook.book.id, updateRequest).subscribe({
+    this.libraryService.updateBookStatus(this.userBook.id, updateRequest).subscribe({
       next: (updatedBook) => {
         this.statusChanged.emit(updatedBook);
         this.updating = false;

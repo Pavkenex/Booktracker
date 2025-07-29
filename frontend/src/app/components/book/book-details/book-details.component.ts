@@ -1,16 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, forkJoin } from 'rxjs';
 import { BookService } from '../../../services/book.service';
 import { LibraryService } from '../../../services/library.service';
+import { AuthService } from '../../../services/auth.service';
+import { LibraryEventsService } from '../../../services/library-events.service';
 import { Book } from '../../../models/book.model';
 import { UserBook } from '../../../models/library.model';
+import { BookStatusSelectorComponent } from '../../library/book-status-selector/book-status-selector.component';
 
 @Component({
   selector: 'app-book-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BookStatusSelectorComponent],
   template: `
     <div class="container mt-4">
       <div class="row" *ngIf="book; else loading">
@@ -64,7 +67,24 @@ import { UserBook } from '../../../models/library.model';
             </div>
             
             <div class="book-actions mt-4">
-              <div class="btn-group" role="group">
+              <!-- User not authenticated -->
+              <div *ngIf="!isAuthenticated" class="text-center">
+                <p class="text-muted mb-3">Sign in to add this book to your library</p>
+                <div class="btn-group" role="group">
+                  <a routerLink="/login" class="btn btn-success">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                  </a>
+                  <a routerLink="/register" class="btn btn-outline-primary">
+                    <i class="fas fa-user-plus me-2"></i>Sign Up
+                  </a>
+                  <button class="btn btn-outline-info">
+                    <i class="fas fa-share me-2"></i>Recommend
+                  </button>
+                </div>
+              </div>
+
+              <!-- User authenticated but book not in library -->
+              <div *ngIf="isAuthenticated && !userBook" class="btn-group" role="group">
                 <button 
                   class="btn btn-success"
                   (click)="addToLibrary('to_read')"
@@ -84,6 +104,56 @@ import { UserBook } from '../../../models/library.model';
                 <button class="btn btn-outline-info">
                   <i class="fas fa-share me-2"></i>Recommend
                 </button>
+              </div>
+
+              <!-- User authenticated and book already in library -->
+              <div *ngIf="isAuthenticated && userBook" class="library-status-section">
+                <div class="alert alert-info d-flex align-items-center mb-3">
+                  <i class="fas fa-book me-2"></i>
+                  <span>This book is in your library</span>
+                  <button 
+                    class="btn btn-sm btn-outline-danger ms-auto"
+                    (click)="removeFromLibrary()"
+                    [disabled]="removingFromLibrary">
+                    <span *ngIf="removingFromLibrary" class="spinner-border spinner-border-sm me-1"></span>
+                    <i *ngIf="!removingFromLibrary" class="fas fa-trash me-1"></i>
+                    Remove
+                  </button>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <app-book-status-selector 
+                      [userBook]="userBook"
+                      (statusChanged)="onStatusChanged($event)">
+                    </app-book-status-selector>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="favorite-toggle">
+                      <button 
+                        class="btn btn-sm"
+                        [class.btn-danger]="userBook.isFavourite"
+                        [class.btn-outline-secondary]="!userBook.isFavourite"
+                        (click)="toggleFavorite()"
+                        [disabled]="togglingFavorite">
+                        <span *ngIf="togglingFavorite" class="spinner-border spinner-border-sm me-1"></span>
+                        <i *ngIf="!togglingFavorite" class="fas fa-heart me-1"></i>
+                        {{ userBook.isFavourite ? 'Remove from Favorites' : 'Add to Favorites' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <div class="btn-group" role="group">
+                    <a routerLink="/library" class="btn btn-outline-primary">
+                      <i class="fas fa-book-open me-2"></i>View Library
+                    </a>
+                    <button class="btn btn-outline-info">
+                      <i class="fas fa-share me-2"></i>Recommend
+                    </button>
+                  </div>
+                </div>
               </div>
               
               <!-- Success Message -->
@@ -150,6 +220,14 @@ import { UserBook } from '../../../models/library.model';
       padding-top: 1rem;
     }
 
+    .library-status-section {
+      width: 100%;
+    }
+
+    .favorite-toggle {
+      text-align: right;
+    }
+
     .badge {
       font-size: 0.8rem;
     }
@@ -174,8 +252,11 @@ import { UserBook } from '../../../models/library.model';
 })
 export class BookDetailsComponent implements OnInit, OnDestroy {
   book: Book | null = null;
+  userBook: UserBook | null = null;
   error: string | null = null;
   addingToLibrary = false;
+  removingFromLibrary = false;
+  togglingFavorite = false;
   libraryMessage: string | null = null;
   private destroy$ = new Subject<void>();
 
@@ -183,7 +264,9 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
-    private libraryService: LibraryService
+    private libraryService: LibraryService,
+    private authService: AuthService,
+    private libraryEventsService: LibraryEventsService
   ) {}
 
   ngOnInit(): void {
@@ -193,6 +276,19 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         const bookId = +params['id'];
         if (bookId) {
           this.loadBook(bookId);
+        }
+      });
+
+    // Listen for authentication changes
+    this.authService.isAuthenticated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAuthenticated => {
+        if (isAuthenticated && this.book) {
+          // User just logged in, check library status
+          this.checkLibraryStatus(this.book.id);
+        } else if (!isAuthenticated) {
+          // User logged out, clear library status
+          this.userBook = null;
         }
       });
   }
@@ -206,15 +302,39 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     const id = bookId || +(this.route.snapshot.params['id']);
     this.error = null;
     
+    // First load the book details
     this.bookService.getBookById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (book) => {
           this.book = book;
+          // Then check library status (this might fail if user is not authenticated)
+          this.checkLibraryStatus(id);
         },
         error: (error) => {
           console.error('Error loading book:', error);
           this.error = 'Failed to load book details. Please try again.';
+        }
+      });
+  }
+
+  private checkLibraryStatus(bookId: number): void {
+    // Only check library status if user is authenticated
+    if (!this.authService.isAuthenticated()) {
+      this.userBook = null;
+      return;
+    }
+
+    this.libraryService.checkBookInLibrary(bookId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          this.userBook = result.userBook || null;
+        },
+        error: (error) => {
+          // If library check fails, just set userBook to null
+          console.log('Library status check failed:', error);
+          this.userBook = null;
         }
       });
   }
@@ -232,6 +352,14 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Check if user is authenticated
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], { 
+        queryParams: { returnUrl: this.router.url } 
+      });
+      return;
+    }
+
     this.addingToLibrary = true;
     this.libraryMessage = null;
 
@@ -246,8 +374,12 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (userBook) => {
           this.addingToLibrary = false;
+          this.userBook = userBook;
           const statusText = status === 'read' ? 'Read' : 'Want to Read';
           this.libraryMessage = `"${this.book!.title}" has been added to your ${statusText} list!`;
+          
+          // Notify that library has been updated
+          this.libraryEventsService.notifyLibraryUpdated();
           
           // Clear message after 5 seconds
           setTimeout(() => {
@@ -260,5 +392,75 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.error = 'Failed to add book to library. Please try again.';
         }
       });
+  }
+
+  removeFromLibrary(): void {
+    if (!this.userBook || this.removingFromLibrary) {
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to remove "${this.book!.title}" from your library?`)) {
+      return;
+    }
+
+    this.removingFromLibrary = true;
+    this.libraryMessage = null;
+
+    this.libraryService.removeBookFromLibrary(this.userBook.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.removingFromLibrary = false;
+          this.userBook = null;
+          this.libraryMessage = `"${this.book!.title}" has been removed from your library.`;
+          
+          // Notify that library has been updated
+          this.libraryEventsService.notifyLibraryUpdated();
+          
+          // Clear message after 5 seconds
+          setTimeout(() => {
+            this.libraryMessage = null;
+          }, 5000);
+        },
+        error: (error) => {
+          console.error('Error removing book from library:', error);
+          this.removingFromLibrary = false;
+          this.error = 'Failed to remove book from library. Please try again.';
+        }
+      });
+  }
+
+  toggleFavorite(): void {
+    if (!this.userBook || this.togglingFavorite) {
+      return;
+    }
+
+    this.togglingFavorite = true;
+
+    this.libraryService.toggleFavorite(this.userBook.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedUserBook) => {
+          this.togglingFavorite = false;
+          this.userBook = updatedUserBook;
+          // Notify that library has been updated
+          this.libraryEventsService.notifyLibraryUpdated();
+        },
+        error: (error) => {
+          console.error('Error toggling favorite:', error);
+          this.togglingFavorite = false;
+          this.error = 'Failed to update favorite status. Please try again.';
+        }
+      });
+  }
+
+  onStatusChanged(updatedUserBook: UserBook): void {
+    this.userBook = updatedUserBook;
+    // Notify that library has been updated
+    this.libraryEventsService.notifyLibraryUpdated();
+  }
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
   }
 }

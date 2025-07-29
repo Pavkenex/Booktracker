@@ -2,13 +2,11 @@ import { Book } from './book.model';
 
 export interface UserBook {
   id: number;
-  userId: number;
-  bookId: number;
   book: Book;
   status: 'read' | 'to_read';
   rating?: number;
   review?: string;
-  readDate?: Date;
+  readDate?: string;
   isFavourite: boolean;
 }
 
@@ -18,6 +16,7 @@ export interface LibraryStats {
   booksToRead: number;
   averageRating: number;
   favoriteBooks: number;
+  ratingDistribution?: { [key: number]: number };
 }
 
 export interface AddBookToLibraryRequest {

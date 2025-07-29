@@ -27,18 +27,23 @@ export class LibraryService {
       .pipe(map(response => response.data));
   }
 
-  updateBookStatus(bookId: number, request: UpdateBookStatusRequest): Observable<UserBook> {
-    return this.apiService.put<{success: boolean, data: UserBook}>(`/library/books/${bookId}`, request)
+  updateBookStatus(userBookId: number, request: UpdateBookStatusRequest): Observable<UserBook> {
+    return this.apiService.put<{success: boolean, data: UserBook}>(`/library/books/${userBookId}`, request)
       .pipe(map(response => response.data));
   }
 
-  removeBookFromLibrary(bookId: number): Observable<void> {
-    return this.apiService.delete<{success: boolean}>(`/library/books/${bookId}`)
+  removeBookFromLibrary(userBookId: number): Observable<void> {
+    return this.apiService.delete<{success: boolean}>(`/library/books/${userBookId}`)
       .pipe(map(() => void 0));
   }
 
-  toggleFavorite(bookId: number): Observable<UserBook> {
-    return this.apiService.put<{success: boolean, data: UserBook}>(`/library/books/${bookId}/favorite`, {})
+  toggleFavorite(userBookId: number): Observable<UserBook> {
+    return this.apiService.put<{success: boolean, data: UserBook}>(`/library/books/${userBookId}/favorite`, {})
       .pipe(map(response => response.data));
+  }
+
+  checkBookInLibrary(bookId: number): Observable<{hasBook: boolean, userBook?: UserBook}> {
+    return this.apiService.get<{success: boolean, hasBook: boolean, userBook?: UserBook}>(`/library/books/check/${bookId}`)
+      .pipe(map(response => ({hasBook: response.hasBook, userBook: response.userBook})));
   }
 }

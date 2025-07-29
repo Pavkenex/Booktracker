@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 import { LibraryService } from '../../../services/library.service';
+import { LibraryEventsService } from '../../../services/library-events.service';
 import { LibraryStats } from '../../../models/library.model';
 
 @Component({
@@ -121,28 +123,50 @@ import { LibraryStats } from '../../../models/library.model';
     }
   `]
 })
-export class LibraryStatsComponent implements OnInit {
+export class LibraryStatsComponent implements OnInit, OnDestroy {
   stats: LibraryStats | null = null;
   loading = true;
+  private destroy$ = new Subject<void>();
 
-  constructor(private libraryService: LibraryService) {}
+  constructor(
+    private libraryService: LibraryService,
+    private libraryEventsService: LibraryEventsService
+  ) {}
 
   ngOnInit(): void {
     this.loadStats();
+    
+    // Listen for library update events
+    this.libraryEventsService.libraryUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadStats();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadStats(): void {
     this.loading = true;
-    this.libraryService.getLibraryStats().subscribe({
-      next: (stats) => {
-        this.stats = stats;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading library stats:', error);
-        this.loading = false;
-      }
-    });
+    this.libraryService.getLibraryStats()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats) => {
+          this.stats = stats;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error loading library stats:', error);
+          this.loading = false;
+        }
+      });
+  }
+
+  refreshStats(): void {
+    this.loadStats();
   }
 
   getReadingPercentage(): number {

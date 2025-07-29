@@ -253,6 +253,21 @@ public class LibraryService {
     }
     
     /**
+     * Get user book by book ID
+     */
+    @Transactional(readOnly = true)
+    public UserBookResponse getUserBookByBookId(Long userId, Long bookId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        
+        Optional<UserBook> userBook = userBookRepository.findByUserAndBook(user, book);
+        return userBook.map(UserBookResponse::new).orElse(null);
+    }
+    
+    /**
      * Helper method to get user ID by username
      */
     @Transactional(readOnly = true)

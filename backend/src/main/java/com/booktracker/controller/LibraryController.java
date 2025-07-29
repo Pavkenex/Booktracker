@@ -239,11 +239,14 @@ public class LibraryController {
     public ResponseEntity<Map<String, Object>> checkBookInLibrary(@PathVariable Long bookId) {
         try {
             Long userId = getCurrentUserId();
-            boolean hasBook = libraryService.hasBookInLibrary(userId, bookId);
+            UserBookResponse userBook = libraryService.getUserBookByBookId(userId, bookId);
             
             Map<String, Object> result = new HashMap<>();
             result.put("success", true);
-            result.put("hasBook", hasBook);
+            result.put("hasBook", userBook != null);
+            if (userBook != null) {
+                result.put("userBook", userBook);
+            }
             
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {

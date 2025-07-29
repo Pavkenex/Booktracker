@@ -228,7 +228,7 @@ export class ReviewFormComponent implements OnInit {
       isFavourite: formValue.isFavourite
     };
 
-    this.libraryService.updateBookStatus(this.userBook.book.id, updateRequest).subscribe({
+    this.libraryService.updateBookStatus(this.userBook.id, updateRequest).subscribe({
       next: (updatedBook) => {
         this.reviewSubmitted.emit(updatedBook);
         this.submitting = false;
