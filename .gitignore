@@ -146,6 +146,7 @@ Thumbs.db
 /out-tsc/
 /bazel-out/
 /.angular/
+*/.angular/
 
 # Angular dependencies
 /node_modules/
