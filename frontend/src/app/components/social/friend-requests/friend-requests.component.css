@@ -1,0 +1,67 @@
+.friend-requests-container {
+  padding: 20px;
+}
+
+.request-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: 1px solid #e0e0e0;
+}
+
+.request-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.request-info h6 {
+  color: #333;
+  font-weight: 600;
+}
+
+.request-actions {
+  gap: 8px;
+}
+
+.request-actions .btn {
+  min-width: 80px;
+  font-size: 0.875rem;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.requests-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .friend-requests-container {
+    padding: 15px;
+  }
+  
+  .request-actions {
+    margin-top: 15px;
+    justify-content: center !important;
+  }
+  
+  .request-actions .btn {
+    flex: 1;
+    max-width: 120px;
+  }
+  
+  .col-md-4 {
+    margin-top: 10px;
+  }
+}

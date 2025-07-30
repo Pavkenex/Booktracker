@@ -54,7 +54,7 @@ public class RecommendationController {
      * Get recommendations sent by user
      */
     @GetMapping("/sent")
-    public ResponseEntity<Map<String, Object>> getSentRecommendations(
+    public ResponseEntity<List<RecommendationResponse>> getSentRecommendations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
@@ -63,20 +63,14 @@ public class RecommendationController {
         
         List<RecommendationResponse> recommendations = recommendationService.getSentRecommendations(userId, page, size);
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("recommendations", recommendations);
-        response.put("page", page);
-        response.put("size", size);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(recommendations);
     }
     
     /**
      * Get recommendations received by user
      */
     @GetMapping("/received")
-    public ResponseEntity<Map<String, Object>> getReceivedRecommendations(
+    public ResponseEntity<List<RecommendationResponse>> getReceivedRecommendations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
@@ -85,13 +79,7 @@ public class RecommendationController {
         
         List<RecommendationResponse> recommendations = recommendationService.getReceivedRecommendations(userId, page, size);
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("recommendations", recommendations);
-        response.put("page", page);
-        response.put("size", size);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(recommendations);
     }
     
     /**
@@ -152,6 +140,25 @@ public class RecommendationController {
         return ResponseEntity.ok(response);
     }
     
+    /**
+     * Mark recommendation as read
+     */
+    @PutMapping("/{recommendationId}/read")
+    public ResponseEntity<Map<String, Object>> markRecommendationAsRead(
+            @PathVariable Long recommendationId,
+            HttpServletRequest request) {
+        
+        Long userId = getUserIdFromToken(request);
+        
+        recommendationService.markRecommendationAsRead(userId, recommendationId);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Recommendation marked as read");
+        
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * Delete a recommendation
      */

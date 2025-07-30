@@ -71,7 +71,6 @@
 
 - [x] 9. Build Angular frontend authentication components
 
-
   - Create login component with form validation
   - Implement registration component with email validation
   - Create password reset components (request and reset forms)
@@ -82,11 +81,6 @@
 
 - [x] 10. Develop book catalog frontend components
 
-
-
-
-
-
   - Create BookCatalog component with pagination and search functionality
   - Implement BookCard component for displaying book information
   - Create BookDetails component for detailed book view
@@ -96,11 +90,6 @@
 
 - [x] 11. Build personal library frontend components
 
-
-
-
-
-
   - Create PersonalLibrary component organized by reading status
   - Implement LibraryStats component for reading statistics
   - Create BookStatusSelector for managing reading status
@@ -108,7 +97,7 @@
   - Implement favorites functionality in the UI
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 12. Implement social features frontend
+- [x] 12. Implement social features frontend
 
   - Create FriendsList component for managing friends
   - Implement FriendRequests component for pending requests
@@ -117,7 +106,8 @@
   - Implement notification system for friend requests and recommendations
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
 
-- [ ] 13. Create admin dashboard frontend
+- [x] 13. Create admin dashboard frontend
+
 
   - Build AdminDashboard component with system overview
   - Create BookManagement component for CRUD operations

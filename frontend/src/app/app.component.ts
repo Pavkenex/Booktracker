@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { AuthService, User } from './services/auth.service';
+import { NotificationsComponent } from './components/social/notifications/notifications.component';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, NotificationsComponent],
   template: `
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -27,8 +28,14 @@ import { Observable } from 'rxjs';
               <li class="nav-item" *ngIf="isAuthenticated$ | async">
                 <a class="nav-link" routerLink="/books" routerLinkActive="active">Book Catalog</a>
               </li>
+              <li class="nav-item" *ngIf="isAuthenticated$ | async">
+                <a class="nav-link" routerLink="/social" routerLinkActive="active">Social</a>
+              </li>
             </ul>
             <ul class="navbar-nav ms-auto">
+              <li class="nav-item" *ngIf="isAuthenticated$ | async">
+                <app-notifications></app-notifications>
+              </li>
               <ng-container *ngIf="!(isAuthenticated$ | async); else authenticatedNav">
                 <li class="nav-item">
                   <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
@@ -45,7 +52,7 @@ import { Observable } from 'rxjs';
                   </a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
-                    <li><a class="dropdown-item" routerLink="/friends">Friends</a></li>
+                    <li><a class="dropdown-item" routerLink="/social">Social Features</a></li>
                     <li *ngIf="(currentUser$ | async)?.isAdmin">
                       <a class="dropdown-item" routerLink="/admin">Admin Panel</a>
                     </li>

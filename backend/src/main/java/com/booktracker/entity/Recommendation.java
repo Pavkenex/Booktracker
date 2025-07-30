@@ -28,6 +28,9 @@ public class Recommendation {
     @Column(columnDefinition = "TEXT")
     private String message;
     
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
+    
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -95,6 +98,14 @@ public class Recommendation {
     
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public boolean isRead() {
+        return isRead;
+    }
+    
+    public void setRead(boolean read) {
+        isRead = read;
     }
     
     @Override

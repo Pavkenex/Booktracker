@@ -58,7 +58,7 @@ import { BookCardComponent } from '../book-card/book-card.component';
                   [(ngModel)]="searchParams.genreId"
                   (change)="onFilterChange()"
                 >
-                  <option [value]="undefined">All Genres</option>
+                  <option value="">All Genres</option>
                   <option *ngFor="let genre of genres" [value]="genre.id">
                     {{ genre.name }}
                   </option>
@@ -152,7 +152,7 @@ import { BookCardComponent } from '../book-card/book-card.component';
                 <li class="page-item" [class.disabled]="booksResponse.first">
                   <button 
                     class="page-link" 
-                    (click)="goToPage(booksResponse.number - 1)"
+                    (click)="goToPage(booksResponse.page - 1)"
                     [disabled]="booksResponse.first"
                   >
                     Previous
@@ -162,7 +162,7 @@ import { BookCardComponent } from '../book-card/book-card.component';
                 <li 
                   *ngFor="let page of getVisiblePages()" 
                   class="page-item"
-                  [class.active]="page === booksResponse.number"
+                  [class.active]="page === booksResponse.page"
                 >
                   <button 
                     class="page-link" 
@@ -175,7 +175,7 @@ import { BookCardComponent } from '../book-card/book-card.component';
                 <li class="page-item" [class.disabled]="booksResponse.last">
                   <button 
                     class="page-link" 
-                    (click)="goToPage(booksResponse.number + 1)"
+                    (click)="goToPage(booksResponse.page + 1)"
                     [disabled]="booksResponse.last"
                   >
                     Next
@@ -255,7 +255,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     size: 12,
     title: '',
     author: '',
-    genreId: undefined
+    genreId: ''
   };
 
   private destroy$ = new Subject<void>();
@@ -264,6 +264,9 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   constructor(private bookService: BookService) {}
 
   ngOnInit(): void {
+    // Ensure genreId is properly initialized
+    this.searchParams.genreId = '';
+    
     this.loadGenres();
     this.loadBooks();
     
@@ -271,7 +274,6 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     this.searchSubject
       .pipe(
         debounceTime(500),
-        distinctUntilChanged(),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
@@ -289,13 +291,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    // Clean up empty string parameters
-    const params = { ...this.searchParams };
-    if (!params.title?.trim()) delete params.title;
-    if (!params.author?.trim()) delete params.author;
-    if (!params.genreId) delete params.genreId;
-
-    this.bookService.getBooks(params)
+    this.bookService.getBooks(this.searchParams)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -350,7 +346,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
       size: this.searchParams.size,
       title: '',
       author: '',
-      genreId: undefined
+      genreId: ''
     };
     this.loadBooks();
   }
@@ -358,13 +354,13 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   hasActiveFilters(): boolean {
     return !!(this.searchParams.title?.trim() || 
               this.searchParams.author?.trim() || 
-              this.searchParams.genreId);
+              (this.searchParams.genreId && this.searchParams.genreId !== ''));
   }
 
   getResultsText(): string {
     if (!this.booksResponse) return '';
     
-    const start = this.booksResponse.number * this.booksResponse.size + 1;
+    const start = this.booksResponse.page * this.booksResponse.size + 1;
     const end = Math.min(start + this.booksResponse.size - 1, this.booksResponse.totalElements);
     
     return `${start}-${end} of ${this.booksResponse.totalElements} books`;
@@ -373,7 +369,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   getVisiblePages(): number[] {
     if (!this.booksResponse) return [];
     
-    const current = this.booksResponse.number;
+    const current = this.booksResponse.page;
     const total = this.booksResponse.totalPages;
     const delta = 2; // Number of pages to show on each side of current page
     

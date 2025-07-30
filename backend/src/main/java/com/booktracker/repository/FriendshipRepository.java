@@ -112,4 +112,18 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
      */
     @Query("SELECT COUNT(f) FROM Friendship f WHERE CAST(f.createdAt AS date) = :date")
     long countFriendRequestsSentOnDate(@Param("date") java.time.LocalDate date);
+    
+    /**
+     * Find accepted friendships of user (returns Friendship objects)
+     */
+    @Query("SELECT f FROM Friendship f WHERE (f.user = :user OR f.friend = :user) AND f.status = 'accepted'")
+    List<Friendship> findAcceptedFriendshipsOfUser(@Param("user") User user);
+    
+    /**
+     * Check if there's a pending friend request between users
+     */
+    @Query("SELECT COUNT(f) > 0 FROM Friendship f WHERE " +
+           "((f.user = :user1 AND f.friend = :user2) OR (f.user = :user2 AND f.friend = :user1)) " +
+           "AND f.status = 'pending'")
+    boolean hasPendingRequest(@Param("user1") User user1, @Param("user2") User user2);
 }

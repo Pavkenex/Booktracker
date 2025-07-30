@@ -203,6 +203,33 @@ public class RecommendationService {
     }
     
     /**
+     * Get count of unread recommendations for user
+     */
+    @Transactional(readOnly = true)
+    public long getUnreadRecommendationCount(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        return recommendationRepository.countByReceiverAndIsReadFalse(user);
+    }
+    
+    /**
+     * Mark recommendation as read
+     */
+    public void markRecommendationAsRead(Long userId, Long recommendationId) {
+        Recommendation recommendation = recommendationRepository.findById(recommendationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recommendation not found"));
+        
+        // Only the receiver can mark their recommendation as read
+        if (!recommendation.getReceiver().getId().equals(userId)) {
+            throw new IllegalArgumentException("You can only mark your own recommendations as read");
+        }
+        
+        recommendation.setRead(true);
+        recommendationRepository.save(recommendation);
+    }
+    
+    /**
      * Inner class for recommendation statistics
      */
     public static class RecommendationStats {

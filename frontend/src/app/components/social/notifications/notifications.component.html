@@ -1,0 +1,74 @@
+<div class="notification-dropdown" (clickOutside)="closeDropdown()">
+  <button 
+    class="btn btn-outline-secondary position-relative notification-btn"
+    (click)="toggleDropdown()"
+    [class.active]="showDropdown">
+    <i class="fas fa-bell"></i>
+    <span 
+      *ngIf="notificationCount.total > 0" 
+      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{ notificationCount.total > 99 ? '99+' : notificationCount.total }}
+    </span>
+  </button>
+
+  <div *ngIf="showDropdown" class="dropdown-menu dropdown-menu-end show notification-dropdown-menu">
+    <div class="dropdown-header d-flex justify-content-between align-items-center">
+      <span>Notifications</span>
+      <button 
+        class="btn btn-sm btn-link p-0 text-decoration-none"
+        (click)="refreshNotifications()"
+        [disabled]="isRefreshing"
+        title="Refresh">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isRefreshing"></i>
+      </button>
+    </div>
+
+    <div *ngIf="notificationCount.total === 0" class="dropdown-item-text text-center py-3">
+      <i class="fas fa-bell-slash text-muted mb-2 d-block"></i>
+      <small class="text-muted">No new notifications</small>
+    </div>
+
+    <div *ngIf="notificationCount.total > 0">
+      <!-- Friend Requests -->
+      <div *ngIf="notificationCount.friendRequests > 0">
+        <a 
+          class="dropdown-item d-flex justify-content-between align-items-center"
+          routerLink="/social/friend-requests"
+          (click)="closeDropdown()">
+          <div>
+            <i class="fas fa-user-plus text-primary me-2"></i>
+            Friend Requests
+          </div>
+          <span class="badge bg-primary rounded-pill">
+            {{ notificationCount.friendRequests }}
+          </span>
+        </a>
+      </div>
+
+      <!-- Recommendations -->
+      <div *ngIf="notificationCount.recommendations > 0">
+        <a 
+          class="dropdown-item d-flex justify-content-between align-items-center"
+          routerLink="/social/recommendations"
+          (click)="closeDropdown()">
+          <div>
+            <i class="fas fa-book text-success me-2"></i>
+            Book Recommendations
+          </div>
+          <span class="badge bg-success rounded-pill">
+            {{ notificationCount.recommendations }}
+          </span>
+        </a>
+      </div>
+
+      <div class="dropdown-divider"></div>
+      
+      <a 
+        class="dropdown-item text-center small"
+        routerLink="/social"
+        (click)="closeDropdown()">
+        View All Social Features
+      </a>
+    </div>
+  </div>
+</div>

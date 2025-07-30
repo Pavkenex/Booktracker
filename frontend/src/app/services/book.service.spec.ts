@@ -97,6 +97,6 @@ describe('BookService', () => {
       expect(genres).toEqual(mockGenres);
     });
 
-    expect(apiService.get).toHaveBeenCalledWith('/books/categories');
+    expect(apiService.get).toHaveBeenCalledWith('/genres');
   });
 });

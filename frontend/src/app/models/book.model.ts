@@ -18,7 +18,7 @@ export interface BookSearchParams {
   size?: number;
   title?: string;
   author?: string;
-  genreId?: number;
+  genreId?: number | string;
 }
 
 export interface PagedResponse<T> {
@@ -26,7 +26,9 @@ export interface PagedResponse<T> {
   totalElements: number;
   totalPages: number;
   size: number;
-  number: number;
+  page: number;
   first: boolean;
   last: boolean;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }

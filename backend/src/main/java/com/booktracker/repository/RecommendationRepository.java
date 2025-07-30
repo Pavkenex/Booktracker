@@ -144,4 +144,9 @@ public interface RecommendationRepository extends JpaRepository<Recommendation, 
      * Delete all recommendations received by user
      */
     void deleteByReceiver(User receiver);
+    
+    /**
+     * Count unread recommendations for user
+     */
+    long countByReceiverAndIsReadFalse(User receiver);
 }

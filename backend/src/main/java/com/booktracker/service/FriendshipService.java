@@ -189,6 +189,47 @@ public class FriendshipService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
-        return friendshipRepository.countByFriendAndStatus(user, Friendship.FriendshipStatus.pending);
+        long count = friendshipRepository.countByFriendAndStatus(user, Friendship.FriendshipStatus.pending);
+        System.out.println("Pending friend request count for user " + userId + " (" + user.getUsername() + "): " + count);
+        return count;
+    }
+    
+    /**
+     * Get user's friendships (with friend details)
+     */
+    @Transactional(readOnly = true)
+    public List<FriendshipResponse> getFriendships(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        List<Friendship> friendships = friendshipRepository.findAcceptedFriendshipsOfUser(user);
+        return friendships.stream()
+                .map(FriendshipResponse::new)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Search users by username or email
+     */
+    @Transactional(readOnly = true)
+    public List<User> searchUsers(String query, Long currentUserId) {
+        return userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
+                .stream()
+                .filter(user -> !user.getId().equals(currentUserId))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Check if there's a pending friend request between users
+     */
+    @Transactional(readOnly = true)
+    public boolean hasPendingRequest(Long userId1, Long userId2) {
+        User user1 = userRepository.findById(userId1)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user2 = userRepository.findById(userId2)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        return friendshipRepository.hasPendingRequest(user1, user2);
     }
 }

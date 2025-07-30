@@ -15,14 +15,25 @@ export class BookService {
     
     if (params.page !== undefined) queryParams.append('page', params.page.toString());
     if (params.size !== undefined) queryParams.append('size', params.size.toString());
-    if (params.title) queryParams.append('title', params.title);
-    if (params.author) queryParams.append('author', params.author);
-    if (params.genreId) queryParams.append('genreId', params.genreId.toString());
-
-    const queryString = queryParams.toString();
-    const endpoint = queryString ? `/books?${queryString}` : '/books';
     
-    return this.apiService.get<PagedResponse<Book>>(endpoint);
+    // Check if we have meaningful filter parameters (not empty strings or undefined)
+    const hasTitle = params.title && params.title.trim() !== '';
+    const hasAuthor = params.author && params.author.trim() !== '';
+    const hasGenre = params.genreId && params.genreId !== '' && Number(params.genreId) > 0;
+    
+    const hasFilters = hasTitle || hasAuthor || hasGenre;
+    
+    if (hasFilters) {
+      // Use filter endpoint when we have search criteria
+      if (hasTitle && params.title) queryParams.append('title', params.title.trim());
+      if (hasAuthor && params.author) queryParams.append('author', params.author.trim());
+      if (hasGenre && params.genreId) queryParams.append('genreId', params.genreId.toString());
+      
+      return this.apiService.get<PagedResponse<Book>>(`/books/filter?${queryParams.toString()}`);
+    } else {
+      // Use regular books endpoint for simple pagination
+      return this.apiService.get<PagedResponse<Book>>(`/books?${queryParams.toString()}`);
+    }
   }
 
   getBookById(id: number): Observable<Book> {
@@ -41,6 +52,6 @@ export class BookService {
   }
 
   getGenres(): Observable<Genre[]> {
-    return this.apiService.get<Genre[]>('/books/categories');
+    return this.apiService.get<Genre[]>('/genres');
   }
 }

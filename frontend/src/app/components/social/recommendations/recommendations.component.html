@@ -1,0 +1,273 @@
+<div class="recommendations-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Book Recommendations</h3>
+    <button class="btn btn-outline-secondary" (click)="loadRecommendations()">
+      <i class="fas fa-sync-alt me-2"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'received'"
+        (click)="setActiveTab('received')">
+        <i class="fas fa-inbox me-2"></i>
+        Received
+        <span *ngIf="receivedRecommendations.length > 0" class="badge bg-primary ms-2">
+          {{ receivedRecommendations.length }}
+        </span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'sent'"
+        (click)="setActiveTab('sent')">
+        <i class="fas fa-paper-plane me-2"></i>
+        Sent
+        <span *ngIf="sentRecommendations.length > 0" class="badge bg-secondary ms-2">
+          {{ sentRecommendations.length }}
+        </span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'send'"
+        (click)="setActiveTab('send')">
+        <i class="fas fa-plus me-2"></i>
+        Send New
+      </button>
+    </li>
+  </ul>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading recommendations...</p>
+  </div>
+
+  <!-- Received Recommendations Tab -->
+  <div *ngIf="activeTab === 'received' && !isLoading">
+    <div *ngIf="receivedRecommendations.length === 0" class="text-center py-5">
+      <i class="fas fa-book-reader fa-3x text-muted mb-3"></i>
+      <h5 class="text-muted">No recommendations received</h5>
+      <p class="text-muted">When friends recommend books to you, they will appear here.</p>
+    </div>
+
+    <div *ngIf="receivedRecommendations.length > 0" class="recommendations-list">
+      <div *ngFor="let recommendation of receivedRecommendations" class="card recommendation-card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2">
+              <img 
+                [src]="recommendation.book.thumbnail || '/assets/images/book-placeholder.jpg'" 
+                [alt]="recommendation.book.title"
+                class="book-thumbnail">
+            </div>
+            <div class="col-md-8">
+              <div class="recommendation-content">
+                <h6 class="book-title">{{ recommendation.book.title }}</h6>
+                <p class="book-author text-muted">by {{ recommendation.book.author }}</p>
+                <p class="recommendation-from">
+                  <strong>{{ recommendation.sender.username }}</strong> recommends this book
+                </p>
+                <div *ngIf="recommendation.message" class="recommendation-message">
+                  <i class="fas fa-quote-left text-muted me-2"></i>
+                  <em>{{ recommendation.message }}</em>
+                </div>
+                <small class="text-muted">
+                  <i class="fas fa-clock me-1"></i>
+                  {{ getTimeAgo(recommendation.createdAt) }}
+                </small>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="recommendation-actions">
+                <button 
+                  *ngIf="!recommendation.isRead"
+                  class="btn btn-sm btn-outline-primary mb-2 w-100"
+                  (click)="markAsRead(recommendation.id)">
+                  <i class="fas fa-check me-1"></i>
+                  Mark Read
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-success mb-2 w-100"
+                  (click)="addBookToLibrary(recommendation.book)">
+                  <i class="fas fa-plus me-1"></i>
+                  Add to Library
+                </button>
+                <button 
+                  class="btn btn-sm btn-outline-danger w-100"
+                  (click)="deleteRecommendation(recommendation.id, 'received')">
+                  <i class="fas fa-trash me-1"></i>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sent Recommendations Tab -->
+  <div *ngIf="activeTab === 'sent' && !isLoading">
+    <div *ngIf="sentRecommendations.length === 0" class="text-center py-5">
+      <i class="fas fa-share fa-3x text-muted mb-3"></i>
+      <h5 class="text-muted">No recommendations sent</h5>
+      <p class="text-muted">Start sharing your favorite books with friends!</p>
+      <button class="btn btn-primary" (click)="setActiveTab('send')">
+        <i class="fas fa-plus me-2"></i>
+        Send Recommendation
+      </button>
+    </div>
+
+    <div *ngIf="sentRecommendations.length > 0" class="recommendations-list">
+      <div *ngFor="let recommendation of sentRecommendations" class="card recommendation-card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2">
+              <img 
+                [src]="recommendation.book.thumbnail || '/assets/images/book-placeholder.jpg'" 
+                [alt]="recommendation.book.title"
+                class="book-thumbnail">
+            </div>
+            <div class="col-md-8">
+              <div class="recommendation-content">
+                <h6 class="book-title">{{ recommendation.book.title }}</h6>
+                <p class="book-author text-muted">by {{ recommendation.book.author }}</p>
+                <p class="recommendation-to">
+                  Recommended to <strong>{{ recommendation.receiver.username }}</strong>
+                </p>
+                <div *ngIf="recommendation.message" class="recommendation-message">
+                  <i class="fas fa-quote-left text-muted me-2"></i>
+                  <em>{{ recommendation.message }}</em>
+                </div>
+                <small class="text-muted">
+                  <i class="fas fa-clock me-1"></i>
+                  {{ getTimeAgo(recommendation.createdAt) }}
+                </small>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="recommendation-actions">
+                <button 
+                  class="btn btn-sm btn-outline-danger w-100"
+                  (click)="deleteRecommendation(recommendation.id, 'sent')">
+                  <i class="fas fa-trash me-1"></i>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send New Recommendation Tab -->
+  <div *ngIf="activeTab === 'send' && !isLoading">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Send Book Recommendation</h5>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="sendRecommendation()" #recommendationForm="ngForm">
+          <!-- Friend Selection -->
+          <div class="mb-3">
+            <label for="friendSelect" class="form-label">Select Friend</label>
+            <select 
+              id="friendSelect"
+              class="form-select" 
+              [(ngModel)]="selectedFriendId" 
+              name="friendId"
+              required>
+              <option value="">Choose a friend...</option>
+              <option *ngFor="let friend of friends" [value]="friend.friendId">
+                {{ friend.friend?.username }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Book Selection -->
+          <div class="mb-3">
+            <label for="bookSearch" class="form-label">Select Book from Your Library</label>
+            <div class="position-relative">
+              <input 
+                type="text" 
+                id="bookSearch"
+                class="form-control" 
+                placeholder="Search your books..."
+                [(ngModel)]="bookSearchQuery"
+                (input)="filterBooks()"
+                name="bookSearch"
+                required>
+              
+              <!-- Book Search Results -->
+              <div *ngIf="filteredBooks.length > 0 && bookSearchQuery" class="book-search-results">
+                <div 
+                  *ngFor="let book of filteredBooks" 
+                  class="book-search-item"
+                  (click)="selectBook(book)">
+                  <div class="d-flex align-items-center">
+                    <img 
+                      [src]="book.thumbnail || '/assets/images/book-placeholder.jpg'" 
+                      [alt]="book.title"
+                      class="book-search-thumbnail me-3">
+                    <div>
+                      <div class="fw-bold">{{ book.title }}</div>
+                      <small class="text-muted">by {{ book.author }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="mb-3">
+            <label for="message" class="form-label">Message (Optional)</label>
+            <textarea 
+              id="message"
+              class="form-control" 
+              rows="3" 
+              placeholder="Why do you recommend this book?"
+              [(ngModel)]="recommendationMessage"
+              name="message"
+              maxlength="500"></textarea>
+            <div class="form-text">{{ recommendationMessage.length }}/500 characters</div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="d-flex justify-content-end">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="!selectedFriendId || !selectedBookId || isSending">
+              <span *ngIf="!isSending">
+                <i class="fas fa-paper-plane me-2"></i>
+                Send Recommendation
+              </span>
+              <span *ngIf="isSending">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Sending...
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

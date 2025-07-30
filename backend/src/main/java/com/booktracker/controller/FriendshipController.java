@@ -31,18 +31,12 @@ public class FriendshipController {
      * Get user's friends
      */
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getFriends(HttpServletRequest request) {
+    public ResponseEntity<List<FriendshipResponse>> getFriends(HttpServletRequest request) {
         Long userId = getUserIdFromToken(request);
         
-        List<User> friends = friendshipService.getFriends(userId);
-        long friendCount = friendshipService.getFriendCount(userId);
+        List<FriendshipResponse> friendships = friendshipService.getFriendships(userId);
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("friends", friends);
-        response.put("totalCount", friendCount);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(friendships);
     }
     
     /**
@@ -71,7 +65,7 @@ public class FriendshipController {
     @PutMapping("/request/{friendshipId}")
     public ResponseEntity<Map<String, Object>> respondToFriendRequest(
             @PathVariable Long friendshipId,
-            @Valid @RequestBody FriendRequestResponse request,
+            @RequestBody Map<String, Object> request,
             HttpServletRequest httpRequest) {
         
         Long userId = getUserIdFromToken(httpRequest);
@@ -79,17 +73,14 @@ public class FriendshipController {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         
-        if ("accept".equalsIgnoreCase(request.getAction())) {
+        Boolean accept = (Boolean) request.get("accept");
+        if (accept != null && accept) {
             FriendshipResponse friendship = friendshipService.acceptFriendRequest(userId, friendshipId);
             response.put("message", "Friend request accepted");
             response.put("friendship", friendship);
-        } else if ("decline".equalsIgnoreCase(request.getAction())) {
+        } else {
             friendshipService.declineFriendRequest(userId, friendshipId);
             response.put("message", "Friend request declined");
-        } else {
-            response.put("success", false);
-            response.put("error", "Invalid action. Use 'accept' or 'decline'");
-            return ResponseEntity.badRequest().body(response);
         }
         
         return ResponseEntity.ok(response);
@@ -131,6 +122,18 @@ public class FriendshipController {
         return ResponseEntity.ok(response);
     }
     
+    /**
+     * Get friend requests (received)
+     */
+    @GetMapping("/requests")
+    public ResponseEntity<List<FriendshipResponse>> getFriendRequests(HttpServletRequest request) {
+        Long userId = getUserIdFromToken(request);
+        
+        List<FriendshipResponse> receivedRequests = friendshipService.getReceivedFriendRequests(userId);
+        
+        return ResponseEntity.ok(receivedRequests);
+    }
+
     /**
      * Get received friend requests
      */
@@ -188,6 +191,30 @@ public class FriendshipController {
         return ResponseEntity.ok(response);
     }
     
+    /**
+     * Search users for friend requests
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<Map<String, Object>>> searchUsers(
+            @RequestParam("q") String query,
+            HttpServletRequest request) {
+        
+        Long userId = getUserIdFromToken(request);
+        
+        List<User> users = friendshipService.searchUsers(query, userId);
+        List<Map<String, Object>> searchResults = users.stream().map(user -> {
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", user.getId());
+            result.put("username", user.getUsername());
+            result.put("email", user.getEmail());
+            result.put("isFriend", friendshipService.areFriends(userId, user.getId()));
+            result.put("hasPendingRequest", friendshipService.hasPendingRequest(userId, user.getId()));
+            return result;
+        }).toList();
+        
+        return ResponseEntity.ok(searchResults);
+    }
+
     /**
      * Get friendship statistics
      */

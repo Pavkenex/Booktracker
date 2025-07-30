@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AuthGuard, GuestGuard } from './guards/auth.guard';
+import { AuthGuard, GuestGuard, AdminGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -45,6 +45,46 @@ export const routes: Routes = [
     path: 'library',
     loadComponent: () => import('./components/library/personal-library/personal-library.component').then(m => m.PersonalLibraryComponent),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'social',
+    loadComponent: () => import('./components/social/social-dashboard/social-dashboard.component').then(m => m.SocialDashboardComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'social/friends',
+    loadComponent: () => import('./components/social/friends-list/friends-list.component').then(m => m.FriendsListComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'social/friend-requests',
+    loadComponent: () => import('./components/social/friend-requests/friend-requests.component').then(m => m.FriendRequestsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'social/recommendations',
+    loadComponent: () => import('./components/social/recommendations/recommendations.component').then(m => m.RecommendationsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./components/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'admin/books',
+    loadComponent: () => import('./components/admin/book-management/book-management.component').then(m => m.BookManagementComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'admin/genres',
+    loadComponent: () => import('./components/admin/genre-management/genre-management.component').then(m => m.GenreManagementComponent),
+    canActivate: [AdminGuard]
+  },
+  {
+    path: 'admin/reports',
+    loadComponent: () => import('./components/admin/reports-panel/reports-panel.component').then(m => m.ReportsPanelComponent),
+    canActivate: [AdminGuard]
   },
   {
     path: '**',

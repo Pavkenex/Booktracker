@@ -25,6 +25,13 @@ export class ApiService {
     });
   }
 
+  getBlob(endpoint: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${endpoint}`, {
+      headers: this.getHeaders(),
+      responseType: 'blob'
+    });
+  }
+
   post<T>(endpoint: string, data: any): Observable<T> {
     return this.http.post<T>(`${this.apiUrl}${endpoint}`, data, {
       headers: this.getHeaders()

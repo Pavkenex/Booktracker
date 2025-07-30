@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
+import { SocialService } from '../../services/social.service';
+import { Recommendation } from '../../models/social.model';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -34,6 +36,72 @@ import { Observable } from 'rxjs';
       </div>
     </div>
     
+    <!-- Recent Recommendations Section (only for authenticated users) -->
+    <div *ngIf="isAuthenticated$ | async" class="row mt-5">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3>Recent Book Recommendations</h3>
+          <a routerLink="/social/recommendations" class="btn btn-outline-primary btn-sm">View All</a>
+        </div>
+        
+        <div *ngIf="isLoadingRecommendations" class="text-center py-4">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        
+        <div *ngIf="!isLoadingRecommendations && recentRecommendations.length === 0" class="text-center py-4">
+          <i class="fas fa-book fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No recommendations yet</h5>
+          <p class="text-muted">Connect with friends to start receiving book recommendations!</p>
+          <a routerLink="/social" class="btn btn-primary">Go to Social</a>
+        </div>
+        
+        <div *ngIf="!isLoadingRecommendations && recentRecommendations.length > 0" class="row">
+          <div *ngFor="let recommendation of recentRecommendations" class="col-md-4 mb-3">
+            <div class="card h-100 recommendation-card" [class.unread]="!recommendation.isRead">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <small class="text-muted">{{ getTimeAgo(recommendation.createdAt) }}</small>
+                  <span *ngIf="!recommendation.isRead" class="badge bg-primary">New</span>
+                </div>
+                
+                <h6 class="card-title">{{ recommendation.book.title }}</h6>
+                <p class="card-text">
+                  <small class="text-muted">by {{ recommendation.book.author }}</small>
+                </p>
+                
+                <p *ngIf="recommendation.message" class="card-text">
+                  <em>"{{ recommendation.message }}"</em>
+                </p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <small class="text-muted">
+                    From: <strong>{{ recommendation.sender.username }}</strong>
+                  </small>
+                  <div class="btn-group btn-group-sm">
+                    <button 
+                      *ngIf="!recommendation.isRead"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="markAsRead(recommendation.id)"
+                      title="Mark as read">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <a 
+                      [routerLink]="['/books', recommendation.book.id]"
+                      class="btn btn-primary btn-sm"
+                      title="View book">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row mt-5">
       <div class="col-md-4">
         <div class="card h-100">
@@ -74,14 +142,90 @@ import { Observable } from 'rxjs';
     .card:hover {
       transform: translateY(-5px);
     }
+    
+    .recommendation-card.unread {
+      border-left: 4px solid #007bff;
+      box-shadow: 0 2px 4px rgba(0,123,255,0.1);
+    }
+    
+    .recommendation-card .card-title {
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .btn-group-sm .btn {
+      padding: 0.25rem 0.5rem;
+    }
   `]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   isAuthenticated$: Observable<boolean>;
   currentUser$: Observable<User | null>;
+  recentRecommendations: Recommendation[] = [];
+  isLoadingRecommendations: boolean = false;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private socialService: SocialService
+  ) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
     this.currentUser$ = this.authService.currentUser$;
+  }
+
+  ngOnInit(): void {
+    this.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) {
+        this.loadRecentRecommendations();
+      }
+    });
+  }
+
+  loadRecentRecommendations(): void {
+    this.isLoadingRecommendations = true;
+    this.socialService.getRecommendations().subscribe({
+      next: (recommendations) => {
+        this.recentRecommendations = recommendations.slice(0, 3); // Show only 3 most recent
+        this.isLoadingRecommendations = false;
+      },
+      error: (error) => {
+        console.error('Error loading recommendations:', error);
+        this.isLoadingRecommendations = false;
+      }
+    });
+  }
+
+  markAsRead(recommendationId: number): void {
+    this.socialService.markRecommendationAsRead(recommendationId).subscribe({
+      next: () => {
+        const recommendation = this.recentRecommendations.find(r => r.id === recommendationId);
+        if (recommendation) {
+          recommendation.isRead = true;
+        }
+      },
+      error: (error) => {
+        console.error('Error marking recommendation as read:', error);
+      }
+    });
+  }
+
+  getTimeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInMinutes < 1) {
+      return 'Just now';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+    } else if (diffInDays < 7) {
+      return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    } else {
+      return date.toLocaleDateString();
+    }
   }
 }

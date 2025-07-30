@@ -63,6 +63,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countUsersRegisteredOnDate(@Param("date") java.time.LocalDate date);
     
     /**
+     * Search users by username or email containing query (case insensitive)
+     */
+    List<User> findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(String username, String email);
+    
+    /**
      * Get user engagement data for reports
      */
     @Query("SELECT u.username, u.email, " +
