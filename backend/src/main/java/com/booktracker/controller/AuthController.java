@@ -18,18 +18,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        try {
-            AuthResponse response = authService.register(request);
-            
-            if (response.isSuccess()) {
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // This will print the stack trace to console
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new AuthResponse(false, "Registration failed: " + e.getMessage()));
+        AuthResponse response = authService.register(request);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -70,24 +64,19 @@ public class AuthController {
 
     @GetMapping("/verify-token")
     public ResponseEntity<AuthResponse> verifyToken(@RequestHeader("Authorization") String authHeader) {
-        try {
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                
-                if (authService.validateToken(token)) {
-                    String username = authService.getUsernameFromToken(token);
-                    return ResponseEntity.ok(new AuthResponse(true, "Token is valid"));
-                } else {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                            .body(new AuthResponse(false, "Invalid or expired token"));
-                }
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            
+            if (authService.validateToken(token)) {
+                String username = authService.getUsernameFromToken(token);
+                return ResponseEntity.ok(new AuthResponse(true, "Token is valid"));
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new AuthResponse(false, "Authorization header is missing or invalid"));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new AuthResponse(false, "Invalid or expired token"));
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse(false, "Token validation failed"));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthResponse(false, "Authorization header is missing or invalid"));
         }
     }
 }

@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { AuthService, User } from './services/auth.service';
 import { NotificationsComponent } from './components/social/notifications/notifications.component';
+import { ToastNotificationsComponent } from './components/shared/toast-notifications/toast-notifications.component';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, NotificationsComponent],
+  imports: [CommonModule, RouterOutlet, RouterModule, NotificationsComponent, ToastNotificationsComponent],
   template: `
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -69,6 +70,9 @@ import { Observable } from 'rxjs';
       <main class="container mt-4">
         <router-outlet></router-outlet>
       </main>
+      
+      <!-- Toast notifications -->
+      <app-toast-notifications></app-toast-notifications>
     </div>
   `,
   styles: [`

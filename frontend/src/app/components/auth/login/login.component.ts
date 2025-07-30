@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService, LoginRequest } from '../../../services/auth.service';
+import { ErrorService } from '../../../services/error.service';
 
 @Component({
   selector: 'app-login',
@@ -126,7 +127,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private errorService: ErrorService
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -153,6 +155,7 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
+            this.errorService.showSuccess('Login successful!');
             this.router.navigate([this.returnUrl]);
           } else {
             this.errorMessage = response.message || 'Login failed. Please try again.';
@@ -162,10 +165,9 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           if (error.status === 401) {
             this.errorMessage = 'Invalid username or password.';
-          } else if (error.error?.message) {
-            this.errorMessage = error.error.message;
           } else {
-            this.errorMessage = 'An error occurred. Please try again.';
+            // Let the error interceptor handle other errors
+            this.errorMessage = this.errorService.handleHttpError(error);
           }
         }
       });
