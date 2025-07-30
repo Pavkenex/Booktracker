@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil, debounceTime } from 'rxjs';
 import { BookService } from '../../../services/book.service';
 import { Book, Genre, BookSearchParams, PagedResponse } from '../../../models/book.model';
 import { BookCardComponent } from '../book-card/book-card.component';
@@ -12,17 +12,48 @@ import { BookCardComponent } from '../book-card/book-card.component';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, BookCardComponent],
   template: `
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
       <div class="row">
+        <!-- Mobile Filter Toggle -->
+        <div class="col-12 d-lg-none mb-3">
+          <button 
+            class="btn btn-outline-primary w-100"
+            type="button"
+            [attr.aria-expanded]="showMobileFilters"
+            aria-controls="mobileFilters"
+            (click)="toggleMobileFilters()">
+            <i class="fas fa-filter me-2"></i>
+            Search & Filter
+            <span *ngIf="hasActiveFilters()" class="badge bg-primary ms-2">{{ getActiveFiltersCount() }}</span>
+            <i class="fas fa-chevron-down ms-2 filter-chevron" [class.rotated]="showMobileFilters"></i>
+          </button>
+        </div>
+
         <!-- Search and Filter Sidebar -->
         <div class="col-lg-3 col-md-4 mb-4">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header d-none d-lg-block">
               <h5 class="mb-0">
                 <i class="fas fa-search me-2"></i>Search & Filter
               </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body filter-panel" 
+                 id="mobileFilters" 
+                 [class.mobile-hidden]="!showMobileFilters">
+              
+              <!-- Mobile Close Button -->
+              <div class="d-flex d-lg-none justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">
+                  <i class="fas fa-search me-2"></i>Search & Filter
+                </h6>
+                <button 
+                  type="button" 
+                  class="btn-close" 
+                  aria-label="Close"
+                  (click)="closeMobileFilters()">
+                </button>
+              </div>
+              
               <!-- Search by Title -->
               <div class="mb-3">
                 <label for="titleSearch" class="form-label">Search by Title</label>
@@ -80,19 +111,19 @@ import { BookCardComponent } from '../book-card/book-card.component';
         <!-- Main Content -->
         <div class="col-lg-9 col-md-8">
           <!-- Header with Results Count -->
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h2>Book Catalog</h2>
-              <p class="text-muted mb-0" *ngIf="booksResponse">
-                Showing {{ getResultsText() }}
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+            <div class="mb-2 mb-md-0">
+              <h2 class="h3 mb-1">Book Catalog</h2>
+              <p class="text-muted mb-0 small" *ngIf="booksResponse">
+                {{ getResultsText() }}
               </p>
             </div>
             <div class="d-flex align-items-center">
-              <label for="pageSize" class="form-label me-2 mb-0">Show:</label>
+              <label for="pageSize" class="form-label me-2 mb-0 small d-none d-md-inline">Show:</label>
               <select
                 id="pageSize"
                 class="form-select form-select-sm"
-                style="width: auto;"
+                style="min-width: 80px;"
                 [(ngModel)]="searchParams.size"
                 (change)="onPageSizeChange()"
               >
@@ -128,18 +159,40 @@ import { BookCardComponent } from '../book-card/book-card.component';
 
           <!-- Books Grid -->
           <div *ngIf="!loading && !error && booksResponse && booksResponse.content.length > 0">
-            <div class="row">
+            <div class="row g-3">
               <div 
                 *ngFor="let book of booksResponse.content" 
-                class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4"
+                class="col-xl-3 col-lg-4 col-md-6 col-12"
               >
                 <app-book-card [book]="book"></app-book-card>
               </div>
             </div>
 
-            <!-- Pagination -->
-            <nav aria-label="Book catalog pagination" *ngIf="booksResponse.totalPages > 1">
-              <ul class="pagination justify-content-center">
+            <!-- Mobile-Optimized Pagination -->
+            <nav aria-label="Book catalog pagination" *ngIf="booksResponse.totalPages > 1" class="mt-4">
+              <!-- Mobile pagination (simplified) -->
+              <div class="d-flex d-md-none justify-content-between align-items-center">
+                <button 
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="goToPage(booksResponse.page - 1)"
+                  [disabled]="booksResponse.first">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                
+                <span class="small text-muted">
+                  Page {{ booksResponse.page + 1 }} of {{ booksResponse.totalPages }}
+                </span>
+                
+                <button 
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="goToPage(booksResponse.page + 1)"
+                  [disabled]="booksResponse.last">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+              
+              <!-- Desktop pagination (full) -->
+              <ul class="pagination justify-content-center d-none d-md-flex">
                 <li class="page-item" [class.disabled]="booksResponse.first">
                   <button 
                     class="page-link" 
@@ -221,25 +274,96 @@ import { BookCardComponent } from '../book-card/book-card.component';
       color: #6c757d;
     }
 
-    @media (max-width: 768px) {
-      .container-fluid {
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-      
-      .pagination {
-        flex-wrap: wrap;
-      }
-      
-      .pagination .page-item {
-        margin: 2px;
+    /* Mobile-specific improvements */
+    @media (max-width: 991.98px) {
+      .card-body {
+        transition: all 0.3s ease;
       }
     }
 
-    @media (max-width: 576px) {
-      .col-sm-6 {
-        flex: 0 0 100%;
-        max-width: 100%;
+    @media (max-width: 767.98px) {
+      .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      
+      .h3 {
+        font-size: 1.5rem;
+      }
+      
+      /* Improve form controls on mobile */
+      .form-control, .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+      
+      /* Better spacing for mobile cards */
+      .row.g-3 {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .col-12 {
+        padding-left: 0.375rem;
+        padding-right: 0.375rem;
+      }
+    }
+
+    /* Touch-friendly pagination buttons */
+    .btn-sm {
+      min-height: 36px;
+      padding: 0.375rem 0.75rem;
+    }
+
+    /* Filter toggle button styling */
+    .btn[data-bs-toggle="collapse"] {
+      position: relative;
+    }
+
+    .btn[data-bs-toggle="collapse"]:not(.collapsed)::after {
+      transform: rotate(180deg);
+    }
+
+    /* Badge styling for active filters */
+    .badge {
+      font-size: 0.7rem;
+    }
+
+    /* Filter chevron animation */
+    .filter-chevron {
+      transition: transform 0.3s ease;
+    }
+
+    .filter-chevron.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Mobile filter close button */
+    .btn-close {
+      background-size: 0.75rem;
+    }
+
+    /* Filter panel visibility */
+    .filter-panel {
+      display: block;
+    }
+    
+    /* Mobile-specific filter panel behavior */
+    @media (max-width: 991.98px) {
+      .filter-panel.mobile-hidden {
+        display: none;
+      }
+      
+      .filter-panel {
+        transition: all 0.3s ease;
+      }
+    }
+    
+    /* Desktop always shows filter panel */
+    @media (min-width: 992px) {
+      .filter-panel {
+        display: block !important;
       }
     }
   `]
@@ -249,6 +373,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   genres: Genre[] = [];
   loading = false;
   error: string | null = null;
+  showMobileFilters = false;
   
   searchParams: BookSearchParams = {
     page: 0,
@@ -355,6 +480,22 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     return !!(this.searchParams.title?.trim() || 
               this.searchParams.author?.trim() || 
               (this.searchParams.genreId && this.searchParams.genreId !== ''));
+  }
+
+  getActiveFiltersCount(): number {
+    let count = 0;
+    if (this.searchParams.title?.trim()) count++;
+    if (this.searchParams.author?.trim()) count++;
+    if (this.searchParams.genreId && this.searchParams.genreId !== '') count++;
+    return count;
+  }
+
+  toggleMobileFilters(): void {
+    this.showMobileFilters = !this.showMobileFilters;
+  }
+
+  closeMobileFilters(): void {
+    this.showMobileFilters = false;
   }
 
   getResultsText(): string {

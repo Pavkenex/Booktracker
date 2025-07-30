@@ -32,14 +32,30 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
       <!-- Filter Tabs -->
       <div class="row mb-4">
         <div class="col-12">
-          <ul class="nav nav-tabs" id="libraryTabs" role="tablist">
+          <!-- Mobile dropdown for tabs -->
+          <div class="d-md-none mb-3">
+            <select 
+              class="form-select" 
+              [value]="activeTab" 
+              (change)="setActiveTab($any($event.target).value)">
+              <option value="all">All Books ({{ allBooks.length }})</option>
+              <option value="to_read">Want to Read ({{ booksToRead.length }})</option>
+              <option value="read">Read ({{ booksRead.length }})</option>
+              <option value="favorites">Favorites ({{ favoriteBooks.length }})</option>
+            </select>
+          </div>
+          
+          <!-- Desktop tabs -->
+          <ul class="nav nav-tabs d-none d-md-flex" id="libraryTabs" role="tablist">
             <li class="nav-item" role="presentation">
               <button 
                 class="nav-link" 
                 [class.active]="activeTab === 'all'"
                 (click)="setActiveTab('all')"
                 type="button">
-                All Books ({{ allBooks.length }})
+                <span class="d-none d-lg-inline">All Books</span>
+                <span class="d-inline d-lg-none">All</span>
+                ({{ allBooks.length }})
               </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -48,7 +64,9 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
                 [class.active]="activeTab === 'to_read'"
                 (click)="setActiveTab('to_read')"
                 type="button">
-                Want to Read ({{ booksToRead.length }})
+                <span class="d-none d-lg-inline">Want to Read</span>
+                <span class="d-inline d-lg-none">To Read</span>
+                ({{ booksToRead.length }})
               </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -66,7 +84,10 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
                 [class.active]="activeTab === 'favorites'"
                 (click)="setActiveTab('favorites')"
                 type="button">
-                Favorites ({{ favoriteBooks.length }})
+                <i class="fas fa-heart me-1 d-md-none"></i>
+                <span class="d-none d-md-inline">Favorites</span>
+                <span class="d-inline d-md-none">Fav</span>
+                ({{ favoriteBooks.length }})
               </button>
             </li>
           </ul>
@@ -100,30 +121,27 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
             </div>
 
             <!-- Books Grid -->
-            <div *ngIf="!loading && filteredBooks.length > 0" class="row">
-              <div *ngFor="let userBook of filteredBooks" class="col-md-6 col-lg-4 mb-4">
+            <div *ngIf="!loading && filteredBooks.length > 0" class="row g-3">
+              <div *ngFor="let userBook of filteredBooks" class="col-lg-4 col-md-6 col-12">
                 <div class="card h-100">
                   <!-- Book Image -->
-                  <div class="position-relative">
+                  <div class="position-relative book-image-container">
                     <img 
                       [src]="userBook.book.thumbnail || '/assets/images/book-placeholder.svg'" 
                       [alt]="userBook.book.title"
-                      class="card-img-top"
-                      style="height: 200px; object-fit: cover;">
+                      class="card-img-top">
                     
                     <!-- Favorite Badge -->
                     <button 
                       *ngIf="userBook.isFavourite"
-                      class="btn btn-sm position-absolute top-0 end-0 m-2 p-1"
-                      style="background: rgba(255,255,255,0.9); border: none;"
+                      class="btn btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
                       (click)="toggleFavorite(userBook)"
                       title="Remove from favorites">
                       <i class="fas fa-heart text-danger"></i>
                     </button>
                     <button 
                       *ngIf="!userBook.isFavourite"
-                      class="btn btn-sm position-absolute top-0 end-0 m-2 p-1"
-                      style="background: rgba(255,255,255,0.9); border: none;"
+                      class="btn btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
                       (click)="toggleFavorite(userBook)"
                       title="Add to favorites">
                       <i class="far fa-heart text-muted"></i>
@@ -147,7 +165,7 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
                         <small class="text-muted">My Rating:</small>
                         <div class="d-inline-block ms-1">
                           <i *ngFor="let star of [1,2,3,4,5]" 
-                             class="fas fa-star"
+                             class="fas fa-star star-rating"
                              [class.text-warning]="star <= userBook.rating!"
                              [class.text-muted]="star > userBook.rating!">
                           </i>
@@ -156,16 +174,39 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
                     </div>
 
                     <!-- Review Preview -->
-                    <div *ngIf="userBook.review" class="mb-3">
+                    <div *ngIf="userBook.review" class="mb-3 review-preview">
                       <small class="text-muted">My Review:</small>
                       <p class="small mt-1" [title]="userBook.review">
-                        {{ userBook.review.length > 100 ? (userBook.review | slice:0:100) + '...' : userBook.review }}
+                        {{ userBook.review.length > 80 ? (userBook.review | slice:0:80) + '...' : userBook.review }}
                       </p>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="mt-auto">
-                      <div class="btn-group w-100" role="group">
+                      <!-- Mobile: Stacked buttons -->
+                      <div class="d-md-none">
+                        <div class="d-grid gap-2">
+                          <a [routerLink]="['/books', userBook.book.id]" 
+                             class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-2"></i>View Details
+                          </a>
+                          <div class="btn-group" role="group">
+                            <button 
+                              class="btn btn-outline-secondary btn-sm"
+                              (click)="openReviewForm(userBook)">
+                              <i class="fas fa-edit me-1"></i>Review
+                            </button>
+                            <button 
+                              class="btn btn-outline-danger btn-sm"
+                              (click)="removeBook(userBook)">
+                              <i class="fas fa-trash me-1"></i>Remove
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Desktop: Button group -->
+                      <div class="btn-group w-100 d-none d-md-flex" role="group">
                         <a [routerLink]="['/books', userBook.book.id]" 
                            class="btn btn-outline-primary btn-sm">
                           <i class="fas fa-eye me-1"></i>View
@@ -203,6 +244,7 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
     .nav-tabs .nav-link {
       color: #6c757d;
       border: 1px solid transparent;
+      font-size: 0.9rem;
     }
     
     .nav-tabs .nav-link.active {
@@ -215,13 +257,107 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
       transition: transform 0.2s ease-in-out;
     }
     
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    /* Only apply hover effects on non-touch devices */
+    @media (hover: hover) and (pointer: fine) {
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
     }
     
     .btn-group .btn {
       flex: 1;
+    }
+    
+    .book-image-container {
+      height: 200px;
+      overflow: hidden;
+      background-color: #f8f9fa;
+    }
+    
+    .card-img-top {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .favorite-btn {
+      background: rgba(255,255,255,0.9) !important;
+      border: none !important;
+      min-height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+    }
+    
+    .star-rating {
+      font-size: 0.875rem;
+    }
+    
+    .review-preview {
+      max-height: 60px;
+      overflow: hidden;
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 767.98px) {
+      .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      
+      .book-image-container {
+        height: 180px;
+      }
+      
+      .card-body {
+        padding: 0.875rem;
+      }
+      
+      .card-title {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .btn-sm {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+        min-height: 40px;
+      }
+      
+      .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+      
+      .nav-tabs .nav-link {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+    
+    @media (max-width: 575.98px) {
+      .book-image-container {
+        height: 160px;
+      }
+      
+      .card-body {
+        padding: 0.75rem;
+      }
+      
+      .review-preview {
+        max-height: 50px;
+      }
+    }
+    
+    /* Improve touch targets */
+    .btn {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-sm {
+      min-height: 36px;
     }
   `]
 })

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Responsiveness Test - BookTracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            background: white;
+        }
+        
+        .mobile-test {
+            max-width: 375px;
+            margin: 0 auto;
+            border: 2px solid #007bff;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 767.98px) {
+            .mobile-test {
+                max-width: 100%;
+                border: none;
+            }
+        }
+        
+        /* Filter panel visibility fixes */
+        .filter-panel {
+            display: block;
+        }
+        
+        @media (max-width: 991.98px) {
+            .filter-panel.mobile-hidden {
+                display: none;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .filter-panel {
+                display: block !important;
+            }
+        }
+        
+        /* Dropdown positioning fixes */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-menu {
+            z-index: 1050;
+            min-width: 200px;
+        }
+        
+        @media (min-width: 992px) {
+            .dropdown-menu {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                left: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center my-4">BookTracker Mobile Responsiveness Test</h1>
+                
+                <!-- Navigation Test -->
+                <div class="test-section">
+                    <h3>Navigation Test</h3>
+                    <div class="mobile-test">
+                        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                            <div class="container-fluid px-3">
+                                <a class="navbar-brand d-flex align-items-center" href="#">
+                                    <i class="fas fa-book-open me-2"></i>
+                                    <span class="d-none d-sm-inline">BookTracker</span>
+                                    <span class="d-inline d-sm-none">BT</span>
+                                </a>
+                                
+                                <button class="navbar-toggler" type="button" onclick="toggleNavbar()">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                
+                                <div class="navbar-collapse collapse" id="navbarNav">
+                                    <ul class="navbar-nav me-auto">
+                                        <li class="nav-item">
+                                            <a class="nav-link d-flex align-items-center" href="#">
+                                                <i class="fas fa-home me-2 d-lg-none"></i>Home
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link d-flex align-items-center" href="#">
+                                                <i class="fas fa-book me-2 d-lg-none"></i>My Library
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    
+                                    <ul class="navbar-nav ms-auto">
+                                        <li class="nav-item dropdown" id="userDropdown">
+                                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" onclick="toggleDropdown(event)">
+                                                <i class="fas fa-user-circle me-2"></i>
+                                                <span class="d-none d-md-inline">Username</span>
+                                                <span class="d-inline d-md-none">Account</span>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-users me-2"></i>Social</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- Filter Collapse Test -->
+                <div class="test-section">
+                    <h3>Mobile Filter Test</h3>
+                    <div class="mobile-test">
+                        <div class="p-3">
+                            <button class="btn btn-outline-primary w-100 mb-3" type="button" onclick="toggleFilters()">
+                                <i class="fas fa-filter me-2"></i>
+                                Search & Filter
+                                <span class="badge bg-primary ms-2">2</span>
+                                <i class="fas fa-chevron-down ms-2" id="filterChevron"></i>
+                            </button>
+                            
+                            <div class="filter-panel mobile-hidden" id="testFilters">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-search me-2"></i>Search & Filter
+                                            </h6>
+                                            <button type="button" class="btn-close" onclick="closeFilters()"></button>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Search by Title</label>
+                                            <input type="text" class="form-control" placeholder="Enter book title...">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Filter by Genre</label>
+                                            <select class="form-select">
+                                                <option>All Genres</option>
+                                                <option>Fiction</option>
+                                                <option>Non-Fiction</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <button class="btn btn-outline-secondary w-100">
+                                            <i class="fas fa-times me-2"></i>Clear Filters
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Touch Target Test -->
+                <div class="test-section">
+                    <h3>Touch Target Test</h3>
+                    <div class="mobile-test">
+                        <div class="p-3">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">Primary Button (44px min height)</button>
+                                <button class="btn btn-outline-secondary btn-sm">Small Button (36px min height)</button>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="testCheck">
+                                    <label class="form-check-label" for="testCheck">
+                                        Touch-friendly checkbox
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Responsive Grid Test -->
+                <div class="test-section">
+                    <h3>Responsive Grid Test</h3>
+                    <div class="mobile-test">
+                        <div class="p-3">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Book 1</h6>
+                                            <p class="card-text small">Author Name</p>
+                                            <button class="btn btn-sm btn-outline-primary w-100">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Book 2</h6>
+                                            <p class="card-text small">Author Name</p>
+                                            <button class="btn btn-sm btn-outline-primary w-100">View Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center my-4">
+                    <p class="text-muted">
+                        <strong>Test Instructions:</strong><br>
+                        1. Resize your browser window to test responsiveness<br>
+                        2. Test on actual mobile devices<br>
+                        3. Verify all buttons are touch-friendly (minimum 44px height)<br>
+                        4. Check that dropdowns and collapses work properly
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let isNavbarOpen = false;
+        let isDropdownOpen = false;
+        let isFiltersOpen = false;
+        
+        function toggleNavbar() {
+            isNavbarOpen = !isNavbarOpen;
+            const navbar = document.getElementById('navbarNav');
+            if (isNavbarOpen) {
+                navbar.classList.remove('collapse');
+                navbar.classList.add('show');
+            } else {
+                navbar.classList.add('collapse');
+                navbar.classList.remove('show');
+            }
+        }
+        
+        function toggleDropdown(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            isDropdownOpen = !isDropdownOpen;
+            const dropdown = document.getElementById('userDropdown');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            
+            if (isDropdownOpen) {
+                dropdown.classList.add('show');
+                menu.classList.add('show');
+            } else {
+                dropdown.classList.remove('show');
+                menu.classList.remove('show');
+            }
+        }
+        
+        function toggleFilters() {
+            isFiltersOpen = !isFiltersOpen;
+            const filters = document.getElementById('testFilters');
+            const chevron = document.getElementById('filterChevron');
+            
+            if (isFiltersOpen) {
+                filters.classList.remove('mobile-hidden');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                filters.classList.add('mobile-hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        function closeFilters() {
+            isFiltersOpen = false;
+            const filters = document.getElementById('testFilters');
+            const chevron = document.getElementById('filterChevron');
+            filters.classList.add('mobile-hidden');
+            chevron.style.transform = 'rotate(0deg)';
+        }
+        
+        // Close dropdowns and navbar when clicking outside
+        document.addEventListener('click', function(event) {
+            const target = event.target;
+            
+            // Close dropdown if clicking outside
+            if (!target.closest('.dropdown') && isDropdownOpen) {
+                const dropdown = document.getElementById('userDropdown');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                dropdown.classList.remove('show');
+                menu.classList.remove('show');
+                isDropdownOpen = false;
+            }
+            
+            // Close navbar if clicking outside on mobile
+            if (!target.closest('.navbar') && isNavbarOpen) {
+                const navbar = document.getElementById('navbarNav');
+                navbar.classList.add('collapse');
+                navbar.classList.remove('show');
+                isNavbarOpen = false;
+            }
+        });
+    </script>
+</body>
+</html>
