@@ -47,6 +47,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'library/user/:userId/:userName',
+    loadComponent: () => import('./components/library/user-library/user-library.component').then(m => m.UserLibraryComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'social',
     loadComponent: () => import('./components/social/social-dashboard/social-dashboard.component').then(m => m.SocialDashboardComponent),
     canActivate: [AuthGuard]

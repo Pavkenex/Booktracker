@@ -41,7 +41,7 @@ public class UserBook {
     
     // Enum for reading status
     public enum ReadingStatus {
-        read, to_read
+        read, currently_reading, to_read
     }
     
     // Constructors

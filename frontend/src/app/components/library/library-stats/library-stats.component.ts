@@ -40,6 +40,14 @@ import { LibraryStats } from '../../../models/library.model';
             </div>
           </div>
 
+          <!-- Currently Reading -->
+          <div class="col-6 col-md-3 mb-3">
+            <div class="stat-item">
+              <div class="stat-number text-primary">{{ stats.booksCurrentlyReading }}</div>
+              <div class="stat-label">Currently Reading</div>
+            </div>
+          </div>
+
           <!-- Books to Read -->
           <div class="col-6 col-md-3 mb-3">
             <div class="stat-item">

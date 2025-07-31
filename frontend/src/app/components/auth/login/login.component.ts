@@ -110,11 +110,18 @@ import { ErrorService } from '../../../services/error.service';
   `,
   styles: [`
     .container-fluid {
-      min-height: calc(100vh - 76px);
-      display: flex;
-      align-items: center;
-      padding: 2rem 1rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center; /* <<< ADD THIS LINE */
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+
+    /*Force the row to take up the full width of the flex container */
+    .container-fluid > .row {
+      width: 100%;
     }
     
     .card {

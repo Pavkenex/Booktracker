@@ -17,6 +17,7 @@ import { UserBook } from '../../../models/library.model';
         (change)="onStatusChange($event)"
         [disabled]="updating">
         <option value="to_read">Want to Read</option>
+        <option value="currently_reading">Currently Reading</option>
         <option value="read">Read</option>
       </select>
       
@@ -61,7 +62,7 @@ export class BookStatusSelectorComponent {
 
   onStatusChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
-    const newStatus = target.value as 'read' | 'to_read';
+    const newStatus = target.value as 'read' | 'currently_reading' | 'to_read';
     
     if (newStatus === this.userBook.status) {
       return;

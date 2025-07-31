@@ -174,7 +174,12 @@ import { AuthService, RegisterRequest } from '../../../services/auth.service';
       display: flex;
       align-items: center;
       padding: 2rem 1rem;
+      justify-content:center;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+      /*Force the row to take up the full width of the flex container */
+    .container-fluid > .row {
+      width: 100%;
     }
     
     .card {

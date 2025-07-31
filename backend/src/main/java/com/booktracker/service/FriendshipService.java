@@ -36,10 +36,17 @@ public class FriendshipService {
         User friend = userRepository.findById(friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
         
-        // Check if friendship already exists
+        // Check if friendship already exists (pending or accepted)
         if (friendshipRepository.friendshipExists(user, friend)) {
             throw new IllegalArgumentException("Friendship already exists between users");
         }
+        
+        // Check if there's a rejected friendship and remove it to allow new request
+        friendshipRepository.findFriendshipBetweenUsers(user, friend).ifPresent(existingFriendship -> {
+            if (existingFriendship.getStatus() == Friendship.FriendshipStatus.rejected) {
+                friendshipRepository.delete(existingFriendship);
+            }
+        });
         
         Friendship friendship = new Friendship(user, friend);
         friendship = friendshipRepository.save(friendship);

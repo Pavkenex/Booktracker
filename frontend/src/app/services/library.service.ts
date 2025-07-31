@@ -46,4 +46,9 @@ export class LibraryService {
     return this.apiService.get<{success: boolean, hasBook: boolean, userBook?: UserBook}>(`/library/books/check/${bookId}`)
       .pipe(map(response => ({hasBook: response.hasBook, userBook: response.userBook})));
   }
+
+  getUserLibrary(userId: number): Observable<UserBook[]> {
+    return this.apiService.get<PagedResponse<UserBook>>(`/library/user/${userId}?size=1000`)
+      .pipe(map(response => response.content));
+  }
 }

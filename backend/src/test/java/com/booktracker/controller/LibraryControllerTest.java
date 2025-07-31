@@ -235,7 +235,7 @@ class LibraryControllerTest {
         ratingDistribution.put(5, 3L);
         ratingDistribution.put(4, 2L);
 
-        LibraryStatsResponse stats = new LibraryStatsResponse(10L, 6L, 4L, 3L, ratingDistribution, 4.5);
+        LibraryStatsResponse stats = new LibraryStatsResponse(10L, 6L, 2L, 4L, 3L, ratingDistribution, 4.5);
 
         when(libraryService.getUserIdByUsername("testuser")).thenReturn(1L);
         when(libraryService.getLibraryStats(1L)).thenReturn(stats);

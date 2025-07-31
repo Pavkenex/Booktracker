@@ -220,6 +220,7 @@ class LibraryServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userBookRepository.countByUser(testUser)).thenReturn(10L);
         when(userBookRepository.countByUserAndStatus(testUser, UserBook.ReadingStatus.read)).thenReturn(6L);
+        when(userBookRepository.countByUserAndStatus(testUser, UserBook.ReadingStatus.currently_reading)).thenReturn(2L);
         when(userBookRepository.countByUserAndStatus(testUser, UserBook.ReadingStatus.to_read)).thenReturn(4L);
         when(userBookRepository.countByUserAndIsFavouriteTrue(testUser)).thenReturn(3L);
 
@@ -237,6 +238,7 @@ class LibraryServiceTest {
         assertNotNull(stats);
         assertEquals(10L, stats.getTotalBooks());
         assertEquals(6L, stats.getBooksRead());
+        assertEquals(2L, stats.getBooksCurrentlyReading());
         assertEquals(4L, stats.getBooksToRead());
         assertEquals(3L, stats.getFavoriteBooks());
         assertEquals(4.33, stats.getAverageRating(), 0.01); // (5*3 + 4*2 + 3*1) / 6 = 26/6 = 4.33

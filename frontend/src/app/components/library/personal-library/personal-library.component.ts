@@ -40,6 +40,7 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
               (change)="setActiveTab($any($event.target).value)">
               <option value="all">All Books ({{ allBooks.length }})</option>
               <option value="to_read">Want to Read ({{ booksToRead.length }})</option>
+              <option value="currently_reading">Currently Reading ({{ booksCurrentlyReading.length }})</option>
               <option value="read">Read ({{ booksRead.length }})</option>
               <option value="favorites">Favorites ({{ favoriteBooks.length }})</option>
             </select>
@@ -67,6 +68,17 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
                 <span class="d-none d-lg-inline">Want to Read</span>
                 <span class="d-inline d-lg-none">To Read</span>
                 ({{ booksToRead.length }})
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button 
+                class="nav-link" 
+                [class.active]="activeTab === 'currently_reading'"
+                (click)="setActiveTab('currently_reading')"
+                type="button">
+                <span class="d-none d-lg-inline">Currently Reading</span>
+                <span class="d-inline d-lg-none">Reading</span>
+                ({{ booksCurrentlyReading.length }})
               </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -112,6 +124,7 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
               <p class="text-muted">
                 <span *ngIf="activeTab === 'all'">Your library is empty. Start by adding some books!</span>
                 <span *ngIf="activeTab === 'to_read'">No books in your "Want to Read" list.</span>
+                <span *ngIf="activeTab === 'currently_reading'">No books currently being read.</span>
                 <span *ngIf="activeTab === 'read'">No books marked as read yet.</span>
                 <span *ngIf="activeTab === 'favorites'">No favorite books selected.</span>
               </p>
@@ -364,7 +377,7 @@ import { LibraryStatsComponent } from '../library-stats/library-stats.component'
 export class PersonalLibraryComponent implements OnInit {
   allBooks: UserBook[] = [];
   loading = true;
-  activeTab: 'all' | 'to_read' | 'read' | 'favorites' = 'all';
+  activeTab: 'all' | 'to_read' | 'currently_reading' | 'read' | 'favorites' = 'all';
   selectedBookForReview: UserBook | null = null;
 
   constructor(
@@ -394,6 +407,8 @@ export class PersonalLibraryComponent implements OnInit {
     switch (this.activeTab) {
       case 'to_read':
         return this.booksToRead;
+      case 'currently_reading':
+        return this.booksCurrentlyReading;
       case 'read':
         return this.booksRead;
       case 'favorites':
@@ -407,6 +422,10 @@ export class PersonalLibraryComponent implements OnInit {
     return this.allBooks.filter(book => book.status === 'to_read');
   }
 
+  get booksCurrentlyReading(): UserBook[] {
+    return this.allBooks.filter(book => book.status === 'currently_reading');
+  }
+
   get booksRead(): UserBook[] {
     return this.allBooks.filter(book => book.status === 'read');
   }
@@ -415,7 +434,7 @@ export class PersonalLibraryComponent implements OnInit {
     return this.allBooks.filter(book => book.isFavourite);
   }
 
-  setActiveTab(tab: 'all' | 'to_read' | 'read' | 'favorites'): void {
+  setActiveTab(tab: 'all' | 'to_read' | 'currently_reading' | 'read' | 'favorites'): void {
     this.activeTab = tab;
   }
 

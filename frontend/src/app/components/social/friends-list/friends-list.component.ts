@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SocialService } from '../../../services/social.service';
 import { Friendship, FriendSearchResult } from '../../../models/social.model';
 import { Subject } from 'rxjs';
@@ -24,7 +25,10 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   
   private searchSubject = new Subject<string>();
 
-  constructor(private socialService: SocialService) {
+  constructor(
+    private socialService: SocialService,
+    private router: Router
+  ) {
     // Set up debounced search
     this.searchSubject.pipe(
       debounceTime(300),
@@ -128,5 +132,10 @@ export class FriendsListComponent implements OnInit, OnDestroy {
 
   onSearchInput(): void {
     this.searchSubject.next(this.searchQuery);
+  }
+
+  viewUserLibrary(friendship: Friendship): void {
+    // Navigate to the user's library page
+    this.router.navigate(['/library/user', friendship.friendId, friendship.friend?.username || 'User']);
   }
 }

@@ -3,7 +3,7 @@ import { Book } from './book.model';
 export interface UserBook {
   id: number;
   book: Book;
-  status: 'read' | 'to_read';
+  status: 'read' | 'currently_reading' | 'to_read';
   rating?: number;
   review?: string;
   readDate?: string;
@@ -13,6 +13,7 @@ export interface UserBook {
 export interface LibraryStats {
   totalBooks: number;
   booksRead: number;
+  booksCurrentlyReading: number;
   booksToRead: number;
   averageRating: number;
   favoriteBooks: number;
@@ -21,14 +22,14 @@ export interface LibraryStats {
 
 export interface AddBookToLibraryRequest {
   bookId: number;
-  status: 'read' | 'to_read';
+  status: 'read' | 'currently_reading' | 'to_read';
   rating?: number;
   review?: string;
   isFavourite?: boolean;
 }
 
 export interface UpdateBookStatusRequest {
-  status: 'read' | 'to_read';
+  status: 'read' | 'currently_reading' | 'to_read';
   rating?: number;
   review?: string;
   isFavourite?: boolean;

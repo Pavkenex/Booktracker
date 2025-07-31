@@ -281,6 +281,40 @@ public class LibraryController {
     }
     
     /**
+     * Get another user's public library
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserPublicLibrary(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        try {
+            // Verify the requesting user is authenticated
+            Long currentUserId = getCurrentUserId();
+            
+            // Check if users are friends (for privacy)
+            if (!libraryService.areUsersFriends(currentUserId, userId)) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("success", false);
+                error.put("message", "You can only view libraries of your friends");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+            }
+            
+            Page<UserBookResponse> libraryPage = libraryService.getUserLibrary(userId, page, size, sortBy, sortDir);
+            PagedResponse<UserBookResponse> response = new PagedResponse<>(libraryPage);
+            
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("message", "Failed to load library");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+    
+    /**
      * Get current user ID from security context
      */
     private Long getCurrentUserId() {

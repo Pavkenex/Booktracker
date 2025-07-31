@@ -7,6 +7,7 @@ import com.booktracker.entity.Book;
 import com.booktracker.entity.User;
 import com.booktracker.entity.UserBook;
 import com.booktracker.repository.BookRepository;
+import com.booktracker.repository.FriendshipRepository;
 import com.booktracker.repository.UserBookRepository;
 import com.booktracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class LibraryService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private FriendshipRepository friendshipRepository;
     
     /**
      * Add a book to user's library
@@ -189,6 +193,7 @@ public class LibraryService {
         
         long totalBooks = userBookRepository.countByUser(user);
         long booksRead = userBookRepository.countByUserAndStatus(user, UserBook.ReadingStatus.read);
+        long booksCurrentlyReading = userBookRepository.countByUserAndStatus(user, UserBook.ReadingStatus.currently_reading);
         long booksToRead = userBookRepository.countByUserAndStatus(user, UserBook.ReadingStatus.to_read);
         long favoriteBooks = userBookRepository.countByUserAndIsFavouriteTrue(user);
         
@@ -208,7 +213,7 @@ public class LibraryService {
         
         double averageRating = totalRatedBooks > 0 ? totalRatingSum / totalRatedBooks : 0.0;
         
-        return new LibraryStatsResponse(totalBooks, booksRead, booksToRead, favoriteBooks, 
+        return new LibraryStatsResponse(totalBooks, booksRead, booksCurrentlyReading, booksToRead, favoriteBooks, 
                                        ratingDistribution, averageRating);
     }
     
@@ -275,5 +280,18 @@ public class LibraryService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getId();
+    }
+    
+    /**
+     * Check if two users are friends
+     */
+    @Transactional(readOnly = true)
+    public boolean areUsersFriends(Long userId1, Long userId2) {
+        User user1 = userRepository.findById(userId1)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user2 = userRepository.findById(userId2)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        return friendshipRepository.areFriends(user1, user2);
     }
 }

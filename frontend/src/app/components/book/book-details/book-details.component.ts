@@ -1,34 +1,31 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, takeUntil, forkJoin } from 'rxjs';
-import { BookService } from '../../../services/book.service';
-import { LibraryService } from '../../../services/library.service';
-import { AuthService } from '../../../services/auth.service';
-import { LibraryEventsService } from '../../../services/library-events.service';
-import { Book } from '../../../models/book.model';
-import { UserBook } from '../../../models/library.model';
-import { BookStatusSelectorComponent } from '../../library/book-status-selector/book-status-selector.component';
+import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { Subject, takeUntil, forkJoin } from "rxjs";
+import { BookService } from "../../../services/book.service";
+import { LibraryService } from "../../../services/library.service";
+import { AuthService } from "../../../services/auth.service";
+import { LibraryEventsService } from "../../../services/library-events.service";
+import { Book } from "../../../models/book.model";
+import { UserBook } from "../../../models/library.model";
+import { BookStatusSelectorComponent } from "../../library/book-status-selector/book-status-selector.component";
 
 @Component({
-  selector: 'app-book-details',
+  selector: "app-book-details",
   standalone: true,
   imports: [CommonModule, RouterModule, BookStatusSelectorComponent],
   template: `
     <div class="container mt-4">
       <div class="row" *ngIf="book; else loading">
         <div class="col-12">
-          <button 
-            class="btn btn-outline-secondary mb-3"
-            (click)="goBack()"
-          >
+          <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
             <i class="fas fa-arrow-left me-2"></i>Back to Catalog
           </button>
         </div>
-        
+
         <div class="col-md-4 col-lg-3">
           <div class="book-cover-container">
-            <img 
+            <img
               [src]="book.thumbnail || '/assets/images/book-placeholder.svg'"
               [alt]="book.title"
               class="img-fluid book-cover"
@@ -36,22 +33,25 @@ import { BookStatusSelectorComponent } from '../../library/book-status-selector/
             />
           </div>
         </div>
-        
+
         <div class="col-md-8 col-lg-9">
           <div class="book-info">
             <h1 class="book-title">{{ book.title }}</h1>
             <h4 class="book-author text-muted mb-3">by {{ book.author }}</h4>
-            
+
             <div class="book-meta mb-4">
               <div class="row">
                 <div class="col-sm-6" *ngIf="book.publishedYear">
                   <strong>Published:</strong> {{ book.publishedYear }}
                 </div>
-                <div class="col-sm-6" *ngIf="book.genres && book.genres.length > 0">
+                <div
+                  class="col-sm-6"
+                  *ngIf="book.genres && book.genres.length > 0"
+                >
                   <strong>Genres:</strong>
                   <div class="mt-1">
-                    <span 
-                      *ngFor="let genre of book.genres" 
+                    <span
+                      *ngFor="let genre of book.genres"
                       class="badge bg-primary me-1"
                     >
                       {{ genre.name }}
@@ -60,16 +60,18 @@ import { BookStatusSelectorComponent } from '../../library/book-status-selector/
                 </div>
               </div>
             </div>
-            
+
             <div class="book-description" *ngIf="book.description">
               <h5>Description</h5>
               <p class="lead">{{ book.description }}</p>
             </div>
-            
+
             <div class="book-actions mt-4">
               <!-- User not authenticated -->
               <div *ngIf="!isAuthenticated" class="text-center">
-                <p class="text-muted mb-3">Sign in to add this book to your library</p>
+                <p class="text-muted mb-3">
+                  Sign in to add this book to your library
+                </p>
                 <div class="btn-group" role="group">
                   <a routerLink="/login" class="btn btn-success">
                     <i class="fas fa-sign-in-alt me-2"></i>Sign In
@@ -84,61 +86,127 @@ import { BookStatusSelectorComponent } from '../../library/book-status-selector/
               </div>
 
               <!-- User authenticated but book not in library -->
-              <div *ngIf="isAuthenticated && !userBook" class="btn-group" role="group">
-                <button 
+              <div
+                *ngIf="isAuthenticated && !userBook"
+                class="btn-group dropdown"
+                role="group"
+              >
+                <button
                   class="btn btn-success"
                   (click)="addToLibrary('to_read')"
-                  [disabled]="addingToLibrary">
-                  <span *ngIf="addingToLibrary" class="spinner-border spinner-border-sm me-2"></span>
+                  [disabled]="addingToLibrary"
+                >
+                  <span
+                    *ngIf="addingToLibrary"
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
                   <i *ngIf="!addingToLibrary" class="fas fa-plus me-2"></i>
                   Want to Read
                 </button>
-                <button 
-                  class="btn btn-primary"
-                  (click)="addToLibrary('read')"
-                  [disabled]="addingToLibrary">
-                  <span *ngIf="addingToLibrary" class="spinner-border spinner-border-sm me-2"></span>
-                  <i *ngIf="!addingToLibrary" class="fas fa-check me-2"></i>
-                  Mark as Read
+                <button
+                  class="btn btn-success dropdown-toggle dropdown-toggle-split"
+                  type="button"
+                  (click)="toggleDropdown()"
+                  [attr.aria-expanded]="dropdownOpen"
+                  [disabled]="addingToLibrary"
+                >
+                  <span class="visually-hidden">Toggle Dropdown</span>
                 </button>
+                <ul class="dropdown-menu" [class.show]="dropdownOpen">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      (click)="$event.preventDefault(); selectOption('to_read')"
+                    >
+                      <i class="fas fa-plus me-2 text-success"></i>
+                      Want to Read
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      (click)="
+                        $event.preventDefault();
+                        selectOption('currently_reading')
+                      "
+                    >
+                      <i class="fas fa-book-open me-2 text-warning"></i>
+                      Currently Reading
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      (click)="$event.preventDefault(); selectOption('read')"
+                    >
+                      <i class="fas fa-check me-2 text-primary"></i>
+                      Mark as Read
+                    </a>
+                  </li>
+                </ul>
                 <button class="btn btn-outline-info">
                   <i class="fas fa-share me-2"></i>Recommend
                 </button>
               </div>
 
               <!-- User authenticated and book already in library -->
-              <div *ngIf="isAuthenticated && userBook" class="library-status-section">
+              <div
+                *ngIf="isAuthenticated && userBook"
+                class="library-status-section"
+              >
                 <div class="alert alert-info d-flex align-items-center mb-3">
                   <i class="fas fa-book me-2"></i>
                   <span>This book is in your library</span>
-                  <button 
+                  <button
                     class="btn btn-sm btn-outline-danger ms-auto"
                     (click)="removeFromLibrary()"
-                    [disabled]="removingFromLibrary">
-                    <span *ngIf="removingFromLibrary" class="spinner-border spinner-border-sm me-1"></span>
-                    <i *ngIf="!removingFromLibrary" class="fas fa-trash me-1"></i>
+                    [disabled]="removingFromLibrary"
+                  >
+                    <span
+                      *ngIf="removingFromLibrary"
+                      class="spinner-border spinner-border-sm me-1"
+                    ></span>
+                    <i
+                      *ngIf="!removingFromLibrary"
+                      class="fas fa-trash me-1"
+                    ></i>
                     Remove
                   </button>
                 </div>
 
                 <div class="row">
                   <div class="col-md-6">
-                    <app-book-status-selector 
+                    <app-book-status-selector
                       [userBook]="userBook"
-                      (statusChanged)="onStatusChanged($event)">
+                      (statusChanged)="onStatusChanged($event)"
+                    >
                     </app-book-status-selector>
                   </div>
                   <div class="col-md-6">
                     <div class="favorite-toggle">
-                      <button 
+                      <button
                         class="btn btn-sm"
                         [class.btn-danger]="userBook.isFavourite"
                         [class.btn-outline-secondary]="!userBook.isFavourite"
                         (click)="toggleFavorite()"
-                        [disabled]="togglingFavorite">
-                        <span *ngIf="togglingFavorite" class="spinner-border spinner-border-sm me-1"></span>
-                        <i *ngIf="!togglingFavorite" class="fas fa-heart me-1"></i>
-                        {{ userBook.isFavourite ? 'Remove from Favorites' : 'Add to Favorites' }}
+                        [disabled]="togglingFavorite"
+                      >
+                        <span
+                          *ngIf="togglingFavorite"
+                          class="spinner-border spinner-border-sm me-1"
+                        ></span>
+                        <i
+                          *ngIf="!togglingFavorite"
+                          class="fas fa-heart me-1"
+                        ></i>
+                        {{
+                          userBook.isFavourite
+                            ? "Remove from Favorites"
+                            : "Add to Favorites"
+                        }}
                       </button>
                     </div>
                   </div>
@@ -155,25 +223,34 @@ import { BookStatusSelectorComponent } from '../../library/book-status-selector/
                   </div>
                 </div>
               </div>
-              
+
               <!-- Success Message -->
-              <div *ngIf="libraryMessage" class="alert alert-success mt-3" role="alert">
+              <div
+                *ngIf="libraryMessage"
+                class="alert alert-success mt-3"
+                role="alert"
+              >
                 <i class="fas fa-check-circle me-2"></i>{{ libraryMessage }}
-                <a routerLink="/library" class="alert-link ms-2">View Library</a>
+                <a routerLink="/library" class="alert-link ms-2"
+                  >View Library</a
+                >
               </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <ng-template #loading>
-        <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div
+          class="d-flex justify-content-center align-items-center"
+          style="min-height: 400px;"
+        >
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
       </ng-template>
-      
+
       <div class="alert alert-danger mt-4" *ngIf="error">
         <h5>Error Loading Book</h5>
         <p>{{ error }}</p>
@@ -183,78 +260,116 @@ import { BookStatusSelectorComponent } from '../../library/book-status-selector/
       </div>
     </div>
   `,
-  styles: [`
-    .book-cover-container {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .book-cover {
-      max-height: 400px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .book-title {
-      color: #333;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .book-author {
-      font-style: italic;
-    }
-
-    .book-meta {
-      background-color: #f8f9fa;
-      padding: 1rem;
-      border-radius: 8px;
-    }
-
-    .book-description {
-      margin-top: 2rem;
-    }
-
-    .book-actions {
-      border-top: 1px solid #dee2e6;
-      padding-top: 1rem;
-    }
-
-    .library-status-section {
-      width: 100%;
-    }
-
-    .favorite-toggle {
-      text-align: right;
-    }
-
-    .badge {
-      font-size: 0.8rem;
-    }
-
-    @media (max-width: 768px) {
-      .book-cover {
-        max-height: 300px;
+  styles: [
+    `
+      .book-cover-container {
+        text-align: center;
+        margin-bottom: 2rem;
       }
-      
-      .btn-group {
-        display: flex;
-        flex-direction: column;
+
+      .book-cover {
+        max-height: 400px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-title {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .book-author {
+        font-style: italic;
+      }
+
+      .book-meta {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+      }
+
+      .book-description {
+        margin-top: 2rem;
+      }
+
+      .book-actions {
+        border-top: 1px solid #dee2e6;
+        padding-top: 1rem;
+      }
+
+      .library-status-section {
         width: 100%;
       }
-      
-      .btn-group .btn {
-        margin-bottom: 0.5rem;
-        border-radius: 0.375rem !important;
+
+      .favorite-toggle {
+        text-align: right;
       }
-    }
-  `]
+
+      .dropdown-toggle-split {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      .dropdown-menu {
+        min-width: 180px;
+      }
+
+      .dropdown-item {
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .dropdown-item:hover {
+        background-color: #f8f9fa;
+      }
+
+      .dropdown-item i {
+        width: 20px;
+      }
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-menu.show {
+        display: block;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+      }
+
+      .badge {
+        font-size: 0.8rem;
+      }
+
+      @media (max-width: 768px) {
+        .book-cover {
+          max-height: 300px;
+        }
+
+        .btn-group {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .btn-group .btn {
+          margin-bottom: 0.5rem;
+          border-radius: 0.375rem !important;
+        }
+      }
+    `,
+  ],
 })
 export class BookDetailsComponent implements OnInit, OnDestroy {
   book: Book | null = null;
   userBook: UserBook | null = null;
   error: string | null = null;
   addingToLibrary = false;
+  dropdownOpen = false;
   removingFromLibrary = false;
   togglingFavorite = false;
   libraryMessage: string | null = null;
@@ -270,19 +385,17 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.route.params
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const bookId = +params['id'];
-        if (bookId) {
-          this.loadBook(bookId);
-        }
-      });
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      const bookId = +params["id"];
+      if (bookId) {
+        this.loadBook(bookId);
+      }
+    });
 
     // Listen for authentication changes
     this.authService.isAuthenticated$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(isAuthenticated => {
+      .subscribe((isAuthenticated) => {
         if (isAuthenticated && this.book) {
           // User just logged in, check library status
           this.checkLibraryStatus(this.book.id);
@@ -299,11 +412,12 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   }
 
   loadBook(bookId?: number): void {
-    const id = bookId || +(this.route.snapshot.params['id']);
+    const id = bookId || +this.route.snapshot.params["id"];
     this.error = null;
-    
+
     // First load the book details
-    this.bookService.getBookById(id)
+    this.bookService
+      .getBookById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (book) => {
@@ -312,9 +426,9 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.checkLibraryStatus(id);
         },
         error: (error) => {
-          console.error('Error loading book:', error);
-          this.error = 'Failed to load book details. Please try again.';
-        }
+          console.error("Error loading book:", error);
+          this.error = "Failed to load book details. Please try again.";
+        },
       });
   }
 
@@ -325,7 +439,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.libraryService.checkBookInLibrary(bookId)
+    this.libraryService
+      .checkBookInLibrary(bookId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (result) => {
@@ -333,29 +448,29 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           // If library check fails, just set userBook to null
-          console.log('Library status check failed:', error);
+          console.log("Library status check failed:", error);
           this.userBook = null;
-        }
+        },
       });
   }
 
   goBack(): void {
-    this.router.navigate(['/books']);
+    this.router.navigate(["/books"]);
   }
 
   onImageError(event: any): void {
-    event.target.src = '/assets/images/book-placeholder.svg';
+    event.target.src = "/assets/images/book-placeholder.svg";
   }
 
-  addToLibrary(status: 'read' | 'to_read'): void {
+  addToLibrary(status: "read" | "currently_reading" | "to_read"): void {
     if (!this.book || this.addingToLibrary) {
       return;
     }
 
     // Check if user is authenticated
     if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login'], { 
-        queryParams: { returnUrl: this.router.url } 
+      this.router.navigate(["/login"], {
+        queryParams: { returnUrl: this.router.url },
       });
       return;
     }
@@ -366,31 +481,39 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     const request = {
       bookId: this.book.id,
       status: status,
-      isFavourite: false
+      isFavourite: false,
     };
 
-    this.libraryService.addBookToLibrary(request)
+    this.libraryService
+      .addBookToLibrary(request)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (userBook) => {
           this.addingToLibrary = false;
           this.userBook = userBook;
-          const statusText = status === 'read' ? 'Read' : 'Want to Read';
-          this.libraryMessage = `"${this.book!.title}" has been added to your ${statusText} list!`;
-          
+          const statusText =
+            status === "read"
+              ? "Read"
+              : status === "currently_reading"
+              ? "Currently Reading"
+              : "Want to Read";
+          this.libraryMessage = `"${
+            this.book!.title
+          }" has been added to your ${statusText} list!`;
+
           // Notify that library has been updated
           this.libraryEventsService.notifyLibraryUpdated();
-          
+
           // Clear message after 5 seconds
           setTimeout(() => {
             this.libraryMessage = null;
           }, 5000);
         },
         error: (error) => {
-          console.error('Error adding book to library:', error);
+          console.error("Error adding book to library:", error);
           this.addingToLibrary = false;
-          this.error = 'Failed to add book to library. Please try again.';
-        }
+          this.error = "Failed to add book to library. Please try again.";
+        },
       });
   }
 
@@ -399,34 +522,43 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!confirm(`Are you sure you want to remove "${this.book!.title}" from your library?`)) {
+    if (
+      !confirm(
+        `Are you sure you want to remove "${
+          this.book!.title
+        }" from your library?`
+      )
+    ) {
       return;
     }
 
     this.removingFromLibrary = true;
     this.libraryMessage = null;
 
-    this.libraryService.removeBookFromLibrary(this.userBook.id)
+    this.libraryService
+      .removeBookFromLibrary(this.userBook.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.removingFromLibrary = false;
           this.userBook = null;
-          this.libraryMessage = `"${this.book!.title}" has been removed from your library.`;
-          
+          this.libraryMessage = `"${
+            this.book!.title
+          }" has been removed from your library.`;
+
           // Notify that library has been updated
           this.libraryEventsService.notifyLibraryUpdated();
-          
+
           // Clear message after 5 seconds
           setTimeout(() => {
             this.libraryMessage = null;
           }, 5000);
         },
         error: (error) => {
-          console.error('Error removing book from library:', error);
+          console.error("Error removing book from library:", error);
           this.removingFromLibrary = false;
-          this.error = 'Failed to remove book from library. Please try again.';
-        }
+          this.error = "Failed to remove book from library. Please try again.";
+        },
       });
   }
 
@@ -437,7 +569,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
     this.togglingFavorite = true;
 
-    this.libraryService.toggleFavorite(this.userBook.id)
+    this.libraryService
+      .toggleFavorite(this.userBook.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedUserBook) => {
@@ -447,10 +580,10 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.libraryEventsService.notifyLibraryUpdated();
         },
         error: (error) => {
-          console.error('Error toggling favorite:', error);
+          console.error("Error toggling favorite:", error);
           this.togglingFavorite = false;
-          this.error = 'Failed to update favorite status. Please try again.';
-        }
+          this.error = "Failed to update favorite status. Please try again.";
+        },
       });
   }
 
@@ -458,6 +591,24 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.userBook = updatedUserBook;
     // Notify that library has been updated
     this.libraryEventsService.notifyLibraryUpdated();
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  selectOption(status: "read" | "currently_reading" | "to_read"): void {
+    this.dropdownOpen = false;
+    this.addToLibrary(status);
+  }
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const dropdown = target.closest(".dropdown");
+    if (!dropdown && this.dropdownOpen) {
+      this.dropdownOpen = false;
+    }
   }
 
   get isAuthenticated(): boolean {

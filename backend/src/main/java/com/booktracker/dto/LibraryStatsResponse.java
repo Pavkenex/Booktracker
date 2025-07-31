@@ -6,6 +6,7 @@ public class LibraryStatsResponse {
     
     private long totalBooks;
     private long booksRead;
+    private long booksCurrentlyReading;
     private long booksToRead;
     private long favoriteBooks;
     private Map<Integer, Long> ratingDistribution;
@@ -14,11 +15,12 @@ public class LibraryStatsResponse {
     // Constructors
     public LibraryStatsResponse() {}
     
-    public LibraryStatsResponse(long totalBooks, long booksRead, long booksToRead, 
-                               long favoriteBooks, Map<Integer, Long> ratingDistribution, 
+    public LibraryStatsResponse(long totalBooks, long booksRead, long booksCurrentlyReading, 
+                               long booksToRead, long favoriteBooks, Map<Integer, Long> ratingDistribution, 
                                double averageRating) {
         this.totalBooks = totalBooks;
         this.booksRead = booksRead;
+        this.booksCurrentlyReading = booksCurrentlyReading;
         this.booksToRead = booksToRead;
         this.favoriteBooks = favoriteBooks;
         this.ratingDistribution = ratingDistribution;
@@ -40,6 +42,14 @@ public class LibraryStatsResponse {
     
     public void setBooksRead(long booksRead) {
         this.booksRead = booksRead;
+    }
+    
+    public long getBooksCurrentlyReading() {
+        return booksCurrentlyReading;
+    }
+    
+    public void setBooksCurrentlyReading(long booksCurrentlyReading) {
+        this.booksCurrentlyReading = booksCurrentlyReading;
     }
     
     public long getBooksToRead() {
