@@ -51,7 +51,7 @@ public class FriendshipService {
         Friendship friendship = new Friendship(user, friend);
         friendship = friendshipRepository.save(friendship);
         
-        return new FriendshipResponse(friendship);
+        return new FriendshipResponse(friendship, userId);
     }
     
     /**
@@ -73,7 +73,7 @@ public class FriendshipService {
         friendship.setStatus(Friendship.FriendshipStatus.accepted);
         friendship = friendshipRepository.save(friendship);
         
-        return new FriendshipResponse(friendship);
+        return new FriendshipResponse(friendship, userId);
     }
     
     /**
@@ -133,7 +133,7 @@ public class FriendshipService {
         
         List<Friendship> friendships = friendshipRepository.findByUserAndStatus(user, Friendship.FriendshipStatus.pending);
         return friendships.stream()
-                .map(FriendshipResponse::new)
+                .map(friendship -> new FriendshipResponse(friendship, userId))
                 .collect(Collectors.toList());
     }
     
@@ -147,7 +147,7 @@ public class FriendshipService {
         
         List<Friendship> friendships = friendshipRepository.findByFriendAndStatus(user, Friendship.FriendshipStatus.pending);
         return friendships.stream()
-                .map(FriendshipResponse::new)
+                .map(friendship -> new FriendshipResponse(friendship, userId))
                 .collect(Collectors.toList());
     }
     
@@ -211,7 +211,7 @@ public class FriendshipService {
         
         List<Friendship> friendships = friendshipRepository.findAcceptedFriendshipsOfUser(user);
         return friendships.stream()
-                .map(FriendshipResponse::new)
+                .map(friendship -> new FriendshipResponse(friendship, userId))
                 .collect(Collectors.toList());
     }
     

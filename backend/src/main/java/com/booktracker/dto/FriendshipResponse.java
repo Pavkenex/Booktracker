@@ -28,6 +28,30 @@ public class FriendshipResponse {
         this.createdAt = friendship.getCreatedAt();
     }
     
+    // Constructor that takes the current user's perspective into account
+    public FriendshipResponse(Friendship friendship, Long currentUserId) {
+        this.id = friendship.getId();
+        this.sender = new UserResponse(friendship.getUser()); // sender is always the user who initiated
+        this.receiver = new UserResponse(friendship.getFriend()); // receiver is always the friend who received
+        this.status = friendship.getStatus().name();
+        this.createdAt = friendship.getCreatedAt();
+        
+        // Set user and friend based on current user's perspective
+        if (friendship.getUser().getId().equals(currentUserId)) {
+            // Current user is the one who sent the request
+            this.user = new UserResponse(friendship.getUser());
+            this.friend = new UserResponse(friendship.getFriend());
+            this.userId = friendship.getUser().getId();
+            this.friendId = friendship.getFriend().getId();
+        } else {
+            // Current user is the one who received the request
+            this.user = new UserResponse(friendship.getFriend());
+            this.friend = new UserResponse(friendship.getUser());
+            this.userId = friendship.getFriend().getId();
+            this.friendId = friendship.getUser().getId();
+        }
+    }
+    
     // Getters and Setters
     public Long getId() {
         return id;
