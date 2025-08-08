@@ -11,6 +11,8 @@ export interface Book {
   thumbnail?: string;
   description?: string;
   genres?: Genre[];
+  viewCount?: number;
+  rating?: number;
 }
 
 export interface BookSearchParams {

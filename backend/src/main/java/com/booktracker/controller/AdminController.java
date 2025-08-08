@@ -368,4 +368,61 @@ public class AdminController {
                 .body(("Invalid request: " + e.getMessage()).getBytes());
         }
     }
+    
+    // Popularity Statistics Endpoints
+    
+    @GetMapping("/popularity/statistics")
+    public ResponseEntity<Map<String, Object>> getPopularityStatistics() {
+        try {
+            List<PopularityStatisticsData> data = adminService.getPopularityStatisticsData();
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", data);
+            
+            if (data.isEmpty()) {
+                response.put("message", "No popularity data available. Books need to be viewed to generate statistics.");
+            }
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Failed to retrieve popularity statistics: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+    
+    @GetMapping("/popularity/export")
+    public ResponseEntity<byte[]> exportPopularityStatistics(@RequestParam String format) {
+        try {
+            // Validate format
+            if (!"csv".equalsIgnoreCase(format) && !"pdf".equalsIgnoreCase(format)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid format. Supported formats: csv, pdf".getBytes());
+            }
+            
+            byte[] reportData = adminService.exportPopularityStatisticsReport(format);
+            
+            HttpHeaders headers = new HttpHeaders();
+            String filename = "popularity_statistics_report." + format.toLowerCase();
+            headers.setContentDispositionFormData("attachment", filename);
+            
+            if ("pdf".equalsIgnoreCase(format)) {
+                headers.setContentType(MediaType.APPLICATION_PDF);
+            } else if ("csv".equalsIgnoreCase(format)) {
+                headers.setContentType(MediaType.parseMediaType("text/csv"));
+            }
+            
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(reportData);
+                
+        } catch (JRException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(("Error generating report: " + e.getMessage()).getBytes());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(("Invalid request: " + e.getMessage()).getBytes());
+        }
+    }
 }

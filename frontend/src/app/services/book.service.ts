@@ -54,4 +54,12 @@ export class BookService {
   getGenres(): Observable<Genre[]> {
     return this.apiService.get<Genre[]>('/genres');
   }
+
+  getPopularBooks(limit: number = 10): Observable<Book[]> {
+    return this.apiService.get<Book[]>(`/books/popular?limit=${limit}`);
+  }
+
+  recordBookView(bookId: number): Observable<void> {
+    return this.apiService.post<void>(`/books/${bookId}/view`, {});
+  }
 }

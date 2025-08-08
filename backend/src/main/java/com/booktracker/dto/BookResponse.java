@@ -14,6 +14,8 @@ public class BookResponse {
     private String thumbnail;
     private String description;
     private Set<GenreResponse> genres;
+    private Long viewCount; // New field for popularity data
+    private Double rating; // Average rating from user_books table
 
     // Constructors
     public BookResponse() {}
@@ -28,6 +30,31 @@ public class BookResponse {
         this.genres = book.getGenres().stream()
                 .map(GenreResponse::new)
                 .collect(Collectors.toSet());
+        
+        // Calculate average rating from user_books
+        this.rating = book.getUserBooks().stream()
+                .filter(userBook -> userBook.getRating() != null)
+                .mapToInt(userBook -> userBook.getRating())
+                .average()
+                .orElse(0.0);
+        
+        // Round to 1 decimal place
+        if (this.rating > 0) {
+            this.rating = Math.round(this.rating * 10.0) / 10.0;
+        }
+    }
+
+    // Constructor for popular books with view count
+    public BookResponse(Book book, Long viewCount) {
+        this(book); // Call existing constructor
+        this.viewCount = viewCount;
+    }
+    
+    // Constructor for popular books with view count and rating
+    public BookResponse(Book book, Long viewCount, Double rating) {
+        this(book); // Call existing constructor
+        this.viewCount = viewCount;
+        this.rating = rating;
     }
 
     // Getters and Setters
@@ -85,5 +112,21 @@ public class BookResponse {
 
     public void setGenres(Set<GenreResponse> genres) {
         this.genres = genres;
+    }
+
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }

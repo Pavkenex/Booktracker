@@ -2,6 +2,11 @@
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
 module.exports = function (config) {
+  // Set Chrome binary to use Brave if CHROME_BIN environment variable is set
+  if (process.env.CHROME_BIN) {
+    process.env.CHROME_BIN = process.env.CHROME_BIN;
+  }
+  
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -33,7 +38,19 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
-    browsers: ['ChromeHeadless'],
+    browsers: ['BraveHeadless'],
+    customLaunchers: {
+      BraveHeadless: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',
+          '--disable-web-security',
+          '--disable-features=VizDisplayCompositor',
+          '--disable-gpu',
+          '--remote-debugging-port=9222'
+        ]
+      }
+    },
     restartOnFileChange: true
   });
 };

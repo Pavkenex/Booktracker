@@ -1,22 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AdminService, AdminStats } from '../../../services/admin.service';
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
+import { AdminService, AdminStats } from "../../../services/admin.service";
 
 @Component({
-  selector: 'app-admin-dashboard',
+  selector: "app-admin-dashboard",
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+          <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4"
+          >
             <h1 class="h3 mb-2 mb-md-0">
               <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
             </h1>
             <div class="d-flex gap-2">
-              <button class="btn btn-outline-secondary btn-sm" (click)="loadStats()">
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                (click)="loadStats()"
+              >
                 <i class="fas fa-sync-alt me-1"></i>
                 <span class="d-none d-sm-inline">Refresh</span>
               </button>
@@ -80,7 +85,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="card-title mb-1">{{ stats.recentActivity.newUsers }}</h4>
+                  <h4 class="card-title mb-1">
+                    {{ stats.recentActivity.newUsers }}
+                  </h4>
                   <p class="card-text small mb-0">
                     <span class="d-none d-md-inline">New Users (7 days)</span>
                     <span class="d-inline d-md-none">New Users</span>
@@ -106,9 +113,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
             </div>
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                   <div class="d-grid">
-                    <button 
+                    <button
                       class="btn btn-outline-primary btn-lg"
                       routerLink="/admin/books"
                     >
@@ -117,9 +124,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
                     </button>
                   </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                   <div class="d-grid">
-                    <button 
+                    <button
                       class="btn btn-outline-success btn-lg"
                       routerLink="/admin/genres"
                     >
@@ -128,9 +135,20 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
                     </button>
                   </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                   <div class="d-grid">
-                    <button 
+                    <button
+                      class="btn btn-outline-warning btn-lg"
+                      routerLink="/admin/popularity"
+                    >
+                      <i class="fas fa-chart-line me-2"></i>
+                      <span class="d-none d-sm-inline">Book </span>Popularity
+                    </button>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                  <div class="d-grid">
+                    <button
                       class="btn btn-outline-info btn-lg"
                       routerLink="/admin/reports"
                     >
@@ -152,7 +170,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
             <div class="card-header">
               <h5 class="card-title mb-0">
                 <i class="fas fa-clock me-2"></i>
-                <span class="d-none d-sm-inline">Recent Activity (Last 7 Days)</span>
+                <span class="d-none d-sm-inline"
+                  >Recent Activity (Last 7 Days)</span
+                >
                 <span class="d-inline d-sm-none">Recent Activity</span>
               </h5>
             </div>
@@ -160,7 +180,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
               <div class="row text-center g-2">
                 <div class="col-4">
                   <div class="border-end border-2">
-                    <h4 class="text-primary mb-1">{{ stats.recentActivity.newUsers }}</h4>
+                    <h4 class="text-primary mb-1">
+                      {{ stats.recentActivity.newUsers }}
+                    </h4>
                     <small class="text-muted">
                       <span class="d-none d-md-inline">New Users</span>
                       <span class="d-inline d-md-none">Users</span>
@@ -169,7 +191,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
                 </div>
                 <div class="col-4">
                   <div class="border-end border-2">
-                    <h4 class="text-success mb-1">{{ stats.recentActivity.booksAdded }}</h4>
+                    <h4 class="text-success mb-1">
+                      {{ stats.recentActivity.booksAdded }}
+                    </h4>
                     <small class="text-muted">
                       <span class="d-none d-md-inline">Books Added</span>
                       <span class="d-inline d-md-none">Books</span>
@@ -177,7 +201,9 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
                   </div>
                 </div>
                 <div class="col-4">
-                  <h4 class="text-info mb-1">{{ stats.recentActivity.reviewsPosted }}</h4>
+                  <h4 class="text-info mb-1">
+                    {{ stats.recentActivity.reviewsPosted }}
+                  </h4>
                   <small class="text-muted">
                     <span class="d-none d-md-inline">Reviews Posted</span>
                     <span class="d-inline d-md-none">Reviews</span>
@@ -244,7 +270,7 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
           <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">Error Loading Dashboard</h4>
             <p>{{ error }}</p>
-            <hr>
+            <hr />
             <button class="btn btn-outline-danger" (click)="loadStats()">
               <i class="fas fa-redo me-2"></i>Try Again
             </button>
@@ -253,100 +279,102 @@ import { AdminService, AdminStats } from '../../../services/admin.service';
       </div>
     </div>
   `,
-  styles: [`
-    .container-fluid {
-      padding: 1rem;
-    }
-    
-    .card {
-      border: none;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-      border-radius: 0.5rem;
-    }
-    
-    .card-header {
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #dee2e6;
-      border-radius: 0.5rem 0.5rem 0 0 !important;
-    }
-    
-    .btn-lg {
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border-radius: 0.5rem;
-      font-weight: 500;
-    }
-    
-    .status-indicator {
-      width: 12px;
-      height: 12px;
-    }
-    
-    .opacity-75 {
-      opacity: 0.75;
-    }
-    
-    /* Mobile optimizations */
-    @media (max-width: 767.98px) {
+  styles: [
+    `
       .container-fluid {
-        padding: 0.75rem;
+        padding: 1rem;
       }
-      
-      .h3 {
-        font-size: 1.5rem;
+
+      .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border-radius: 0.5rem;
       }
-      
-      .card-body {
-        padding: 1rem 0.75rem;
+
+      .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0.5rem 0.5rem 0 0 !important;
       }
-      
-      .card-title {
-        font-size: 1.25rem;
-      }
-      
+
       .btn-lg {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
       }
-    }
-    
-    @media (max-width: 575.98px) {
-      .container-fluid {
-        padding: 0.5rem;
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
       }
-      
-      .card-body {
-        padding: 0.75rem 0.5rem;
+
+      .opacity-75 {
+        opacity: 0.75;
       }
-      
-      .card-title {
-        font-size: 1.1rem;
+
+      /* Mobile optimizations */
+      @media (max-width: 767.98px) {
+        .container-fluid {
+          padding: 0.75rem;
+        }
+
+        .h3 {
+          font-size: 1.5rem;
+        }
+
+        .card-body {
+          padding: 1rem 0.75rem;
+        }
+
+        .card-title {
+          font-size: 1.25rem;
+        }
+
+        .btn-lg {
+          padding: 0.75rem 0.5rem;
+          font-size: 0.9rem;
+        }
       }
-      
-      .btn-lg {
-        padding: 0.625rem 0.5rem;
-        font-size: 0.85rem;
+
+      @media (max-width: 575.98px) {
+        .container-fluid {
+          padding: 0.5rem;
+        }
+
+        .card-body {
+          padding: 0.75rem 0.5rem;
+        }
+
+        .card-title {
+          font-size: 1.1rem;
+        }
+
+        .btn-lg {
+          padding: 0.625rem 0.5rem;
+          font-size: 0.85rem;
+        }
       }
-    }
-    
-    /* Improve touch targets */
-    .btn {
-      min-height: 44px;
-      transition: all 0.2s ease-in-out;
-    }
-    
-    .btn-sm {
-      min-height: 36px;
-    }
-    
-    /* Card hover effects for non-touch devices */
-    @media (hover: hover) and (pointer: fine) {
-      .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+      /* Improve touch targets */
+      .btn {
+        min-height: 44px;
+        transition: all 0.2s ease-in-out;
       }
-    }
-  `]
+
+      .btn-sm {
+        min-height: 36px;
+      }
+
+      /* Card hover effects for non-touch devices */
+      @media (hover: hover) and (pointer: fine) {
+        .card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+      }
+    `,
+  ],
 })
 export class AdminDashboardComponent implements OnInit {
   stats: AdminStats | null = null;
@@ -369,10 +397,10 @@ export class AdminDashboardComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.error = 'Failed to load dashboard statistics. Please try again.';
+        this.error = "Failed to load dashboard statistics. Please try again.";
         this.loading = false;
-        console.error('Error loading admin stats:', error);
-      }
+        console.error("Error loading admin stats:", error);
+      },
     });
   }
 }

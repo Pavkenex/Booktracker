@@ -372,4 +372,122 @@ class AdminControllerTest {
 
         verify(adminService).exportBooksByCategoryReport("excel");
     }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getPopularityStatistics_Success() throws Exception {
+        // Arrange
+        List<PopularityStatisticsData> statisticsData = Arrays.asList(
+            new PopularityStatisticsData(1L, "Popular Book", "Popular Author", 100L, 50.0, 1),
+            new PopularityStatisticsData(2L, "Another Book", "Another Author", 50L, 25.0, 2)
+        );
+        when(adminService.getPopularityStatisticsData()).thenReturn(statisticsData);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/statistics"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data[0].title").value("Popular Book"))
+                .andExpect(jsonPath("$.data[0].author").value("Popular Author"))
+                .andExpect(jsonPath("$.data[0].viewCount").value(100))
+                .andExpect(jsonPath("$.data[0].percentage").value(50.0))
+                .andExpect(jsonPath("$.data[0].rank").value(1));
+
+        verify(adminService).getPopularityStatisticsData();
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getPopularityStatistics_EmptyData() throws Exception {
+        // Arrange
+        when(adminService.getPopularityStatisticsData()).thenReturn(Arrays.asList());
+
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/statistics"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data").isEmpty())
+                .andExpect(jsonPath("$.message").value("No popularity data available. Books need to be viewed to generate statistics."));
+
+        verify(adminService).getPopularityStatisticsData();
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getPopularityStatistics_ServiceException() throws Exception {
+        // Arrange
+        when(adminService.getPopularityStatisticsData()).thenThrow(new RuntimeException("Database error"));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/statistics"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value("Failed to retrieve popularity statistics: Database error"));
+
+        verify(adminService).getPopularityStatisticsData();
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void exportPopularityStatistics_PDF_Success() throws Exception {
+        // Arrange
+        byte[] reportData = "PDF content".getBytes();
+        when(adminService.exportPopularityStatisticsReport("pdf")).thenReturn(reportData);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/export")
+                .param("format", "pdf"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"popularity_statistics_report.pdf\""))
+                .andExpect(content().contentType(MediaType.APPLICATION_PDF));
+
+        verify(adminService).exportPopularityStatisticsReport("pdf");
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void exportPopularityStatistics_CSV_Success() throws Exception {
+        // Arrange
+        byte[] reportData = "CSV content".getBytes();
+        when(adminService.exportPopularityStatisticsReport("csv")).thenReturn(reportData);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/export")
+                .param("format", "csv"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"popularity_statistics_report.csv\""))
+                .andExpect(content().contentType(MediaType.parseMediaType("text/csv")));
+
+        verify(adminService).exportPopularityStatisticsReport("csv");
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void exportPopularityStatistics_InvalidFormat() throws Exception {
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/export")
+                .param("format", "xml"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid format. Supported formats: csv, pdf"));
+
+        verify(adminService, never()).exportPopularityStatisticsReport(anyString());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void exportPopularityStatistics_JRException() throws Exception {
+        // Arrange
+        when(adminService.exportPopularityStatisticsReport("pdf"))
+            .thenThrow(new net.sf.jasperreports.engine.JRException("Report generation failed"));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/admin/popularity/export")
+                .param("format", "pdf"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Error generating report: Report generation failed"));
+
+        verify(adminService).exportPopularityStatisticsReport("pdf");
+    }
 }

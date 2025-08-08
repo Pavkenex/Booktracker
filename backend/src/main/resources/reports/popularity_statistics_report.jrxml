@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="popularity_statistics_report" pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+
+    <field name="rank" class="java.lang.Integer"/>
+    <field name="title" class="java.lang.String"/>
+    <field name="author" class="java.lang.String"/>
+    <field name="viewCount" class="java.lang.Long"/>
+    <field name="percentage" class="java.lang.Double"/>
+
+    <title>
+        <band height="70">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="30"/>
+                <textElement textAlignment="Center">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Book Popularity Statistics Report]]></text>
+            </staticText>
+            <textField pattern="MMMMM dd, yyyy">
+                <reportElement x="0" y="40" width="555" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="30">
+            <staticText>
+                <reportElement x="0" y="0" width="40" height="30"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Rank]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="40" y="0" width="200" height="30"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Book Title]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="240" y="0" width="150" height="30"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Author]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="390" y="0" width="80" height="30"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Views]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="470" y="0" width="85" height="30"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Percentage]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="25">
+            <textField>
+                <reportElement x="0" y="0" width="40" height="25"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{rank}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="40" y="0" width="200" height="25"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="240" y="0" width="150" height="25"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{author}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="390" y="0" width="80" height="25"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{viewCount}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00%">
+                <reportElement x="470" y="0" width="85" height="25"/>
+                <box>
+                    <pen lineWidth="1"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{percentage}/100]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <pageFooter>
+        <band height="30">
+            <textField>
+                <reportElement x="400" y="10" width="100" height="20"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+</jasperReport>

@@ -5,11 +5,12 @@ import { AuthService, User } from "../../services/auth.service";
 import { SocialService } from "../../services/social.service";
 import { Recommendation } from "../../models/social.model";
 import { Observable } from "rxjs";
+import { PopularBooksSectionComponent } from "../shared/popular-books-section/popular-books-section.component";
 
 @Component({
   selector: "app-home",
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, PopularBooksSectionComponent],
   template: `
     <div class="row">
       <div class="col-12">
@@ -54,6 +55,13 @@ import { Observable } from "rxjs";
             </ng-template>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Popular Books Section -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <app-popular-books-section></app-popular-books-section>
       </div>
     </div>
 

@@ -44,6 +44,9 @@ class AdminServiceTest {
     @Mock
     private RecommendationRepository recommendationRepository;
 
+    @Mock
+    private PopularityService popularityService;
+
     @InjectMocks
     private AdminService adminService;
 
@@ -346,5 +349,101 @@ class AdminServiceTest {
         assertEquals(6L, userResult.getReviewsWritten());
 
         verify(userRepository).getUserEngagementData();
+    }
+
+    @Test
+    void getPopularityStatisticsData_Success() {
+        // Arrange
+        List<BookResponse> mockPopularityData = Arrays.asList(
+            createBookResponseWithViewCount(1L, "Popular Book 1", "Author 1", 100L),
+            createBookResponseWithViewCount(2L, "Popular Book 2", "Author 2", 50L),
+            createBookResponseWithViewCount(3L, "Popular Book 3", "Author 3", 25L)
+        );
+        when(popularityService.getPopularityStatistics()).thenReturn(mockPopularityData);
+
+        // Act
+        List<PopularityStatisticsData> result = adminService.getPopularityStatisticsData();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(3, result.size());
+
+        PopularityStatisticsData first = result.get(0);
+        assertEquals(1L, first.getBookId());
+        assertEquals("Popular Book 1", first.getTitle());
+        assertEquals("Author 1", first.getAuthor());
+        assertEquals(100L, first.getViewCount());
+        assertEquals(57.14, first.getPercentage(), 0.01); // 100/175 * 100
+        assertEquals(1, first.getRank());
+
+        PopularityStatisticsData second = result.get(1);
+        assertEquals(2L, second.getBookId());
+        assertEquals("Popular Book 2", second.getTitle());
+        assertEquals("Author 2", second.getAuthor());
+        assertEquals(50L, second.getViewCount());
+        assertEquals(28.57, second.getPercentage(), 0.01); // 50/175 * 100
+        assertEquals(2, second.getRank());
+
+        PopularityStatisticsData third = result.get(2);
+        assertEquals(3L, third.getBookId());
+        assertEquals("Popular Book 3", third.getTitle());
+        assertEquals("Author 3", third.getAuthor());
+        assertEquals(25L, third.getViewCount());
+        assertEquals(14.29, third.getPercentage(), 0.01); // 25/175 * 100
+        assertEquals(3, third.getRank());
+
+        verify(popularityService).getPopularityStatistics();
+    }
+
+    @Test
+    void getPopularityStatisticsData_EmptyData() {
+        // Arrange
+        when(popularityService.getPopularityStatistics()).thenReturn(Arrays.asList());
+
+        // Act
+        List<PopularityStatisticsData> result = adminService.getPopularityStatisticsData();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(popularityService).getPopularityStatistics();
+    }
+
+    @Test
+    void getPopularityStatisticsData_NullViewCounts() {
+        // Arrange
+        List<BookResponse> mockPopularityData = Arrays.asList(
+            createBookResponseWithViewCount(1L, "Book 1", "Author 1", null),
+            createBookResponseWithViewCount(2L, "Book 2", "Author 2", 50L)
+        );
+        when(popularityService.getPopularityStatistics()).thenReturn(mockPopularityData);
+
+        // Act
+        List<PopularityStatisticsData> result = adminService.getPopularityStatisticsData();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        PopularityStatisticsData first = result.get(0);
+        assertEquals(0L, first.getViewCount());
+        assertEquals(0.0, first.getPercentage());
+        assertEquals(1, first.getRank());
+
+        PopularityStatisticsData second = result.get(1);
+        assertEquals(50L, second.getViewCount());
+        assertEquals(100.0, second.getPercentage());
+        assertEquals(2, second.getRank());
+
+        verify(popularityService).getPopularityStatistics();
+    }
+
+    private BookResponse createBookResponseWithViewCount(Long id, String title, String author, Long viewCount) {
+        BookResponse response = new BookResponse();
+        response.setId(id);
+        response.setTitle(title);
+        response.setAuthor(author);
+        response.setViewCount(viewCount);
+        return response;
     }
 }

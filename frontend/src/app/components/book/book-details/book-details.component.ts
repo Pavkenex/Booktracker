@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { Subject, takeUntil, forkJoin } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { BookService } from "../../../services/book.service";
 import { LibraryService } from "../../../services/library.service";
 import { AuthService } from "../../../services/auth.service";
@@ -9,11 +9,17 @@ import { LibraryEventsService } from "../../../services/library-events.service";
 import { Book } from "../../../models/book.model";
 import { UserBook } from "../../../models/library.model";
 import { BookStatusSelectorComponent } from "../../library/book-status-selector/book-status-selector.component";
+import { FallbackImageDirective } from "../../../directives/fallback-image.directive";
 
 @Component({
   selector: "app-book-details",
   standalone: true,
-  imports: [CommonModule, RouterModule, BookStatusSelectorComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    BookStatusSelectorComponent,
+    FallbackImageDirective,
+  ],
   template: `
     <div class="container mt-4">
       <div class="row" *ngIf="book; else loading">
@@ -26,10 +32,10 @@ import { BookStatusSelectorComponent } from "../../library/book-status-selector/
         <div class="col-md-4 col-lg-3">
           <div class="book-cover-container">
             <img
-              [src]="book.thumbnail || '/assets/images/book-placeholder.svg'"
+              [src]="book.thumbnail || getDefaultPlaceholder()"
               [alt]="book.title"
               class="img-fluid book-cover"
-              (error)="onImageError($event)"
+              appFallbackImage
             />
           </div>
         </div>
@@ -365,6 +371,10 @@ import { BookStatusSelectorComponent } from "../../library/book-status-selector/
   ],
 })
 export class BookDetailsComponent implements OnInit, OnDestroy {
+  private static readonly MESSAGE_TIMEOUT_MS = 5000;
+  private static readonly DEFAULT_BOOK_PLACEHOLDER =
+    "/assets/images/book-placeholder.svg";
+
   book: Book | null = null;
   userBook: UserBook | null = null;
   error: string | null = null;
@@ -374,6 +384,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   togglingFavorite = false;
   libraryMessage: string | null = null;
   private destroy$ = new Subject<void>();
+  private viewRecorded = false; // Track if view has been recorded for this page visit
 
   constructor(
     private route: ActivatedRoute,
@@ -388,6 +399,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       const bookId = +params["id"];
       if (bookId) {
+        // Reset view tracking for new book
+        this.viewRecorded = false;
         this.loadBook(bookId);
       }
     });
@@ -422,6 +435,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (book) => {
           this.book = book;
+          // Record view only once per page visit
+          this.recordBookView(id);
           // Then check library status (this might fail if user is not authenticated)
           this.checkLibraryStatus(id);
         },
@@ -454,13 +469,35 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
+  private recordBookView(bookId: number): void {
+    // Only record view once per page visit
+    if (this.viewRecorded) {
+      return;
+    }
+
+    this.viewRecorded = true;
+
+    // Record the book view asynchronously and handle errors silently
+    this.bookService
+      .recordBookView(bookId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          // View recorded successfully - no user feedback needed
+        },
+        error: (error) => {
+          // Handle view recording errors silently without affecting user experience
+          console.warn("Failed to record book view:", error);
+          // Don't show error to user or affect page functionality
+        },
+      });
+  }
+
   goBack(): void {
     this.router.navigate(["/books"]);
   }
 
-  onImageError(event: any): void {
-    event.target.src = "/assets/images/book-placeholder.svg";
-  }
+  // Image error handling is now handled by the FallbackImageDirective
 
   addToLibrary(status: "read" | "currently_reading" | "to_read"): void {
     if (!this.book || this.addingToLibrary) {
@@ -491,12 +528,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         next: (userBook) => {
           this.addingToLibrary = false;
           this.userBook = userBook;
-          const statusText =
-            status === "read"
-              ? "Read"
-              : status === "currently_reading"
-              ? "Currently Reading"
-              : "Want to Read";
+          const statusText = this.getStatusDisplayText(status);
           this.libraryMessage = `"${
             this.book!.title
           }" has been added to your ${statusText} list!`;
@@ -504,10 +536,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           // Notify that library has been updated
           this.libraryEventsService.notifyLibraryUpdated();
 
-          // Clear message after 5 seconds
-          setTimeout(() => {
-            this.libraryMessage = null;
-          }, 5000);
+          // Clear message after timeout
+          this.clearMessageAfterTimeout();
         },
         error: (error) => {
           console.error("Error adding book to library:", error);
@@ -549,10 +579,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           // Notify that library has been updated
           this.libraryEventsService.notifyLibraryUpdated();
 
-          // Clear message after 5 seconds
-          setTimeout(() => {
-            this.libraryMessage = null;
-          }, 5000);
+          // Clear message after timeout
+          this.clearMessageAfterTimeout();
         },
         error: (error) => {
           console.error("Error removing book from library:", error);
@@ -613,5 +641,26 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
+  }
+
+  getDefaultPlaceholder(): string {
+    return BookDetailsComponent.DEFAULT_BOOK_PLACEHOLDER;
+  }
+
+  private clearMessageAfterTimeout(): void {
+    setTimeout(() => {
+      this.libraryMessage = null;
+    }, BookDetailsComponent.MESSAGE_TIMEOUT_MS);
+  }
+
+  private getStatusDisplayText(
+    status: "read" | "currently_reading" | "to_read"
+  ): string {
+    const statusMap = {
+      read: "Read",
+      currently_reading: "Currently Reading",
+      to_read: "Want to Read",
+    };
+    return statusMap[status];
   }
 }

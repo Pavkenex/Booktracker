@@ -31,6 +31,9 @@ public class BookService {
     @Autowired
     private GenreRepository genreRepository;
 
+    @Autowired
+    private PopularityService popularityService;
+
     /**
      * Get all books with pagination
      */
@@ -176,15 +179,13 @@ public class BookService {
     }
 
     /**
-     * Get most popular books
+     * Get most popular books with view counts
+     * Delegates to PopularityService to include view count data
      */
     @Transactional(readOnly = true)
     public List<BookResponse> getMostPopularBooks(int limit) {
-        Pageable pageable = PageRequest.of(0, limit);
-        List<Book> books = bookRepository.findMostPopularBooks(pageable);
-        return books.stream()
-                .map(BookResponse::new)
-                .collect(Collectors.toList());
+        // Delegate to PopularityService to get books with view counts
+        return popularityService.getMostPopularBooks(limit);
     }
 
     /**

@@ -49,6 +49,9 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Recommendation> recommendations = new HashSet<>();
     
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private BookView bookView;
+    
     // Constructors
     public Book() {}
     
@@ -135,6 +138,14 @@ public class Book {
     
     public void setRecommendations(Set<Recommendation> recommendations) {
         this.recommendations = recommendations;
+    }
+    
+    public BookView getBookView() {
+        return bookView;
+    }
+    
+    public void setBookView(BookView bookView) {
+        this.bookView = bookView;
     }
     
     // Helper methods for managing genres

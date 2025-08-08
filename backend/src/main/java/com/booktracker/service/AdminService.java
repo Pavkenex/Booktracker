@@ -48,6 +48,9 @@ public class AdminService {
     @Autowired
     private RecommendationRepository recommendationRepository;
     
+    @Autowired
+    private PopularityService popularityService;
+    
     // Book Management
     
     public BookResponse createBook(AdminBookRequest request) {
@@ -233,6 +236,41 @@ public class AdminService {
             .collect(Collectors.toList());
     }
     
+    public List<PopularityStatisticsData> getPopularityStatisticsData() {
+        List<BookResponse> popularityData = popularityService.getPopularityStatistics();
+        
+        if (popularityData.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        // Calculate total views for percentage calculation
+        long totalViews = popularityData.stream()
+            .mapToLong(book -> book.getViewCount() != null ? book.getViewCount() : 0L)
+            .sum();
+        
+        List<PopularityStatisticsData> statisticsData = new ArrayList<>();
+        
+        for (int i = 0; i < popularityData.size(); i++) {
+            BookResponse book = popularityData.get(i);
+            Long viewCount = book.getViewCount() != null ? book.getViewCount() : 0L;
+            Double percentage = totalViews > 0 ? (viewCount.doubleValue() / totalViews) * 100 : 0.0;
+            Integer rank = i + 1;
+            
+            PopularityStatisticsData data = new PopularityStatisticsData(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor(),
+                viewCount,
+                percentage,
+                rank
+            );
+            
+            statisticsData.add(data);
+        }
+        
+        return statisticsData;
+    }
+    
     // Report Export Methods
     
     public byte[] exportBooksByCategoryReport(String format) throws JRException {
@@ -251,6 +289,11 @@ public class AdminService {
     public byte[] exportUserEngagementReport(String format) throws JRException {
         List<UserEngagementReportData> data = getUserEngagementData();
         return generateReport("user_engagement_report", data, format);
+    }
+    
+    public byte[] exportPopularityStatisticsReport(String format) throws JRException {
+        List<PopularityStatisticsData> data = getPopularityStatisticsData();
+        return generateReport("popularity_statistics_report", data, format);
     }
     
     private byte[] generateReport(String reportName, List<?> data, String format) throws JRException {
@@ -294,6 +337,8 @@ public class AdminService {
                 configuration.setDetectCellType(true);
                 exporter.setConfiguration(configuration);
                 exporter.exportReport();
+            } else if ("csv".equalsIgnoreCase(format)) {
+                return generateCsvReport(data, reportName);
             } else {
                 throw new IllegalArgumentException("Unsupported export format: " + format);
             }
@@ -303,6 +348,45 @@ public class AdminService {
         } catch (Exception e) {
             throw new JRException("Error generating report: " + e.getMessage(), e);
         }
+    }
+    
+    private byte[] generateCsvReport(List<?> data, String reportName) {
+        StringBuilder csv = new StringBuilder();
+        
+        if ("popularity_statistics_report".equals(reportName)) {
+            // CSV header for popularity statistics
+            csv.append("Rank,Book Title,Author,View Count,Percentage\n");
+            
+            // CSV data rows
+            for (Object item : data) {
+                if (item instanceof PopularityStatisticsData) {
+                    PopularityStatisticsData stats = (PopularityStatisticsData) item;
+                    csv.append(stats.getRank()).append(",")
+                       .append("\"").append(escapeCsvValue(stats.getTitle())).append("\",")
+                       .append("\"").append(escapeCsvValue(stats.getAuthor())).append("\",")
+                       .append(stats.getViewCount()).append(",")
+                       .append(String.format("%.2f%%", stats.getPercentage()))
+                       .append("\n");
+                }
+            }
+        } else {
+            // Fallback for other report types - basic CSV generation
+            csv.append("Data not available in CSV format for this report type\n");
+        }
+        
+        return csv.toString().getBytes();
+    }
+    
+    private String escapeCsvValue(String value) {
+        if (value == null) {
+            return "";
+        }
+        // Escape quotes by doubling them and wrap in quotes if contains comma, quote, or newline
+        String escaped = value.replace("\"", "\"\"");
+        if (escaped.contains(",") || escaped.contains("\"") || escaped.contains("\n")) {
+            return escaped;
+        }
+        return escaped;
     }
     
     // Helper Methods

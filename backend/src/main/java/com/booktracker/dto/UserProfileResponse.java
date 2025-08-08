@@ -105,4 +105,34 @@ public class UserProfileResponse {
     public void setUser(UserInfo user) {
         this.user = user;
     }
+    
+    // Builder pattern for fluent construction
+    public static class Builder {
+        private boolean success;
+        private String message;
+        private UserInfo user;
+        
+        public Builder success(boolean success) {
+            this.success = success;
+            return this;
+        }
+        
+        public Builder message(String message) {
+            this.message = message;
+            return this;
+        }
+        
+        public Builder user(UserInfo user) {
+            this.user = user;
+            return this;
+        }
+        
+        public UserProfileResponse build() {
+            return new UserProfileResponse(success, message, user);
+        }
+    }
+    
+    public static Builder builder() {
+        return new Builder();
+    }
 }
