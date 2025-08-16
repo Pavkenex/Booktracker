@@ -87,6 +87,7 @@ import { UserBook } from '../../../models/library.model';
                 <label class="form-label">Reading Status</label>
                 <select class="form-select" formControlName="status">
                   <option value="to_read">Want to Read</option>
+                  <option value="currently_reading">Currently Reading</option>
                   <option value="read">Read</option>
                 </select>
               </div>
