@@ -66,14 +66,16 @@ export class LibraryService {
     bookId: number
   ): Observable<{ hasBook: boolean; userBook?: UserBook }> {
     return this.apiService
-      .get<{ success: boolean; hasBook: boolean; userBook?: UserBook }>(
-        `/library/books/check/${bookId}`
-      )
+      .get<any>(`/library/books/check/${bookId}`)
       .pipe(
-        map((response) => ({
-          hasBook: response.hasBook,
-          userBook: response.userBook,
-        }))
+        map((response) => {
+          // If response.data exists, use it; else fallback to root
+          const data = response.data || response;
+          return {
+            hasBook: data.hasBook,
+            userBook: data.userBook,
+          };
+        })
       );
   }
 
