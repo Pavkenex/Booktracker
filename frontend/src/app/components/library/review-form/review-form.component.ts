@@ -222,6 +222,7 @@ export class ReviewFormComponent implements OnInit {
     const formValue = this.reviewForm.value;
     
     const updateRequest = {
+      bookId: this.userBook.book.id,
       status: formValue.status,
       rating: formValue.rating,
       review: formValue.review?.trim() || undefined,
