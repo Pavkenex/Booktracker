@@ -13,6 +13,7 @@ public class UserBookResponse {
     private String review;
     private LocalDate readDate;
     private Boolean isFavourite;
+    private String username; // reviewer username
     
     // Constructors
     public UserBookResponse() {}
@@ -25,6 +26,7 @@ public class UserBookResponse {
         this.review = userBook.getReview();
         this.readDate = userBook.getReadDate();
         this.isFavourite = userBook.getIsFavourite();
+    this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
     }
     
     // Constructor with pre-calculated book rating to avoid circular loading
@@ -36,6 +38,7 @@ public class UserBookResponse {
         this.review = userBook.getReview();
         this.readDate = userBook.getReadDate();
         this.isFavourite = userBook.getIsFavourite();
+    this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
     }
     
     // Getters and Setters
@@ -93,5 +96,13 @@ public class UserBookResponse {
     
     public void setIsFavourite(Boolean isFavourite) {
         this.isFavourite = isFavourite;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

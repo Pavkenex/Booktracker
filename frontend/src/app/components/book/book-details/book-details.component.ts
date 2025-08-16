@@ -288,6 +288,33 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
           </button>
         </div>
       </div>
+
+      <!-- Reviews Section -->
+      <div *ngIf="book" class="reviews-section mt-5">
+        <h3 class="mb-3">Recent Reviews</h3>
+        <div *ngIf="loadingReviews" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div *ngIf="!loadingReviews && reviews.length === 0" class="text-muted">No reviews yet.</div>
+        <div class="list-group">
+          <div class="list-group-item" *ngFor="let r of reviews">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <div>
+                <span class="badge bg-warning text-dark me-2" *ngIf="r.rating">{{ r.rating }}★</span>
+                <span class="fw-semibold" *ngIf="r.username">&#64;{{ r.username }}</span>
+              </div>
+              <small class="text-muted" *ngIf="r.readDate">{{ r.readDate | date:'mediumDate' }}</small>
+            </div>
+            <div *ngIf="r.review" class="review-text">{{ r.review }}</div>
+            <div class="small text-muted mt-1">Status: {{ r.status.replace('_',' ') }}</div>
+          </div>
+        </div>
+        <div class="mt-3 text-center" *ngIf="hasMoreReviews">
+          <button class="btn btn-outline-primary btn-sm" (click)="loadMoreReviews()" [disabled]="loadingReviews">Show More</button>
+        </div>
+      </div>
     </div>
   `,
   styles: [
@@ -407,6 +434,8 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
       .thumb-wrapper img { width:100%; height:100%; object-fit:cover; }
       @media (min-width: 576px) { .similar-item { flex: 0 0 160px; max-width:160px; } }
       .slider-btn { width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; }
+  .reviews-section { border-top:1px solid #dee2e6; padding-top:2rem; }
+  .review-text { white-space: pre-wrap; }
     `,
   ],
 })
@@ -427,6 +456,11 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   private viewRecorded = false; // Track if view has been recorded for this page visit
   similarBooks: Book[] = [];
   @ViewChild('similarSlider') similarSlider?: ElementRef<HTMLElement>;
+  reviews: UserBook[] = [];
+  loadingReviews = false;
+  reviewPage = 0;
+  reviewPageSize = 5;
+  hasMoreReviews = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -482,12 +516,41 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           // Then check library status (this might fail if user is not authenticated)
           this.checkLibraryStatus(id);
           this.loadSimilarBooks(id);
+          this.resetReviews();
+          this.loadReviews();
         },
         error: (error) => {
           console.error("Error loading book:", error);
           this.error = "Failed to load book details. Please try again.";
         },
       });
+  }
+
+  private resetReviews(): void {
+    this.reviews = [];
+    this.reviewPage = 0;
+    this.hasMoreReviews = false;
+  }
+
+  private loadReviews(): void {
+    if (!this.book) return;
+    this.loadingReviews = true;
+    this.libraryService.getBookReviews(this.book.id, this.reviewPage, this.reviewPageSize)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: page => {
+          this.reviews = [...this.reviews, ...page.content];
+          this.hasMoreReviews = !page.last;
+          this.loadingReviews = false;
+        },
+        error: err => { console.warn('Failed to load reviews', err); this.loadingReviews = false; }
+      });
+  }
+
+  loadMoreReviews(): void {
+    if (!this.hasMoreReviews || this.loadingReviews) return;
+    this.reviewPage += 1;
+    this.loadReviews();
   }
 
   private loadSimilarBooks(bookId: number): void {

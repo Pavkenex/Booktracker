@@ -8,6 +8,7 @@ export interface UserBook {
   review?: string;
   readDate?: string;
   isFavourite: boolean;
+  username?: string; // reviewer username
 }
 
 export interface LibraryStats {
