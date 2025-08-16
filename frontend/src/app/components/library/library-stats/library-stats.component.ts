@@ -23,45 +23,31 @@ import { LibraryStats } from '../../../models/library.model';
           </div>
         </div>
 
-        <div *ngIf="!loading && stats" class="row text-center">
-          <!-- Total Books -->
-          <div class="col-6 col-md-3 mb-3">
-            <div class="stat-item">
-              <div class="stat-number text-primary">{{ stats.totalBooks }}</div>
-              <div class="stat-label">Total Books</div>
-            </div>
+        <div *ngIf="!loading && stats" class="stats-grid mb-3">
+          <div class="stat-item" aria-label="Total books">
+            <div class="stat-icon text-primary"><i class="fas fa-book"></i></div>
+            <div class="stat-number text-primary">{{ stats.totalBooks }}</div>
+            <div class="stat-label">Total</div>
           </div>
-
-          <!-- Books Read -->
-          <div class="col-6 col-md-3 mb-3">
-            <div class="stat-item">
-              <div class="stat-number text-success">{{ stats.booksRead }}</div>
-              <div class="stat-label">Books Read</div>
-            </div>
+          <div class="stat-item" aria-label="Books read">
+            <div class="stat-icon text-success"><i class="fas fa-check"></i></div>
+            <div class="stat-number text-success">{{ stats.booksRead }}</div>
+            <div class="stat-label">Read</div>
           </div>
-
-          <!-- Currently Reading -->
-          <div class="col-6 col-md-3 mb-3">
-            <div class="stat-item">
-              <div class="stat-number text-primary">{{ stats.booksCurrentlyReading }}</div>
-              <div class="stat-label">Currently Reading</div>
-            </div>
+          <div class="stat-item" aria-label="Currently reading">
+            <div class="stat-icon text-info"><i class="fas fa-book-open"></i></div>
+            <div class="stat-number text-info">{{ stats.booksCurrentlyReading }}</div>
+            <div class="stat-label">Reading</div>
           </div>
-
-          <!-- Books to Read -->
-          <div class="col-6 col-md-3 mb-3">
-            <div class="stat-item">
-              <div class="stat-number text-warning">{{ stats.booksToRead }}</div>
-              <div class="stat-label">Want to Read</div>
-            </div>
+          <div class="stat-item" aria-label="Want to read">
+            <div class="stat-icon text-warning"><i class="fas fa-list"></i></div>
+            <div class="stat-number text-warning">{{ stats.booksToRead }}</div>
+            <div class="stat-label">Want to Read</div>
           </div>
-
-          <!-- Favorite Books -->
-          <div class="col-6 col-md-3 mb-3">
-            <div class="stat-item">
-              <div class="stat-number text-danger">{{ stats.favoriteBooks }}</div>
-              <div class="stat-label">Favorites</div>
-            </div>
+            <div class="stat-item" aria-label="Favorite books">
+            <div class="stat-icon text-danger"><i class="fas fa-heart"></i></div>
+            <div class="stat-number text-danger">{{ stats.favoriteBooks }}</div>
+            <div class="stat-label">Favorites</div>
           </div>
         </div>
 
@@ -105,30 +91,30 @@ import { LibraryStats } from '../../../models/library.model';
     </div>
   `,
   styles: [`
-    .stat-item {
-      padding: 0.5rem;
+    .stats-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+      gap: 0.75rem; 
     }
-    
-    .stat-number {
-      font-size: 2rem;
-      font-weight: bold;
-      line-height: 1;
+    .stat-item { 
+      background:#f8f9fa; 
+      border:1px solid #e9ecef; 
+      border-radius:8px; 
+      padding:.75rem .5rem; 
+      text-align:center; 
+      display:flex; 
+      flex-direction:column; 
+      align-items:center; 
+      justify-content:space-between; 
+      min-height:110px;
     }
-    
-    .stat-label {
-      font-size: 0.875rem;
-      color: #6c757d;
-      margin-top: 0.25rem;
-    }
-    
-    .progress {
-      border-radius: 4px;
-    }
-    
-    .card-header {
-      background-color: #f8f9fa;
-      border-bottom: 1px solid #dee2e6;
-    }
+    .stat-item:hover { background:#f1f3f5; }
+    .stat-icon { font-size:1.1rem; margin-bottom:.25rem; }
+    .stat-number { font-size:1.75rem; font-weight:600; line-height:1; }
+    .stat-label { font-size:.75rem; letter-spacing:.5px; text-transform:uppercase; color:#6c757d; margin-top:.35rem; }
+    .progress { border-radius:4px; }
+    .card-header { background-color:#f8f9fa; border-bottom:1px solid #dee2e6; }
+    @media (min-width: 992px) { .stat-number { font-size:2rem; } }
   `]
 })
 export class LibraryStatsComponent implements OnInit, OnDestroy {
