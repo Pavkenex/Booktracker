@@ -190,6 +190,21 @@ public class LibraryController {
             return createSuccessResponse(null, recentActivity, HttpStatus.OK);
         });
     }
+
+    /**
+     * Get reviews for a specific book (public)
+     */
+    @GetMapping("/book/{bookId}/reviews")
+    public ResponseEntity<Map<String, Object>> getBookReviews(
+            @PathVariable Long bookId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return executeWithErrorHandling(() -> {
+            Page<UserBookResponse> reviewPage = libraryService.getBookReviews(bookId, page, size);
+            PagedResponse<UserBookResponse> response = new PagedResponse<>(reviewPage);
+            return createSuccessResponse(null, response, HttpStatus.OK);
+        });
+    }
     
     /**
      * Get another user's public library

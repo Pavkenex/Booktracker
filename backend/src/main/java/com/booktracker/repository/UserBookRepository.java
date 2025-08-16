@@ -161,4 +161,10 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
      */
     @Query("SELECT ub.book.id, AVG(CAST(ub.rating AS double)) FROM UserBook ub WHERE ub.book.id IN :bookIds AND ub.rating IS NOT NULL GROUP BY ub.book.id")
     List<Object[]> getAverageRatingsForBooks(@Param("bookIds") List<Long> bookIds);
+
+    /**
+     * Get recent reviews for a specific book (non-null review, ordered by most recent id)
+     */
+    @Query("SELECT ub FROM UserBook ub WHERE ub.book.id = :bookId AND ub.review IS NOT NULL ORDER BY ub.id DESC")
+    Page<UserBook> findRecentReviewsForBook(@Param("bookId") Long bookId, Pageable pageable);
 }

@@ -84,4 +84,10 @@ export class LibraryService {
       )
       .pipe(map((response) => response.data.content ?? []));
   }
+
+  getBookReviews(bookId: number, page: number = 0, size: number = 5): Observable<PagedResponse<UserBook>> {
+    return this.apiService
+      .get<{ success: boolean; data: PagedResponse<UserBook> }>(`/library/book/${bookId}/reviews?page=${page}&size=${size}`)
+      .pipe(map(r => r.data));
+  }
 }

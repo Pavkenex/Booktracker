@@ -336,6 +336,19 @@ public class LibraryService {
                 })
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Get reviews for a book (latest first)
+     */
+    @Transactional(readOnly = true)
+    public Page<UserBookResponse> getBookReviews(Long bookId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<UserBook> pageResult = userBookRepository.findRecentReviewsForBook(bookId, pageable);
+        return pageResult.map(userBook -> {
+            Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
+            return new UserBookResponse(userBook, bookRating);
+        });
+    }
     
     /**
      * Get user book by book ID
