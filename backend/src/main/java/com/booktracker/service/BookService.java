@@ -207,4 +207,25 @@ public class BookService {
     public long getTotalBookCount() {
         return bookRepository.countTotalBooks();
     }
+
+    /**
+     * Get similar books based on shared genres
+     */
+    @Transactional(readOnly = true)
+    public List<BookResponse> getSimilarBooks(Long bookId, int limit) {
+    return bookRepository.findById(bookId)
+        .map(book -> {
+            if (book.getGenres() == null || book.getGenres().isEmpty()) {
+            return List.<BookResponse>of();
+            }
+            List<Long> genreIds = book.getGenres().stream()
+                .map(g -> g.getId())
+                .collect(Collectors.toList());
+            Pageable pageable = PageRequest.of(0, limit);
+            List<Book> similar = bookRepository.findSimilarBooks(genreIds, bookId, pageable);
+            return similar.stream()
+                .map(BookResponse::new)
+                .collect(Collectors.toList());
+        }).orElse(List.of());
+    }
 }

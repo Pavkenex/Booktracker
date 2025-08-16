@@ -118,6 +118,19 @@ public class BookController {
     }
 
     /**
+     * Get similar books by shared genres
+     */
+    @GetMapping("/{id}/similar")
+    public ResponseEntity<List<BookResponse>> getSimilarBooks(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "10") int limit) {
+        if (limit <= 0) limit = 10;
+        if (limit > 50) limit = 50; // simple cap
+        List<BookResponse> similar = bookService.getSimilarBooks(id, limit);
+        return ResponseEntity.ok(similar);
+    }
+
+    /**
      * Get most popular books based on view count
      */
     @GetMapping("/popular")

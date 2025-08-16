@@ -48,6 +48,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      */
     @Query("SELECT DISTINCT b FROM Book b JOIN b.genres g WHERE g IN :genres")
     Page<Book> findByGenresIn(@Param("genres") List<Genre> genres, Pageable pageable);
+
+       /**
+        * Find similar books by genre ids excluding the original book
+        */
+       @Query("SELECT DISTINCT b FROM Book b JOIN b.genres g WHERE g.id IN :genreIds AND b.id <> :bookId")
+       List<Book> findSimilarBooks(@Param("genreIds") List<Long> genreIds, @Param("bookId") Long bookId, Pageable pageable);
     
     /**
      * Find books by published year

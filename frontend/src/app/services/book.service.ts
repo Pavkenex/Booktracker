@@ -62,4 +62,8 @@ export class BookService {
   recordBookView(bookId: number): Observable<void> {
     return this.apiService.post<void>(`/books/${bookId}/view`, {});
   }
+
+  getSimilarBooks(bookId: number, limit: number = 12): Observable<Book[]> {
+    return this.apiService.get<Book[]>(`/books/${bookId}/similar?limit=${limit}`);
+  }
 }

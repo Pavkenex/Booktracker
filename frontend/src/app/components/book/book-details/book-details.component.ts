@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
+import { Component, OnInit, OnDestroy, HostListener, ViewChild, ElementRef } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
@@ -264,6 +264,30 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
           Try Again
         </button>
       </div>
+
+      <!-- Similar Books -->
+      <div *ngIf="book && similarBooks.length > 0" class="similar-section mt-5">
+        <h3 class="mb-3">Similar Books</h3>
+        <div class="similar-slider-wrapper d-flex align-items-center">
+          <button class="slider-btn btn btn-outline-secondary me-2" (click)="scrollSimilar('prev')" aria-label="Previous">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="similar-slider flex-grow-1" #similarSlider>
+            <div class="similar-item" *ngFor="let b of similarBooks">
+              <a [routerLink]="['/books', b.id]" (click)="navigateToSimilar(b.id)" class="text-decoration-none">
+                <div class="thumb-wrapper mb-2">
+                  <img [src]="b.thumbnail || getDefaultPlaceholder()" [alt]="b.title" class="img-fluid rounded" />
+                </div>
+                <div class="small fw-semibold text-dark text-truncate" [title]="b.title">{{ b.title }}</div>
+                <div class="small text-muted text-truncate" *ngIf="b.author" [title]="b.author">{{ b.author }}</div>
+              </a>
+            </div>
+          </div>
+          <button class="slider-btn btn btn-outline-secondary ms-2" (click)="scrollSimilar('next')" aria-label="Next">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
     </div>
   `,
   styles: [
@@ -367,6 +391,22 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
           border-radius: 0.375rem !important;
         }
       }
+
+      /* Similar books slider */
+      .similar-section {
+        border-top: 1px solid #dee2e6;
+        padding-top: 2rem;
+      }
+      .similar-slider-wrapper { position: relative; }
+      .similar-slider { display: flex; overflow-x: auto; scroll-behavior: smooth; gap: 1rem; padding-bottom: .5rem; }
+      .similar-slider::-webkit-scrollbar { height: 8px; }
+      .similar-slider::-webkit-scrollbar-track { background: #f1f1f1; }
+      .similar-slider::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+      .similar-item { flex: 0 0 140px; max-width: 140px; }
+      .thumb-wrapper { width: 100%; aspect-ratio: 2/3; overflow: hidden; background:#f8f9fa; display:flex; align-items:center; justify-content:center; }
+      .thumb-wrapper img { width:100%; height:100%; object-fit:cover; }
+      @media (min-width: 576px) { .similar-item { flex: 0 0 160px; max-width:160px; } }
+      .slider-btn { width: 40px; height: 40px; display:flex; align-items:center; justify-content:center; }
     `,
   ],
 })
@@ -385,6 +425,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   libraryMessage: string | null = null;
   private destroy$ = new Subject<void>();
   private viewRecorded = false; // Track if view has been recorded for this page visit
+  similarBooks: Book[] = [];
+  @ViewChild('similarSlider') similarSlider?: ElementRef<HTMLElement>;
 
   constructor(
     private route: ActivatedRoute,
@@ -439,12 +481,34 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.recordBookView(id);
           // Then check library status (this might fail if user is not authenticated)
           this.checkLibraryStatus(id);
+          this.loadSimilarBooks(id);
         },
         error: (error) => {
           console.error("Error loading book:", error);
           this.error = "Failed to load book details. Please try again.";
         },
       });
+  }
+
+  private loadSimilarBooks(bookId: number): void {
+    this.bookService.getSimilarBooks(bookId, 15)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: books => { this.similarBooks = books; },
+        error: err => { console.warn('Failed to load similar books', err); }
+      });
+  }
+
+  scrollSimilar(direction: 'prev' | 'next'): void {
+    const el = this.similarSlider?.nativeElement;
+    if (!el) return;
+    const amount = el.clientWidth * 0.8;
+    el.scrollBy({ left: direction === 'next' ? amount : -amount, behavior: 'smooth' });
+  }
+
+  navigateToSimilar(id: number): void {
+    // Reset similar books to avoid flicker while loading new book
+    this.similarBooks = [];
   }
 
   private checkLibraryStatus(bookId: number): void {
