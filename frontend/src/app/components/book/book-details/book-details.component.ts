@@ -92,70 +92,83 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
               </div>
 
               <!-- User authenticated but book not in library -->
-              <div
-                *ngIf="isAuthenticated && !userBook"
-                class="btn-group dropdown"
-                role="group"
-              >
-                <button
-                  class="btn btn-success"
-                  (click)="addToLibrary('to_read')"
-                  [disabled]="addingToLibrary"
-                >
-                  <span
-                    *ngIf="addingToLibrary"
-                    class="spinner-border spinner-border-sm me-2"
-                  ></span>
-                  <i *ngIf="!addingToLibrary" class="fas fa-plus me-2"></i>
-                  Want to Read
-                </button>
-                <button
-                  class="btn btn-success dropdown-toggle dropdown-toggle-split"
-                  type="button"
-                  (click)="toggleDropdown()"
-                  [attr.aria-expanded]="dropdownOpen"
-                  [disabled]="addingToLibrary"
-                >
-                  <span class="visually-hidden">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu" [class.show]="dropdownOpen">
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      (click)="$event.preventDefault(); selectOption('to_read')"
-                    >
-                      <i class="fas fa-plus me-2 text-success"></i>
-                      Want to Read
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      (click)="
-                        $event.preventDefault();
-                        selectOption('currently_reading')
-                      "
-                    >
-                      <i class="fas fa-book-open me-2 text-warning"></i>
-                      Currently Reading
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="#"
-                      (click)="$event.preventDefault(); selectOption('read')"
-                    >
-                      <i class="fas fa-check me-2 text-primary"></i>
-                      Mark as Read
-                    </a>
-                  </li>
-                </ul>
-                <button class="btn btn-outline-info">
-                  <i class="fas fa-share me-2"></i>Recommend
-                </button>
+              <div *ngIf="isAuthenticated && !userBook">
+                <!-- Desktop / larger screens: split button group -->
+                <div class="btn-group dropdown d-none d-sm-inline-flex" role="group">
+                  <button
+                    class="btn btn-success"
+                    (click)="addToLibrary('to_read')"
+                    [disabled]="addingToLibrary"
+                  >
+                    <span *ngIf="addingToLibrary" class="spinner-border spinner-border-sm me-2"></span>
+                    <i *ngIf="!addingToLibrary" class="fas fa-plus me-2"></i>
+                    Want to Read
+                  </button>
+                  <button
+                    class="btn btn-success dropdown-toggle dropdown-toggle-split"
+                    type="button"
+                    (click)="toggleDropdown()"
+                    [attr.aria-expanded]="dropdownOpen"
+                    [disabled]="addingToLibrary"
+                  >
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" [class.show]="dropdownOpen">
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="$event.preventDefault(); selectOption('to_read')">
+                        <i class="fas fa-plus me-2 text-success"></i>Want to Read
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="$event.preventDefault(); selectOption('currently_reading')">
+                        <i class="fas fa-book-open me-2 text-warning"></i>Currently Reading
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="$event.preventDefault(); selectOption('read')">
+                        <i class="fas fa-check me-2 text-primary"></i>Mark as Read
+                      </a>
+                    </li>
+                  </ul>
+                  <button class="btn btn-outline-info">
+                    <i class="fas fa-share me-2"></i>Recommend
+                  </button>
+                </div>
+                <!-- Mobile: single full-width dropdown button -->
+                <div class="dropdown d-sm-none">
+                  <button
+                    class="btn btn-success w-100"
+                    type="button"
+                    (click)="toggleDropdown()"
+                    [attr.aria-expanded]="dropdownOpen"
+                    [disabled]="addingToLibrary"
+                  >
+                    <span *ngIf="addingToLibrary" class="spinner-border spinner-border-sm me-2"></span>
+                    <i *ngIf="!addingToLibrary" class="fas fa-plus me-2"></i>
+                    Add to Library
+                    <i class="fas fa-caret-down ms-2"></i>
+                  </button>
+                  <ul class="dropdown-menu w-100 mobile-dropdown" [class.show]="dropdownOpen">
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="$event.preventDefault(); selectOption('to_read')">
+                        <i class="fas fa-plus me-2 text-success"></i>Want to Read
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="$event.preventDefault(); selectOption('currently_reading')">
+                        <i class="fas fa-book-open me-2 text-warning"></i>Currently Reading
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="$event.preventDefault(); selectOption('read')">
+                        <i class="fas fa-check me-2 text-primary"></i>Mark as Read
+                      </a>
+                    </li>
+                  </ul>
+                  <button class="btn btn-outline-info w-100 mt-2">
+                    <i class="fas fa-share me-2"></i>Recommend
+                  </button>
+                </div>
               </div>
 
               <!-- User authenticated and book already in library -->
@@ -397,6 +410,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
         left: 0;
         z-index: 1000;
       }
+  .mobile-dropdown { position: static !important; float:none; margin-top:.25rem; }
 
       .badge {
         font-size: 0.8rem;
