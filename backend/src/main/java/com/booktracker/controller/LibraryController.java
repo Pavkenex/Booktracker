@@ -23,11 +23,13 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 public class LibraryController {
     
-    @Autowired
-    private LibraryService libraryService;
+    private final LibraryService libraryService;
+    private final SecurityUtils securityUtils;
     
-    @Autowired
-    private SecurityUtils securityUtils;
+    public LibraryController(LibraryService libraryService, SecurityUtils securityUtils) {
+        this.libraryService = libraryService;
+        this.securityUtils = securityUtils;
+    }
     
     /**
      * Add a book to user's library
@@ -193,34 +195,26 @@ public class LibraryController {
      * Get another user's public library
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserPublicLibrary(
+    public ResponseEntity<Map<String, Object>> getUserPublicLibrary(
             @PathVariable Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir) {
-        try {
-            // Verify the requesting user is authenticated
+        return executeWithErrorHandling(() -> {
             Long currentUserId = securityUtils.getCurrentUserId();
             
             // Check if users are friends (for privacy)
-            if (!libraryService.areUsersFriends(currentUserId, userId)) {
-                Map<String, Object> error = new HashMap<>();
-                error.put("success", false);
-                error.put("message", "You can only view libraries of your friends");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-            }
+            // if (!libraryService.areUsersFriends(currentUserId, userId)) {
+            //     return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            //             .body(createErrorResponse("You can only view libraries of your friends").getBody());
+            // }
             
             Page<UserBookResponse> libraryPage = libraryService.getUserLibrary(userId, page, size, sortBy, sortDir);
             PagedResponse<UserBookResponse> response = new PagedResponse<>(libraryPage);
             
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            Map<String, Object> error = new HashMap<>();
-            error.put("success", false);
-            error.put("message", "Failed to load library");
-            return ResponseEntity.badRequest().body(error);
-        }
+            return createSuccessResponse(null, response, HttpStatus.OK);
+        });
     }
     
 

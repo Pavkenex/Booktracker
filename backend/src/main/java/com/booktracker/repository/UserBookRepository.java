@@ -149,4 +149,16 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
      */
     @Query("SELECT COUNT(ub) FROM UserBook ub WHERE ub.review IS NOT NULL AND CAST(ub.readDate AS date) = :date")
     long countReviewsPostedOnDate(@Param("date") LocalDate date);
+    
+    /**
+     * Get average rating for a book
+     */
+    @Query("SELECT AVG(CAST(ub.rating AS double)) FROM UserBook ub WHERE ub.book.id = :bookId AND ub.rating IS NOT NULL")
+    Double getAverageRatingForBook(@Param("bookId") Long bookId);
+    
+    /**
+     * Get average ratings for multiple books
+     */
+    @Query("SELECT ub.book.id, AVG(CAST(ub.rating AS double)) FROM UserBook ub WHERE ub.book.id IN :bookIds AND ub.rating IS NOT NULL GROUP BY ub.book.id")
+    List<Object[]> getAverageRatingsForBooks(@Param("bookIds") List<Long> bookIds);
 }

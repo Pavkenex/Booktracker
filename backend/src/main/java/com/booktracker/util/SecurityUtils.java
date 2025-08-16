@@ -37,14 +37,7 @@ public class SecurityUtils {
             }
         }
         
-        // Fallback: Extract JWT token from request
-        String token = extractTokenFromAuthentication(authentication);
-        if (token != null && !token.trim().isEmpty()) {
-            Long userId = jwtUtil.extractUserId(token);
-            if (userId != null) {
-                return userId;
-            }
-        }
+
         
         throw new AuthenticationException("Unable to extract user ID from authentication context");
     }

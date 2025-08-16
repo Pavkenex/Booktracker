@@ -27,6 +27,17 @@ public class UserBookResponse {
         this.isFavourite = userBook.getIsFavourite();
     }
     
+    // Constructor with pre-calculated book rating to avoid circular loading
+    public UserBookResponse(UserBook userBook, Double bookRating) {
+        this.id = userBook.getId();
+        this.book = new BookResponse(userBook.getBook(), bookRating);
+        this.status = userBook.getStatus();
+        this.rating = userBook.getRating();
+        this.review = userBook.getReview();
+        this.readDate = userBook.getReadDate();
+        this.isFavourite = userBook.getIsFavourite();
+    }
+    
     // Getters and Setters
     public Long getId() {
         return id;

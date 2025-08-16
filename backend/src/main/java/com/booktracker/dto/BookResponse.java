@@ -31,17 +31,9 @@ public class BookResponse {
                 .map(GenreResponse::new)
                 .collect(Collectors.toSet());
         
-        // Calculate average rating from user_books
-        this.rating = book.getUserBooks().stream()
-                .filter(userBook -> userBook.getRating() != null)
-                .mapToInt(userBook -> userBook.getRating())
-                .average()
-                .orElse(0.0);
-        
-        // Round to 1 decimal place
-        if (this.rating > 0) {
-            this.rating = Math.round(this.rating * 10.0) / 10.0;
-        }
+        // Don't calculate rating here to avoid circular loading
+        // Rating will be set separately when needed
+        this.rating = 0.0;
     }
 
     // Constructor for popular books with view count
@@ -55,6 +47,12 @@ public class BookResponse {
         this(book); // Call existing constructor
         this.viewCount = viewCount;
         this.rating = rating;
+    }
+    
+    // Constructor that accepts pre-calculated rating to avoid circular loading
+    public BookResponse(Book book, Double rating) {
+        this(book); // Call existing constructor
+        this.rating = rating != null ? Math.round(rating * 10.0) / 10.0 : 0.0;
     }
 
     // Getters and Setters

@@ -34,3 +34,8 @@ export interface PagedResponse<T> {
   hasNext: boolean;
   hasPrevious: boolean;
 }
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string; // Optional message
+  data: T;
+}

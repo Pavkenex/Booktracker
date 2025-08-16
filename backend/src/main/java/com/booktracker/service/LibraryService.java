@@ -29,24 +29,26 @@ import java.util.stream.Collectors;
 @Transactional
 public class LibraryService {
     
-    @Autowired
-    private UserBookRepository userBookRepository;
+    private final UserBookRepository userBookRepository;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
+    private final FriendshipRepository friendshipRepository;
     
-    @Autowired
-    private BookRepository bookRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private FriendshipRepository friendshipRepository;
+    public LibraryService(UserBookRepository userBookRepository, 
+                         BookRepository bookRepository,
+                         UserRepository userRepository, 
+                         FriendshipRepository friendshipRepository) {
+        this.userBookRepository = userBookRepository;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+        this.friendshipRepository = friendshipRepository;
+    }
     
     /**
      * Add a book to user's library
      */
     public UserBookResponse addBookToLibrary(Long userId, UserBookRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = validateAndFetchUser(userId);
         
         Book book = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new RuntimeException("Book not found"));
@@ -69,7 +71,11 @@ public class LibraryService {
         }
         
         UserBook savedUserBook = userBookRepository.save(userBook);
-        return new UserBookResponse(savedUserBook);
+        
+        // Get average rating for this book
+        Double bookRating = userBookRepository.getAverageRatingForBook(book.getId());
+        
+        return new UserBookResponse(savedUserBook, bookRating);
     }
     
     /**
@@ -80,9 +86,7 @@ public class LibraryService {
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
         
         // Verify the book belongs to the user
-        if (!userBook.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized access to library item");
-        }
+        validateUserBookOwnership(userBook, userId);
         
         userBook.setStatus(request.getStatus());
         userBook.setRating(request.getRating());
@@ -96,7 +100,11 @@ public class LibraryService {
         }
         
         UserBook savedUserBook = userBookRepository.save(userBook);
-        return new UserBookResponse(savedUserBook);
+        
+        // Get average rating for this book
+        Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
+        
+        return new UserBookResponse(savedUserBook, bookRating);
     }
     
     /**
@@ -115,6 +123,51 @@ public class LibraryService {
     }
     
     /**
+     * Helper method to validate and fetch user by ID
+     * @param userId The user ID to validate and fetch
+     * @return User entity if found
+     * @throws RuntimeException if user not found
+     */
+    private User validateAndFetchUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    /**
+     * Helper method to validate user ownership of a UserBook
+     * @param userBook The UserBook to validate ownership for
+     * @param userId The user ID that should own the book
+     * @throws RuntimeException if user doesn't own the book
+     */
+    private void validateUserBookOwnership(UserBook userBook, Long userId) {
+        if (!userBook.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized access to library item");
+        }
+    }
+
+    /**
+     * Helper method to efficiently fetch average ratings for multiple books
+     * @param userBooks List of UserBook entities to fetch ratings for
+     * @return Map of book ID to average rating
+     */
+    private Map<Long, Double> fetchBookRatings(List<UserBook> userBooks) {
+        List<Long> bookIds = userBooks.stream()
+                .map(ub -> ub.getBook().getId())
+                .collect(Collectors.toList());
+        
+        Map<Long, Double> bookRatings = new HashMap<>();
+        if (!bookIds.isEmpty()) {
+            List<Object[]> ratings = userBookRepository.getAverageRatingsForBooks(bookIds);
+            for (Object[] rating : ratings) {
+                Long bookId = (Long) rating[0];
+                Double avgRating = (Double) rating[1];
+                bookRatings.put(bookId, avgRating);
+            }
+        }
+        return bookRatings;
+    }
+
+    /**
      * Get user's library with pagination
      */
     @Transactional(readOnly = true)
@@ -128,7 +181,12 @@ public class LibraryService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<UserBook> userBooks = userBookRepository.findByUser(user, pageable);
         
-        return userBooks.map(UserBookResponse::new);
+        Map<Long, Double> bookRatings = fetchBookRatings(userBooks.getContent());
+        
+        return userBooks.map(userBook -> {
+            Double bookRating = bookRatings.get(userBook.getBook().getId());
+            return new UserBookResponse(userBook, bookRating);
+        });
     }
     
     /**
@@ -146,7 +204,12 @@ public class LibraryService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<UserBook> userBooks = userBookRepository.findByUserAndStatus(user, status, pageable);
         
-        return userBooks.map(UserBookResponse::new);
+        Map<Long, Double> bookRatings = fetchBookRatings(userBooks.getContent());
+        
+        return userBooks.map(userBook -> {
+            Double bookRating = bookRatings.get(userBook.getBook().getId());
+            return new UserBookResponse(userBook, bookRating);
+        });
     }
     
     /**
@@ -163,7 +226,12 @@ public class LibraryService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<UserBook> userBooks = userBookRepository.findByUserAndIsFavouriteTrue(user, pageable);
         
-        return userBooks.map(UserBookResponse::new);
+        Map<Long, Double> bookRatings = fetchBookRatings(userBooks.getContent());
+        
+        return userBooks.map(userBook -> {
+            Double bookRating = bookRatings.get(userBook.getBook().getId());
+            return new UserBookResponse(userBook, bookRating);
+        });
     }
     
     /**
@@ -180,7 +248,11 @@ public class LibraryService {
         
         userBook.setIsFavourite(!userBook.getIsFavourite());
         UserBook savedUserBook = userBookRepository.save(userBook);
-        return new UserBookResponse(savedUserBook);
+        
+        // Get average rating for this book
+        Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
+        
+        return new UserBookResponse(savedUserBook, bookRating);
     }
     
     /**
@@ -230,7 +302,10 @@ public class LibraryService {
             throw new RuntimeException("Unauthorized access to library item");
         }
         
-        return new UserBookResponse(userBook);
+        // Get average rating for this book
+        Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
+        
+        return new UserBookResponse(userBook, bookRating);
     }
     
     /**
@@ -252,8 +327,13 @@ public class LibraryService {
         Pageable pageable = PageRequest.of(0, limit);
         List<UserBook> recentBooks = userBookRepository.findRecentActivity(user, pageable);
         
+        Map<Long, Double> bookRatings = fetchBookRatings(recentBooks);
+        
         return recentBooks.stream()
-                .map(UserBookResponse::new)
+                .map(userBook -> {
+                    Double bookRating = bookRatings.get(userBook.getBook().getId());
+                    return new UserBookResponse(userBook, bookRating);
+                })
                 .collect(Collectors.toList());
     }
     
@@ -269,7 +349,12 @@ public class LibraryService {
                 .orElseThrow(() -> new RuntimeException("Book not found"));
         
         Optional<UserBook> userBook = userBookRepository.findByUserAndBook(user, book);
-        return userBook.map(UserBookResponse::new).orElse(null);
+        if (userBook.isPresent()) {
+            // Get average rating for this book
+            Double bookRating = userBookRepository.getAverageRatingForBook(bookId);
+            return new UserBookResponse(userBook.get(), bookRating);
+        }
+        return null;
     }
     
     /**
