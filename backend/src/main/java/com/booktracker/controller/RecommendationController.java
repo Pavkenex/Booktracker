@@ -1,18 +1,14 @@
 package com.booktracker.controller;
 
-import com.booktracker.dto.RecommendationRequest;
-import com.booktracker.dto.RecommendationResponse;
-import com.booktracker.security.JwtUtil;
+import com.booktracker.dto.*;
+import com.booktracker.util.SecurityUtils;
 import com.booktracker.service.RecommendationService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/recommendations")
@@ -23,17 +19,16 @@ public class RecommendationController {
     private RecommendationService recommendationService;
     
     @Autowired
-    private JwtUtil jwtUtil;
+    private SecurityUtils securityUtils;
     
     /**
      * Send a book recommendation
      */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> sendRecommendation(
-            @Valid @RequestBody RecommendationRequest request,
-            HttpServletRequest httpRequest) {
+    public ResponseEntity<RecommendationResponse> sendRecommendation(
+            @Valid @RequestBody RecommendationRequest request) {
         
-        Long senderId = getUserIdFromToken(httpRequest);
+        Long senderId = securityUtils.getCurrentUserId();
         
         RecommendationResponse recommendation = recommendationService.sendRecommendation(
                 senderId, 
@@ -42,12 +37,7 @@ public class RecommendationController {
                 request.getMessage()
         );
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Recommendation sent successfully");
-        response.put("recommendation", recommendation);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(recommendation);
     }
     
     /**
@@ -56,10 +46,9 @@ public class RecommendationController {
     @GetMapping("/sent")
     public ResponseEntity<List<RecommendationResponse>> getSentRecommendations(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") int size) {
         
-        Long userId = getUserIdFromToken(request);
+        Long userId = securityUtils.getCurrentUserId();
         
         List<RecommendationResponse> recommendations = recommendationService.getSentRecommendations(userId, page, size);
         
@@ -72,10 +61,9 @@ public class RecommendationController {
     @GetMapping("/received")
     public ResponseEntity<List<RecommendationResponse>> getReceivedRecommendations(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") int size) {
         
-        Long userId = getUserIdFromToken(request);
+        Long userId = securityUtils.getCurrentUserId();
         
         List<RecommendationResponse> recommendations = recommendationService.getReceivedRecommendations(userId, page, size);
         
@@ -86,165 +74,92 @@ public class RecommendationController {
      * Get recommendations between two users
      */
     @GetMapping("/between/{friendId}")
-    public ResponseEntity<Map<String, Object>> getRecommendationsBetweenUsers(
+    public ResponseEntity<List<RecommendationResponse>> getRecommendationsBetweenUsers(
             @PathVariable Long friendId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") int size) {
         
-        Long userId = getUserIdFromToken(request);
-        
+        Long userId = securityUtils.getCurrentUserId();
         List<RecommendationResponse> recommendations = recommendationService.getRecommendationsBetweenUsers(userId, friendId, page, size);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("recommendations", recommendations);
-        response.put("page", page);
-        response.put("size", size);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(recommendations);
     }
     
     /**
      * Get recent recommendations for user
      */
     @GetMapping("/recent")
-    public ResponseEntity<Map<String, Object>> getRecentRecommendations(
-            @RequestParam(defaultValue = "5") int limit,
-            HttpServletRequest request) {
+    public ResponseEntity<List<RecommendationResponse>> getRecentRecommendations(
+            @RequestParam(defaultValue = "5") int limit) {
         
-        Long userId = getUserIdFromToken(request);
-        
+        Long userId = securityUtils.getCurrentUserId();
         List<RecommendationResponse> recommendations = recommendationService.getRecentRecommendations(userId, limit);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("recommendations", recommendations);
-        response.put("limit", limit);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(recommendations);
     }
     
     /**
      * Get recommendations for a specific book
      */
     @GetMapping("/book/{bookId}")
-    public ResponseEntity<Map<String, Object>> getRecommendationsForBook(@PathVariable Long bookId) {
+    public ResponseEntity<List<RecommendationResponse>> getRecommendationsForBook(@PathVariable Long bookId) {
         List<RecommendationResponse> recommendations = recommendationService.getRecommendationsForBook(bookId);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("recommendations", recommendations);
-        response.put("count", recommendations.size());
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(recommendations);
     }
     
     /**
      * Mark recommendation as read
      */
     @PutMapping("/{recommendationId}/read")
-    public ResponseEntity<Map<String, Object>> markRecommendationAsRead(
-            @PathVariable Long recommendationId,
-            HttpServletRequest request) {
-        
-        Long userId = getUserIdFromToken(request);
-        
+    public ResponseEntity<Void> markRecommendationAsRead(@PathVariable Long recommendationId) {
+        Long userId = securityUtils.getCurrentUserId();
         recommendationService.markRecommendationAsRead(userId, recommendationId);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Recommendation marked as read");
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * Delete a recommendation
      */
     @DeleteMapping("/{recommendationId}")
-    public ResponseEntity<Map<String, Object>> deleteRecommendation(
-            @PathVariable Long recommendationId,
-            HttpServletRequest request) {
-        
-        Long userId = getUserIdFromToken(request);
-        
+    public ResponseEntity<Void> deleteRecommendation(@PathVariable Long recommendationId) {
+        Long userId = securityUtils.getCurrentUserId();
         recommendationService.deleteRecommendation(userId, recommendationId);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Recommendation deleted successfully");
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
     
     /**
      * Get recommendation statistics
      */
     @GetMapping("/stats")
-    public ResponseEntity<Map<String, Object>> getRecommendationStats(HttpServletRequest request) {
-        Long userId = getUserIdFromToken(request);
-        
+    public ResponseEntity<RecommendationStatsResponse> getRecommendationStats() {
+        Long userId = securityUtils.getCurrentUserId();
         RecommendationService.RecommendationStats stats = recommendationService.getRecommendationStats(userId);
-        
-        Map<String, Object> statsMap = new HashMap<>();
-        statsMap.put("sentCount", stats.getSentCount());
-        statsMap.put("receivedCount", stats.getReceivedCount());
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("stats", statsMap);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new RecommendationStatsResponse(stats.getSentCount(), stats.getReceivedCount()));
     }
     
     /**
      * Check if user has recommended a book to another user
      */
     @GetMapping("/check")
-    public ResponseEntity<Map<String, Object>> checkRecommendation(
+    public ResponseEntity<Boolean> checkRecommendation(
             @RequestParam Long receiverId,
-            @RequestParam Long bookId,
-            HttpServletRequest request) {
+            @RequestParam Long bookId) {
         
-        Long senderId = getUserIdFromToken(request);
-        
+        Long senderId = securityUtils.getCurrentUserId();
         boolean hasRecommended = recommendationService.hasRecommended(senderId, receiverId, bookId);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("hasRecommended", hasRecommended);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(hasRecommended);
     }
     
     /**
      * Get most recommended books
      */
     @GetMapping("/popular")
-    public ResponseEntity<Map<String, Object>> getMostRecommendedBooks(
+    public ResponseEntity<List<BookResponse>> getMostRecommendedBooks(
             @RequestParam(defaultValue = "10") int limit) {
         
         List<Object[]> mostRecommended = recommendationService.getMostRecommendedBooks(limit);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("mostRecommended", mostRecommended);
-        response.put("limit", limit);
-        
-        return ResponseEntity.ok(response);
-    }
-    
-    /**
-     * Extract user ID from JWT token
-     */
-    private Long getUserIdFromToken(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-            String username = jwtUtil.extractUsername(token);
-            return jwtUtil.extractUserId(token);
-        }
-        throw new RuntimeException("Invalid token");
+        // Convert Object[] to BookResponse - assuming Object[] contains [Book, count]
+        List<BookResponse> bookResponses = mostRecommended.stream()
+            .map(arr -> new BookResponse((com.booktracker.entity.Book) arr[0]))
+            .toList();
+        return ResponseEntity.ok(bookResponses);
     }
 }

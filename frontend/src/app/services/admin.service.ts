@@ -78,14 +78,12 @@ export class AdminService {
   // Genre management
   createGenre(genre: Omit<Genre, "id">): Observable<Genre> {
     return this.apiService
-      .post<any>("/admin/genres", genre)
-      .pipe(map((response) => response.data));
+      .post<Genre>("/admin/genres", genre);
   }
 
   updateGenre(id: number, genre: Partial<Genre>): Observable<Genre> {
     return this.apiService
-      .put<any>(`/admin/genres/${id}`, genre)
-      .pipe(map((response) => response.data));
+      .put<Genre>(`/admin/genres/${id}`, genre);
   }
 
   deleteGenre(id: number): Observable<void> {
@@ -94,8 +92,7 @@ export class AdminService {
 
   getAllGenres(): Observable<Genre[]> {
     return this.apiService
-      .get<any>("/admin/genres")
-      .pipe(map((response) => response.data));
+      .get<Genre[]>("/admin/genres");
   }
 
   // Reports

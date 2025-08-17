@@ -18,9 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -33,245 +31,103 @@ public class AdminController {
     // Book Management Endpoints
     
     @PostMapping("/books")
-    public ResponseEntity<Map<String, Object>> createBook(@Valid @RequestBody AdminBookRequest request) {
-        try {
-            BookResponse book = adminService.createBook(request);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Book created successfully");
-            response.put("data", book);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to create book: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+    public ResponseEntity<BookResponse> createBook(@Valid @RequestBody AdminBookRequest request) {
+        BookResponse book = adminService.createBook(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
     
     @PutMapping("/books/{id}")
-    public ResponseEntity<Map<String, Object>> updateBook(@PathVariable Long id, @Valid @RequestBody AdminBookRequest request) {
-        try {
-            BookResponse book = adminService.updateBook(id, request);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Book updated successfully");
-            response.put("data", book);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to update book: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+    public ResponseEntity<BookResponse> updateBook(@PathVariable Long id, @Valid @RequestBody AdminBookRequest request) {
+        BookResponse book = adminService.updateBook(id, request);
+        return ResponseEntity.ok(book);
     }
     
     @DeleteMapping("/books/{id}")
-    public ResponseEntity<Map<String, Object>> deleteBook(@PathVariable Long id) {
-        try {
-            adminService.deleteBook(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Book deleted successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to delete book: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        adminService.deleteBook(id);
+        return ResponseEntity.noContent().build();
     }
     
     @GetMapping("/books")
-    public ResponseEntity<Map<String, Object>> getAllBooks(
+    public ResponseEntity<PagedResponse<BookResponse>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "title") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
         
-        try {
-            Sort sort = sortDir.equalsIgnoreCase("desc") ? 
-                Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
-            Pageable pageable = PageRequest.of(page, size, sort);
-            
-            Page<BookResponse> books = adminService.getAllBooks(pageable);
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", books.getContent());
-            response.put("currentPage", books.getNumber());
-            response.put("totalItems", books.getTotalElements());
-            response.put("totalPages", books.getTotalPages());
-            response.put("hasNext", books.hasNext());
-            response.put("hasPrevious", books.hasPrevious());
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to retrieve books: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? 
+            Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        Page<BookResponse> books = adminService.getAllBooks(pageable);
+        PagedResponse<BookResponse> response = new PagedResponse<>(books);
+        
+        return ResponseEntity.ok(response);
     }
     
     @GetMapping("/books/{id}")
-    public ResponseEntity<Map<String, Object>> getBookById(@PathVariable Long id) {
-        try {
-            BookResponse book = adminService.getBookById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", book);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to retrieve book: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ResponseEntity<BookResponse> getBookById(@PathVariable Long id) {
+        BookResponse book = adminService.getBookById(id);
+        return ResponseEntity.ok(book);
     }
     
     // Genre Management Endpoints
     
     @PostMapping("/genres")
-    public ResponseEntity<Map<String, Object>> createGenre(@Valid @RequestBody AdminGenreRequest request) {
-        try {
-            GenreResponse genre = adminService.createGenre(request);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Genre created successfully");
-            response.put("data", genre);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to create genre: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+    public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody AdminGenreRequest request) {
+        GenreResponse genre = adminService.createGenre(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(genre);
     }
     
     @PutMapping("/genres/{id}")
-    public ResponseEntity<Map<String, Object>> updateGenre(@PathVariable Long id, @Valid @RequestBody AdminGenreRequest request) {
-        try {
-            GenreResponse genre = adminService.updateGenre(id, request);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Genre updated successfully");
-            response.put("data", genre);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to update genre: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+    public ResponseEntity<GenreResponse> updateGenre(@PathVariable Long id, @Valid @RequestBody AdminGenreRequest request) {
+        GenreResponse genre = adminService.updateGenre(id, request);
+        return ResponseEntity.ok(genre);
     }
     
     @DeleteMapping("/genres/{id}")
-    public ResponseEntity<Map<String, Object>> deleteGenre(@PathVariable Long id) {
-        try {
-            adminService.deleteGenre(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Genre deleted successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to delete genre: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+    public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
+        adminService.deleteGenre(id);
+        return ResponseEntity.noContent().build();
     }
     
     @GetMapping("/genres")
-    public ResponseEntity<Map<String, Object>> getAllGenres() {
-        try {
-            List<GenreResponse> genres = adminService.getAllGenres();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", genres);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to retrieve genres: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    public ResponseEntity<List<GenreResponse>> getAllGenres() {
+        List<GenreResponse> genres = adminService.getAllGenres();
+        return ResponseEntity.ok(genres);
     }
     
     @GetMapping("/genres/{id}")
-    public ResponseEntity<Map<String, Object>> getGenreById(@PathVariable Long id) {
-        try {
-            GenreResponse genre = adminService.getGenreById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", genre);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to retrieve genre: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+    public ResponseEntity<GenreResponse> getGenreById(@PathVariable Long id) {
+        GenreResponse genre = adminService.getGenreById(id);
+        return ResponseEntity.ok(genre);
     }
     
     // Report Endpoints
     
     @GetMapping("/reports/books-by-category")
-    public ResponseEntity<Map<String, Object>> getBooksByCategoryReport() {
-        try {
-            List<BooksByCategoryReportData> data = adminService.getBooksByCategoryData();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", data);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to generate books by category report: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    public ResponseEntity<List<BooksByCategoryReportData>> getBooksByCategoryReport() {
+        List<BooksByCategoryReportData> data = adminService.getBooksByCategoryData();
+        return ResponseEntity.ok(data);
     }
     
     @GetMapping("/reports/daily-activity")
-    public ResponseEntity<Map<String, Object>> getDailyActivityReport(
+    public ResponseEntity<List<DailyActivityReportData>> getDailyActivityReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         
-        try {
-            if (startDate.isAfter(endDate)) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Start date cannot be after end date");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-            
-            List<DailyActivityReportData> data = adminService.getDailyActivityData(startDate, endDate);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", data);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to generate daily activity report: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        if (startDate.isAfter(endDate)) {
+            return ResponseEntity.badRequest().build();
         }
+        
+        List<DailyActivityReportData> data = adminService.getDailyActivityData(startDate, endDate);
+        return ResponseEntity.ok(data);
     }
     
     @GetMapping("/reports/user-engagement")
-    public ResponseEntity<Map<String, Object>> getUserEngagementReport() {
-        try {
-            List<UserEngagementReportData> data = adminService.getUserEngagementData();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", data);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to generate user engagement report: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    public ResponseEntity<List<UserEngagementReportData>> getUserEngagementReport() {
+        List<UserEngagementReportData> data = adminService.getUserEngagementData();
+        return ResponseEntity.ok(data);
     }
     
     // Report Export Endpoints
@@ -372,24 +228,9 @@ public class AdminController {
     // Popularity Statistics Endpoints
     
     @GetMapping("/popularity/statistics")
-    public ResponseEntity<Map<String, Object>> getPopularityStatistics() {
-        try {
-            List<PopularityStatisticsData> data = adminService.getPopularityStatisticsData();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", data);
-            
-            if (data.isEmpty()) {
-                response.put("message", "No popularity data available. Books need to be viewed to generate statistics.");
-            }
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Failed to retrieve popularity statistics: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    public ResponseEntity<List<PopularityStatisticsData>> getPopularityStatistics() {
+        List<PopularityStatisticsData> data = adminService.getPopularityStatisticsData();
+        return ResponseEntity.ok(data);
     }
     
     @GetMapping("/popularity/export")

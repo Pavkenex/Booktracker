@@ -3,8 +3,7 @@ package com.booktracker.controller;
 import com.booktracker.dto.*;
 import com.booktracker.service.AuthService;
 import com.booktracker.service.UserService;
-import com.booktracker.security.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
+import com.booktracker.util.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,44 +25,16 @@ public class UserController {
     private AuthService authService;
 
     @Autowired
-    private JwtUtil jwtUtil;
-
-    /**
-     * User registration endpoint
-     */
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
-
-    /**
-     * User login endpoint
-     */
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginRequest request) {
-        AuthResponse response = authService.login(request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
-    }
+    private SecurityUtils securityUtils;
 
     /**
      * Get current user profile
      */
     @GetMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<UserProfileResponse> getCurrentUserProfile(HttpServletRequest request) {
+    public ResponseEntity<UserProfileResponse> getCurrentUserProfile() {
         try {
-            Long userId = getUserIdFromToken(request);
+            Long userId = securityUtils.getCurrentUserId();
             UserProfileResponse response = userService.getUserProfile(userId);
             
             if (response.isSuccess()) {
@@ -113,10 +84,9 @@ public class UserController {
     @PutMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> updateUserProfile(
-            @Valid @RequestBody UpdateProfileRequest request,
-            HttpServletRequest httpRequest) {
+            @Valid @RequestBody UpdateProfileRequest request) {
         try {
-            Long userId = getUserIdFromToken(httpRequest);
+            Long userId = securityUtils.getCurrentUserId();
             UserProfileResponse response = userService.updateUserProfile(userId, request);
             
             if (response.isSuccess()) {
@@ -136,10 +106,9 @@ public class UserController {
     @PutMapping("/password")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> changePassword(
-            @Valid @RequestBody ChangePasswordRequest request,
-            HttpServletRequest httpRequest) {
+            @Valid @RequestBody ChangePasswordRequest request) {
         try {
-            Long userId = getUserIdFromToken(httpRequest);
+            Long userId = securityUtils.getCurrentUserId();
             AuthResponse response = userService.changePassword(userId, request);
             
             if (response.isSuccess()) {
@@ -158,9 +127,9 @@ public class UserController {
      */
     @DeleteMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<AuthResponse> deleteCurrentUser(HttpServletRequest request) {
+    public ResponseEntity<AuthResponse> deleteCurrentUser() {
         try {
-            Long userId = getUserIdFromToken(request);
+            Long userId = securityUtils.getCurrentUserId();
             AuthResponse response = userService.deleteUser(userId);
             
             if (response.isSuccess()) {
@@ -219,21 +188,5 @@ public class UserController {
     public ResponseEntity<Boolean> checkEmailExists(@PathVariable String email) {
         boolean exists = userService.emailExists(email);
         return ResponseEntity.ok(exists);
-    }
-
-    /**
-     * Helper method to extract user ID from JWT token
-     */
-    private Long getUserIdFromToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            String username = jwtUtil.extractUsername(token);
-            
-            return userService.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"))
-                    .getId();
-        }
-        throw new RuntimeException("No valid token found");
     }
 }
