@@ -1,1 +1,1 @@
-export { BookFiltersComponent } from './book-filters.component';
+export { BookFiltersComponent } from './book-filters';

@@ -2,8 +2,8 @@ import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { AuthService, User } from './services/auth.service';
-import { NotificationsComponent } from './components/social/notifications/notifications.component';
-import { ToastNotificationsComponent } from './components/shared/toast-notifications/toast-notifications.component';
+import { NotificationsComponent } from './components/social/notifications/notifications';
+import { ToastNotificationsComponent } from './components/shared/toast-notifications/toast-notifications';
 import { Observable } from 'rxjs';
 
 @Component({

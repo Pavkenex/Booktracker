@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { BookStatusSelectorComponent } from '../../../library/book-status-selector/book-status-selector.component';
+import { BookStatusSelectorComponent } from '../../../library/book-status-selector/book-status-selector';
 import { Book } from '../../../../models/book.model';
 import { UserBook } from '../../../../models/library.model';
 

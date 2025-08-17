@@ -10,12 +10,12 @@ export const routes: Routes = [
   {
     path: "home",
     loadComponent: () =>
-      import("./components/home/home.component").then((m) => m.HomeComponent),
+      import("./components/home/home").then((m) => m.HomeComponent),
   },
   {
     path: "login",
     loadComponent: () =>
-      import("./components/auth/login/login.component").then(
+      import("./components/auth/login/login").then(
         (m) => m.LoginComponent
       ),
     canActivate: [GuestGuard],
@@ -23,7 +23,7 @@ export const routes: Routes = [
   {
     path: "register",
     loadComponent: () =>
-      import("./components/auth/register/register.component").then(
+      import("./components/auth/register/register").then(
         (m) => m.RegisterComponent
       ),
     canActivate: [GuestGuard],
@@ -32,14 +32,14 @@ export const routes: Routes = [
     path: "forgot-password",
     loadComponent: () =>
       import(
-        "./components/auth/forgot-password/forgot-password.component"
+        "./components/auth/forgot-password/forgot-password"
       ).then((m) => m.ForgotPasswordComponent),
     canActivate: [GuestGuard],
   },
   {
     path: "reset-password",
     loadComponent: () =>
-      import("./components/auth/reset-password/reset-password.component").then(
+      import("./components/auth/reset-password/reset-password").then(
         (m) => m.ResetPasswordComponent
       ),
     canActivate: [GuestGuard],
@@ -47,7 +47,7 @@ export const routes: Routes = [
   {
     path: "books",
     loadComponent: () =>
-      import("./components/book/book-catalog/book-catalog.component").then(
+      import("./components/book/book-catalog/book-catalog").then(
         (m) => m.BookCatalogComponent
       ),
     canActivate: [AuthGuard],
@@ -55,7 +55,7 @@ export const routes: Routes = [
   {
     path: "books/:id",
     loadComponent: () =>
-      import("./components/book/book-details/book-details.component").then(
+      import("./components/book/book-details/book-details").then(
         (m) => m.BookDetailsComponent
       ),
     canActivate: [AuthGuard],
@@ -64,14 +64,14 @@ export const routes: Routes = [
     path: "library",
     loadComponent: () =>
       import(
-        "./components/library/personal-library/personal-library.component"
+        "./components/library/personal-library/personal-library"
       ).then((m) => m.PersonalLibraryComponent),
     canActivate: [AuthGuard],
   },
   {
     path: "library/user/:userId/:userName",
     loadComponent: () =>
-      import("./components/library/user-library/user-library.component").then(
+      import("./components/library/user-library/user-library").then(
         (m) => m.UserLibraryComponent
       ),
     canActivate: [AuthGuard],
@@ -80,14 +80,14 @@ export const routes: Routes = [
     path: "social",
     loadComponent: () =>
       import(
-        "./components/social/social-dashboard/social-dashboard.component"
+        "./components/social/social-dashboard/social-dashboard"
       ).then((m) => m.SocialDashboardComponent),
     canActivate: [AuthGuard],
   },
   {
     path: "social/friends",
     loadComponent: () =>
-      import("./components/social/friends-list/friends-list.component").then(
+      import("./components/social/friends-list/friends-list").then(
         (m) => m.FriendsListComponent
       ),
     canActivate: [AuthGuard],
@@ -96,7 +96,7 @@ export const routes: Routes = [
     path: "social/friend-requests",
     loadComponent: () =>
       import(
-        "./components/social/friend-requests/friend-requests.component"
+        "./components/social/friend-requests/friend-requests"
       ).then((m) => m.FriendRequestsComponent),
     canActivate: [AuthGuard],
   },
@@ -104,7 +104,7 @@ export const routes: Routes = [
     path: "social/recommendations",
     loadComponent: () =>
       import(
-        "./components/social/recommendations/recommendations.component"
+        "./components/social/recommendations/recommendations"
       ).then((m) => m.RecommendationsComponent),
     canActivate: [AuthGuard],
   },
@@ -112,7 +112,7 @@ export const routes: Routes = [
     path: "admin",
     loadComponent: () =>
       import(
-        "./components/admin/admin-dashboard/admin-dashboard.component"
+        "./components/admin/admin-dashboard/admin-dashboard"
       ).then((m) => m.AdminDashboardComponent),
     canActivate: [AdminGuard],
   },
@@ -120,7 +120,7 @@ export const routes: Routes = [
     path: "admin/books",
     loadComponent: () =>
       import(
-        "./components/admin/book-management/book-management.component"
+        "./components/admin/book-management/book-management"
       ).then((m) => m.BookManagementComponent),
     canActivate: [AdminGuard],
   },
@@ -128,14 +128,14 @@ export const routes: Routes = [
     path: "admin/genres",
     loadComponent: () =>
       import(
-        "./components/admin/genre-management/genre-management.component"
+        "./components/admin/genre-management/genre-management"
       ).then((m) => m.GenreManagementComponent),
     canActivate: [AdminGuard],
   },
   {
     path: "admin/reports",
     loadComponent: () =>
-      import("./components/admin/reports-panel/reports-panel.component").then(
+      import("./components/admin/reports-panel/reports-panel").then(
         (m) => m.ReportsPanelComponent
       ),
     canActivate: [AdminGuard],
@@ -144,7 +144,7 @@ export const routes: Routes = [
     path: "admin/popularity",
     loadComponent: () =>
       import(
-        "./components/admin/popularity-statistics/popularity-statistics.component"
+        "./components/admin/popularity-statistics/popularity-statistics"
       ).then((m) => m.PopularityStatisticsComponent),
     canActivate: [AdminGuard],
   },

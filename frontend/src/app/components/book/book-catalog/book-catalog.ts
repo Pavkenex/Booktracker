@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { BookService } from '../../../services/book.service';
 import { Book, BookSearchParams, PagedResponse } from '../../../models/book.model';
-import { BookFiltersComponent } from '../book-filters/book-filters.component';
-import { BookListComponent } from '../book-list/book-list.component';
-import { BookPaginationComponent } from '../book-pagination/book-pagination.component';
-import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filter-toggle.component';
+import { BookFiltersComponent } from '../book-filters/book-filters';
+import { BookListComponent } from '../book-list/book-list';
+import { BookPaginationComponent } from '../book-pagination/book-pagination';
+import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filter-toggle';
 
 @Component({
   selector: 'app-book-catalog',

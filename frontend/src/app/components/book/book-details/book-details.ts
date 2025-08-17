@@ -8,10 +8,10 @@ import { AuthService } from "../../../services/auth.service";
 import { LibraryEventsService } from "../../../services/library-events.service";
 import { Book } from "../../../models/book.model";
 import { UserBook } from "../../../models/library.model";
-import { BookDetailsHeaderComponent } from "./book-details-header/book-details-header.component";
-import { BookLibraryActionsComponent } from "./book-library-actions/book-library-actions.component";
-import { BookReviewsComponent } from "./book-reviews/book-reviews.component";
-import { SimilarBooksComponent } from "./similar-books/similar-books.component";
+import { BookDetailsHeaderComponent } from './book-details-header/book-details-header';
+import { BookLibraryActionsComponent } from './book-library-actions/book-library-actions';
+import { BookReviewsComponent } from './book-reviews/book-reviews';
+import { SimilarBooksComponent } from './similar-books/similar-books';
 
 @Component({
   selector: "app-book-details",

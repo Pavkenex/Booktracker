@@ -4,9 +4,9 @@ import { RouterModule } from '@angular/router';
 import { LibraryService } from '../../../services/library.service';
 import { LibraryEventsService } from '../../../services/library-events.service';
 import { UserBook } from '../../../models/library.model';
-import { BookStatusSelectorComponent } from '../book-status-selector/book-status-selector.component';
-import { ReviewFormComponent } from '../review-form/review-form.component';
-import { LibraryStatsComponent } from '../library-stats/library-stats.component';
+import { BookStatusSelectorComponent } from '../book-status-selector/book-status-selector';
+import { ReviewFormComponent } from '../review-form/review-form';
+import { LibraryStatsComponent } from '../library-stats/library-stats';
 
 @Component({
   selector: 'app-personal-library',

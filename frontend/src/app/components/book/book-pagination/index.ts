@@ -1,1 +1,1 @@
-export { BookPaginationComponent } from './book-pagination.component';
+export { BookPaginationComponent } from './book-pagination';

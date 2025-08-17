@@ -5,7 +5,7 @@ import { AuthService, User } from "../../services/auth.service";
 import { SocialService } from "../../services/social.service";
 import { Recommendation } from "../../models/social.model";
 import { Observable } from "rxjs";
-import { PopularBooksSectionComponent } from "../shared/popular-books-section/popular-books-section.component";
+import { PopularBooksSectionComponent } from '../shared/popular-books-section/popular-books-section';
 
 @Component({
   selector: "app-home",
