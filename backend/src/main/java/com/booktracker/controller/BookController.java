@@ -102,17 +102,6 @@ public class BookController {
     public ResponseEntity<BookResponse> getBookById(@PathVariable Long id) {
         Optional<BookResponse> book = bookService.getBookById(id);
         
-        // If book exists, record the view asynchronously
-        if (book.isPresent()) {
-            try {
-                recordBookViewAsync(id);
-                logger.debug("Initiated async view recording for book detail page, book ID: {}", id);
-            } catch (Exception e) {
-                // Log error but don't let view recording failure affect the book detail response
-                logger.error("Failed to initiate view recording for book ID: {}", id, e);
-            }
-        }
-        
         return book.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

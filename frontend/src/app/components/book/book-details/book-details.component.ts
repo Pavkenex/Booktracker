@@ -85,7 +85,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
                   <a routerLink="/register" class="btn btn-outline-primary">
                     <i class="fas fa-user-plus me-2"></i>Sign Up
                   </a>
-                  <button class="btn btn-outline-info">
+                  <button class="btn btn-outline-info" (click)="startRecommendation()">
                     <i class="fas fa-share me-2"></i>Recommend
                   </button>
                 </div>
@@ -165,7 +165,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
                       </a>
                     </li>
                   </ul>
-                  <button class="btn btn-outline-info w-100 mt-2">
+                  <button class="btn btn-outline-info w-100 mt-2" (click)="startRecommendation()">
                     <i class="fas fa-share me-2"></i>Recommend
                   </button>
                 </div>
@@ -236,7 +236,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
                     <a routerLink="/library" class="btn btn-outline-primary">
                       <i class="fas fa-book-open me-2"></i>View Library
                     </a>
-                    <button class="btn btn-outline-info">
+                    <button class="btn btn-outline-info" (click)="startRecommendation()">
                       <i class="fas fa-share me-2"></i>Recommend
                     </button>
                   </div>
@@ -803,5 +803,18 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       to_read: "Want to Read",
     };
     return statusMap[status];
+  }
+
+  startRecommendation(): void {
+    if (!this.isAuthenticated) {
+      this.router.navigate(["/login"], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+    const base = '/social/recommendations';
+    if (this.book) {
+      this.router.navigate([base], { queryParams: { bookId: this.book.id, action: 'send' } });
+    } else {
+      this.router.navigate([base], { queryParams: { action: 'send' } });
+    }
   }
 }
