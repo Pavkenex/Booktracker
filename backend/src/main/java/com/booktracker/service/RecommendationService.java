@@ -156,12 +156,14 @@ public class RecommendationService {
         Recommendation recommendation = recommendationRepository.findById(recommendationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recommendation not found"));
         
-        // Only the sender can delete their recommendation
-        if (!recommendation.getSender().getId().equals(userId)) {
-            throw new IllegalArgumentException("You can only delete your own recommendations");
+        // Allow either sender or receiver to delete (receiver "dismisses" it)
+        Long senderId = recommendation.getSender().getId();
+        Long receiverId = recommendation.getReceiver().getId();
+        if (!senderId.equals(userId) && !receiverId.equals(userId)) {
+            throw new IllegalArgumentException("You can only delete recommendations you sent or received");
         }
-        
-        recommendationRepository.delete(recommendation);
+
+        recommendationRepository.delete(recommendation); // hard delete for simplicity
     }
     
     /**

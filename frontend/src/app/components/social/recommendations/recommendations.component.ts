@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { SocialService } from '../../../services/social.service';
 import { BookService } from '../../../services/book.service';
 import { LibraryService } from '../../../services/library.service';
+import { ActivatedRoute } from '@angular/router';
 import { Recommendation, Friendship, SendRecommendationRequest } from '../../../models/social.model';
 import { Book } from '../../../models/book.model';
+import { UserBook } from '../../../models/library.model';
 
 @Component({
   selector: 'app-recommendations',
@@ -19,6 +21,7 @@ export class RecommendationsComponent implements OnInit {
   sentRecommendations: Recommendation[] = [];
   friends: Friendship[] = [];
   books: Book[] = [];
+  userBooksMap: Map<number, UserBook> = new Map();
   
   isLoading: boolean = false;
   error: string = '';
@@ -31,14 +34,36 @@ export class RecommendationsComponent implements OnInit {
   bookSearchQuery: string = '';
   filteredBooks: Book[] = [];
   isSending: boolean = false;
+  // Query param handling
+  private pendingBookId: number | null = null;
+  private pendingAction: 'send' | null = null;
 
   constructor(
     private socialService: SocialService,
     private bookService: BookService,
-    private libraryService: LibraryService
+    private libraryService: LibraryService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    // Read query params for preselecting a book and switching to send tab
+    this.route.queryParams.subscribe(params => {
+      const action = params['action'];
+      const bookIdParam = params['bookId'];
+      if (action === 'send') {
+        this.pendingAction = 'send';
+        this.activeTab = 'send';
+      }
+      const parsedId = Number(bookIdParam);
+      if (!isNaN(parsedId) && parsedId > 0) {
+        this.pendingBookId = parsedId;
+      }
+      // If books already loaded we can try selecting immediately
+      if (this.books.length > 0 && this.pendingBookId) {
+        this.applyPendingBookSelection();
+      }
+    });
+
     this.loadRecommendations();
     this.loadFriends();
     this.loadUserBooks();
@@ -89,8 +114,15 @@ export class RecommendationsComponent implements OnInit {
   loadUserBooks(): void {
     this.libraryService.getLibrary().subscribe({
       next: (userBooks) => {
-        this.books = userBooks.map(ub => ub.book);
+        this.books = userBooks.map(ub => {
+          this.userBooksMap.set(ub.book.id, ub);
+          return ub.book;
+        });
         this.filteredBooks = [...this.books];
+        // Apply pending book selection if present
+        if (this.pendingBookId) {
+          this.applyPendingBookSelection();
+        }
       },
       error: (error) => {
         console.error('Error loading user books:', error);
@@ -98,22 +130,70 @@ export class RecommendationsComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'received' | 'sent' | 'send'): void {
-    this.activeTab = tab;
+  // Ownership helpers
+  hasBook(book: Book): boolean { return this.userBooksMap.has(book.id); }
+  getUserBook(book: Book): UserBook | undefined { return this.userBooksMap.get(book.id); }
+  hasStatus(book: Book, status: UserBook['status']): boolean {
+    const ub = this.getUserBook(book); return !!ub && ub.status === status;
   }
 
-  markAsRead(recommendationId: number): void {
-    this.socialService.markRecommendationAsRead(recommendationId).subscribe({
-      next: () => {
-        const recommendation = this.receivedRecommendations.find(r => r.id === recommendationId);
-        if (recommendation) {
-          recommendation.isRead = true;
-        }
-      },
-      error: (error) => {
-        console.error('Error marking recommendation as read:', error);
-      }
+  markAsReadDirect(book: Book): void {
+    const ub = this.getUserBook(book);
+    if (!ub || ub.status === 'read') return;
+    this.libraryService.updateBookStatus(ub.id, { status: 'read' }).subscribe({
+      next: updated => { this.userBooksMap.set(book.id, { ...ub, ...updated }); },
+      error: err => console.error('Failed to mark as read', err)
     });
+  }
+
+  startReading(book: Book): void {
+    const ub = this.getUserBook(book);
+    if (!ub || ub.status === 'currently_reading') return;
+    this.libraryService.updateBookStatus(ub.id, { status: 'currently_reading' }).subscribe({
+      next: updated => { this.userBooksMap.set(book.id, { ...ub, ...updated }); },
+      error: err => console.error('Failed to set currently reading', err)
+    });
+  }
+
+  addToLibraryQuick(book: Book): void {
+    if (this.hasBook(book)) return;
+    this.libraryService.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
+      next: ub => { this.userBooksMap.set(book.id, { ...ub }); },
+      error: err => console.error('Failed quick add', err)
+    });
+  }
+
+  private applyPendingBookSelection(): void {
+    if (!this.pendingBookId) return;
+    const book = this.books.find(b => b.id === this.pendingBookId);
+    if (book) {
+      this.selectBook(book);
+      if (this.pendingAction === 'send') {
+        this.activeTab = 'send';
+      }
+      // Clear pending once applied
+      this.pendingBookId = null;
+      this.pendingAction = null;
+    } else {
+      // If not in library fetch directly and add temporarily
+      this.bookService.getBookById(this.pendingBookId).subscribe({
+        next: fetched => {
+          this.books.push(fetched);
+          this.filteredBooks = [...this.books];
+          this.selectBook(fetched);
+          if (this.pendingAction === 'send') this.activeTab = 'send';
+          this.pendingBookId = null;
+          this.pendingAction = null;
+        },
+        error: err => {
+          console.warn('Could not preselect book for recommendation', err);
+        }
+      });
+    }
+  }
+
+  setActiveTab(tab: 'received' | 'sent' | 'send'): void {
+    this.activeTab = tab;
   }
 
   deleteRecommendation(recommendationId: number, type: 'received' | 'sent'): void {
@@ -192,12 +272,11 @@ export class RecommendationsComponent implements OnInit {
   }
 
   addBookToLibrary(book: Book): void {
-    this.libraryService.addBookToLibrary({
-      bookId: book.id,
-      status: 'to_read'
-    }).subscribe({
-      next: () => {
-        // Show success message or update UI
+    if (this.hasBook(book)) return; // safety
+    this.libraryService.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
+      next: (userBook) => {
+        // Update ownership map so button disables
+        this.userBooksMap.set(book.id, userBook);
         console.log('Book added to library successfully');
       },
       error: (error) => {

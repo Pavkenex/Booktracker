@@ -95,18 +95,13 @@
             </div>
             <div class="col-md-2">
               <div class="recommendation-actions">
-                <button 
-                  *ngIf="!recommendation.isRead"
-                  class="btn btn-sm btn-outline-primary mb-2 w-100"
-                  (click)="markAsRead(recommendation.id)">
-                  <i class="fas fa-check me-1"></i>
-                  Mark Read
-                </button>
-                <button 
+                <!-- If user does not own the book -->
+                <button
                   class="btn btn-sm btn-outline-success mb-2 w-100"
-                  (click)="addBookToLibrary(recommendation.book)">
+                  [disabled]="hasBook(recommendation.book)"
+                  (click)="!hasBook(recommendation.book) && addBookToLibrary(recommendation.book)">
                   <i class="fas fa-plus me-1"></i>
-                  Add to Library
+                  {{ hasBook(recommendation.book) ? 'Already in Library' : 'Add to Library' }}
                 </button>
                 <button 
                   class="btn btn-sm btn-outline-danger w-100"
