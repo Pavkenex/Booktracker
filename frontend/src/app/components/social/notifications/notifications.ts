@@ -7,11 +7,10 @@ import { NotificationCount } from '../../../models/social.model';
 import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
 
 @Component({
-  selector: 'app-notifications',
-  standalone: true,
-  imports: [CommonModule, RouterModule, ClickOutsideDirective],
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.css']
+    selector: 'app-notifications',
+    imports: [CommonModule, RouterModule, ClickOutsideDirective],
+    templateUrl: './notifications.component.html',
+    styleUrls: ['./notifications.component.css']
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
   notificationCount: NotificationCount = {

@@ -4,11 +4,10 @@ import { SocialService } from '../../../services/social.service';
 import { FriendRequest } from '../../../models/social.model';
 
 @Component({
-  selector: 'app-friend-requests',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './friend-requests.component.html',
-  styleUrls: ['./friend-requests.component.css']
+    selector: 'app-friend-requests',
+    imports: [CommonModule],
+    templateUrl: './friend-requests.component.html',
+    styleUrls: ['./friend-requests.component.css']
 })
 export class FriendRequestsComponent implements OnInit {
   friendRequests: FriendRequest[] = [];

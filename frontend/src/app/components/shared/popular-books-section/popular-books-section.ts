@@ -14,11 +14,10 @@ import { SliderUtil } from "../../../utils/slider.util";
 import { FallbackImageDirective } from "../../../directives/fallback-image.directive";
 
 @Component({
-  selector: "app-popular-books-section",
-  standalone: true,
-  imports: [CommonModule, RouterModule, FallbackImageDirective],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: "app-popular-books-section",
+    imports: [CommonModule, RouterModule, FallbackImageDirective],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
     <div class="popular-books-section">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="section-title">Most Popular Books</h3>
@@ -170,8 +169,8 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
       </div>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .popular-books-section {
         margin-bottom: 2rem;
       }
@@ -562,7 +561,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
         }
       }
     `,
-  ],
+    ]
 })
 export class PopularBooksSectionComponent implements OnInit {
   popularBooks: Book[] = [];

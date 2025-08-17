@@ -4,10 +4,9 @@ import { FallbackImageDirective } from '../../../../directives/fallback-image.di
 import { Book } from '../../../../models/book.model';
 
 @Component({
-  selector: 'app-book-details-header',
-  standalone: true,
-  imports: [CommonModule, FallbackImageDirective],
-  template: `
+    selector: 'app-book-details-header',
+    imports: [CommonModule, FallbackImageDirective],
+    template: `
     <div class="row" *ngIf="book">
       <div class="col-md-4 col-lg-3">
         <div class="book-cover-container">
@@ -49,7 +48,7 @@ import { Book } from '../../../../models/book.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .book-cover-container {
       text-align: center;
       margin-bottom: 2rem;

@@ -6,10 +6,9 @@ import { Book } from '../../../../models/book.model';
 import { UserBook } from '../../../../models/library.model';
 
 @Component({
-  selector: 'app-book-library-actions',
-  standalone: true,
-  imports: [CommonModule, RouterModule, BookStatusSelectorComponent],
-  template: `
+    selector: 'app-book-library-actions',
+    imports: [CommonModule, RouterModule, BookStatusSelectorComponent],
+    template: `
     <div class="book-actions mt-4">
       <!-- User not authenticated -->
       <div *ngIf="!isAuthenticated" class="text-center">
@@ -164,7 +163,7 @@ import { UserBook } from '../../../../models/library.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .book-actions {
       border-top: 1px solid #dee2e6;
       padding-top: 1rem;

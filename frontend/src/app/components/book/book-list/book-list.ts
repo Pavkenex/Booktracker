@@ -5,10 +5,9 @@ import { Book, PagedResponse } from '../../../models/book.model';
 import { BookCardComponent } from '../book-card/book-card';
 
 @Component({
-  selector: 'app-book-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule, BookCardComponent],
-  template: `
+    selector: 'app-book-list',
+    imports: [CommonModule, FormsModule, BookCardComponent],
+    template: `
     <!-- Header with Results Count -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
       <div class="mb-2 mb-md-0">
@@ -68,7 +67,7 @@ import { BookCardComponent } from '../book-card/book-card';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     @media (max-width: 767.98px) {
       .h3 {
         font-size: 1.5rem;

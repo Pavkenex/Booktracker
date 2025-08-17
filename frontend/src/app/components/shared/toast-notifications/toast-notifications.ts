@@ -4,10 +4,9 @@ import { Subscription } from 'rxjs';
 import { ErrorService, ErrorMessage } from '../../../services/error.service';
 
 @Component({
-  selector: 'app-toast-notifications',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-toast-notifications',
+    imports: [CommonModule],
+    template: `
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
       <div 
         *ngFor="let error of errors" 
@@ -34,7 +33,7 @@ import { ErrorService, ErrorMessage } from '../../../services/error.service';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .toast-container {
       max-width: 400px;
     }

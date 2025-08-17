@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { PagedResponse } from '../../../models/book.model';
 
 @Component({
-  selector: 'app-book-pagination',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-book-pagination',
+    imports: [CommonModule],
+    template: `
     <nav aria-label="Book catalog pagination" *ngIf="pagedResponse && pagedResponse.totalPages > 1" class="mt-4">
       <!-- Mobile pagination (simplified) -->
       <div class="d-flex d-md-none justify-content-between align-items-center">
@@ -84,7 +83,7 @@ import { PagedResponse } from '../../../models/book.model';
       </ul>
     </nav>
   `,
-  styles: [`
+    styles: [`
     .pagination .page-link {
       color: #007bff;
     }

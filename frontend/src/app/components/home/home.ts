@@ -8,10 +8,9 @@ import { Observable } from "rxjs";
 import { PopularBooksSectionComponent } from '../shared/popular-books-section/popular-books-section';
 
 @Component({
-  selector: "app-home",
-  standalone: true,
-  imports: [CommonModule, RouterModule, PopularBooksSectionComponent],
-  template: `
+    selector: "app-home",
+    imports: [CommonModule, RouterModule, PopularBooksSectionComponent],
+    template: `
     <div class="row">
       <div class="col-12">
         <div class="jumbotron bg-light p-5 rounded">
@@ -197,8 +196,8 @@ import { PopularBooksSectionComponent } from '../shared/popular-books-section/po
       </div>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .jumbotron {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -226,7 +225,7 @@ import { PopularBooksSectionComponent } from '../shared/popular-books-section/po
         padding: 0.25rem 0.5rem;
       }
     `,
-  ],
+    ]
 })
 export class HomeComponent implements OnInit {
   isAuthenticated$: Observable<boolean>;

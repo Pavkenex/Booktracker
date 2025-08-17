@@ -9,10 +9,9 @@ interface ReportData {
 }
 
 @Component({
-  selector: 'app-reports-panel',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-reports-panel',
+    imports: [CommonModule],
+    template: `
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">

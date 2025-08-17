@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { UserBook } from '../../../../models/library.model';
 
 @Component({
-  selector: 'app-book-reviews',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-book-reviews',
+    imports: [CommonModule],
+    template: `
     <div class="reviews-section mt-5">
       <h3 class="mb-3">Recent Reviews</h3>
       
@@ -52,7 +51,7 @@ import { UserBook } from '../../../../models/library.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .reviews-section {
       border-top: 1px solid #dee2e6;
       padding-top: 2rem;

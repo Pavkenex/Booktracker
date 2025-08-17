@@ -8,10 +8,9 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: "app-user-library",
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: "app-user-library",
+    imports: [CommonModule],
+    template: `
     <div class="container mt-4">
       <div class="row">
         <div class="col-12">
@@ -159,7 +158,7 @@ import { takeUntil } from "rxjs/operators";
       </div>
     </div>
   `,
-  styleUrls: ["./user-library.component.css"],
+    styleUrls: ["./user-library.component.css"]
 })
 export class UserLibraryComponent implements OnInit, OnDestroy {
   books: UserBook[] = [];

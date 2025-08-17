@@ -10,11 +10,10 @@ import { Book } from '../../../models/book.model';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
-  selector: 'app-recommendations',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './recommendations.component.html',
-  styleUrls: ['./recommendations.component.css']
+    selector: 'app-recommendations',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './recommendations.component.html',
+    styleUrls: ['./recommendations.component.css']
 })
 export class RecommendationsComponent implements OnInit {
   receivedRecommendations: Recommendation[] = [];

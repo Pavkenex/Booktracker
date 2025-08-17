@@ -5,10 +5,9 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService, RegisterRequest } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  template: `
+    selector: 'app-register',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    template: `
     <div class="container-fluid">
       <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
@@ -168,7 +167,7 @@ import { AuthService, RegisterRequest } from '../../../services/auth.service';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .container-fluid {
       min-height: calc(100vh - 76px);
       display: flex;

@@ -5,10 +5,9 @@ import { FallbackImageDirective } from '../../../../directives/fallback-image.di
 import { Book } from '../../../../models/book.model';
 
 @Component({
-  selector: 'app-similar-books',
-  standalone: true,
-  imports: [CommonModule, RouterModule, FallbackImageDirective],
-  template: `
+    selector: 'app-similar-books',
+    imports: [CommonModule, RouterModule, FallbackImageDirective],
+    template: `
     <div class="similar-section mt-5" *ngIf="similarBooks.length > 0">
       <h3 class="mb-3">Similar Books</h3>
       <div class="similar-slider-wrapper">
@@ -50,7 +49,7 @@ import { Book } from '../../../../models/book.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .similar-section {
       border-top: 1px solid #dee2e6;
       padding-top: 2rem;

@@ -6,10 +6,9 @@ import { BookService } from '../../../services/book.service';
 import { Book, Genre, PagedResponse } from '../../../models/book.model';
 
 @Component({
-  selector: 'app-book-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  template: `
+    selector: 'app-book-management',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    template: `
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">

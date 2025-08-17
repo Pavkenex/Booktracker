@@ -6,10 +6,9 @@ import { BookService } from '../../../services/book.service';
 import { Genre, BookSearchParams } from '../../../models/book.model';
 
 @Component({
-  selector: 'app-book-filters',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
+    selector: 'app-book-filters',
+    imports: [CommonModule, FormsModule],
+    template: `
     <div class="card">
       <div class="card-header d-none d-lg-block">
         <h5 class="mb-0">
@@ -86,7 +85,7 @@ import { Genre, BookSearchParams } from '../../../models/book.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .card-header {
       background-color: #f8f9fa;
       border-bottom: 1px solid #dee2e6;

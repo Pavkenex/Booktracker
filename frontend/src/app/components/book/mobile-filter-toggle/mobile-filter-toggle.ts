@@ -2,10 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-mobile-filter-toggle',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-mobile-filter-toggle',
+    imports: [CommonModule],
+    template: `
     <div class="col-12 d-lg-none mb-3">
       <button 
         class="btn btn-outline-primary w-100"
@@ -20,7 +19,7 @@ import { CommonModule } from '@angular/common';
       </button>
     </div>
   `,
-  styles: [`
+    styles: [`
     /* Filter toggle button styling */
     .btn[data-bs-toggle="collapse"] {
       position: relative;

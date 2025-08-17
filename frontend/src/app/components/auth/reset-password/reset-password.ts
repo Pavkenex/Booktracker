@@ -5,10 +5,9 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService, PasswordResetConfirm } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  template: `
+    selector: 'app-reset-password',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    template: `
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-4">
         <div class="card">
@@ -130,7 +129,7 @@ import { AuthService, PasswordResetConfirm } from '../../../services/auth.servic
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .card {
       box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
       border: 1px solid rgba(0, 0, 0, 0.125);

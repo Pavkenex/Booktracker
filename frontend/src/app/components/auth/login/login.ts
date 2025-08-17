@@ -6,10 +6,9 @@ import { AuthService, LoginRequest } from '../../../services/auth.service';
 import { ErrorService } from '../../../services/error.service';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  template: `
+    selector: 'app-login',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    template: `
     <div class="container-fluid">
       <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
@@ -108,7 +107,7 @@ import { ErrorService } from '../../../services/error.service';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .container-fluid {
     min-height: calc(100vh - 76px);
     display: flex;

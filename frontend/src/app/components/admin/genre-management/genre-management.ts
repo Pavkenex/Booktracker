@@ -5,10 +5,9 @@ import { AdminService } from '../../../services/admin.service';
 import { Genre } from '../../../models/book.model';
 
 @Component({
-  selector: 'app-genre-management',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  template: `
+    selector: 'app-genre-management',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    template: `
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">

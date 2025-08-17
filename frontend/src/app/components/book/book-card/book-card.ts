@@ -4,10 +4,9 @@ import { RouterModule } from '@angular/router';
 import { Book } from '../../../models/book.model';
 
 @Component({
-  selector: 'app-book-card',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
+    selector: 'app-book-card',
+    imports: [CommonModule, RouterModule],
+    template: `
     <div class="card h-100 book-card">
       <div class="card-img-container">
         <img 
@@ -48,7 +47,7 @@ import { Book } from '../../../models/book.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .book-card {
       transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
       cursor: pointer;

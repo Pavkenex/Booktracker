@@ -5,10 +5,9 @@ import { LibraryService } from '../../../services/library.service';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
-  selector: 'app-book-status-selector',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
+    selector: 'app-book-status-selector',
+    imports: [CommonModule, FormsModule],
+    template: `
     <div class="status-selector">
       <label class="form-label small text-muted">Reading Status:</label>
       <select 
@@ -37,7 +36,7 @@ import { UserBook } from '../../../models/library.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .status-selector {
       margin-bottom: 0.5rem;
     }

@@ -7,10 +7,9 @@ import { ToastNotificationsComponent } from './components/shared/toast-notificat
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, NotificationsComponent, ToastNotificationsComponent],
-  template: `
+    selector: 'app-root',
+    imports: [CommonModule, RouterOutlet, RouterModule, NotificationsComponent, ToastNotificationsComponent],
+    template: `
     <div class="container-fluid">
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container-fluid px-3">
@@ -156,7 +155,7 @@ import { Observable } from 'rxjs';
       <app-toast-notifications></app-toast-notifications>
     </div>
   `,
-  styles: [`
+    styles: [`
     .navbar-brand {
       font-weight: bold;
       font-size: 1.5rem;

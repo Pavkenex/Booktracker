@@ -6,10 +6,9 @@ import { LibraryEventsService } from '../../../services/library-events.service';
 import { LibraryStats } from '../../../models/library.model';
 
 @Component({
-  selector: 'app-library-stats',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-library-stats',
+    imports: [CommonModule],
+    template: `
     <div class="card">
       <div class="card-header">
         <h5 class="card-title mb-0">
@@ -90,7 +89,7 @@ import { LibraryStats } from '../../../models/library.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .stats-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 

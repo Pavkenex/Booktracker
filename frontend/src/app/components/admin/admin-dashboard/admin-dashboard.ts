@@ -4,10 +4,9 @@ import { RouterModule } from "@angular/router";
 import { AdminService, AdminStats } from "../../../services/admin.service";
 
 @Component({
-  selector: "app-admin-dashboard",
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
+    selector: "app-admin-dashboard",
+    imports: [CommonModule, RouterModule],
+    template: `
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
@@ -279,8 +278,8 @@ import { AdminService, AdminStats } from "../../../services/admin.service";
       </div>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .container-fluid {
         padding: 1rem;
       }
@@ -374,7 +373,7 @@ import { AdminService, AdminStats } from "../../../services/admin.service";
         }
       }
     `,
-  ],
+    ]
 })
 export class AdminDashboardComponent implements OnInit {
   stats: AdminStats | null = null;

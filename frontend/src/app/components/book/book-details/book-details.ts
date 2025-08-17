@@ -14,17 +14,16 @@ import { BookReviewsComponent } from './book-reviews/book-reviews';
 import { SimilarBooksComponent } from './similar-books/similar-books';
 
 @Component({
-  selector: "app-book-details",
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    BookDetailsHeaderComponent,
-    BookLibraryActionsComponent,
-    BookReviewsComponent,
-    SimilarBooksComponent,
-  ],
-  template: `
+    selector: "app-book-details",
+    imports: [
+        CommonModule,
+        RouterModule,
+        BookDetailsHeaderComponent,
+        BookLibraryActionsComponent,
+        BookReviewsComponent,
+        SimilarBooksComponent,
+    ],
+    template: `
     <div class="container mt-4">
       <div *ngIf="book; else loading">
         <div class="col-12">
@@ -75,7 +74,7 @@ import { SimilarBooksComponent } from './similar-books/similar-books';
         </div>
       </ng-template>
     </div>
-  `,
+  `
 })
 export class BookDetailsComponent implements OnInit, OnDestroy {
   private static readonly MESSAGE_TIMEOUT_MS = 5000;

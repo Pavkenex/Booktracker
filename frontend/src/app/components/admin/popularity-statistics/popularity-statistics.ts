@@ -7,10 +7,9 @@ import {
 } from "../../../services/admin.service";
 
 @Component({
-  selector: "app-popularity-statistics",
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
+    selector: "app-popularity-statistics",
+    imports: [CommonModule, FormsModule],
+    template: `
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
@@ -262,8 +261,8 @@ import {
       </div>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .container-fluid {
         padding: 1rem;
       }
@@ -368,7 +367,7 @@ import {
         min-height: 44px;
       }
     `,
-  ],
+    ]
 })
 export class PopularityStatisticsComponent implements OnInit {
   statistics: PopularityStatistics[] = [];

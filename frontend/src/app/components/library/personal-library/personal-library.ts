@@ -9,10 +9,9 @@ import { ReviewFormComponent } from '../review-form/review-form';
 import { LibraryStatsComponent } from '../library-stats/library-stats';
 
 @Component({
-  selector: 'app-personal-library',
-  standalone: true,
-  imports: [CommonModule, RouterModule, BookStatusSelectorComponent, ReviewFormComponent, LibraryStatsComponent],
-  template: `
+    selector: 'app-personal-library',
+    imports: [CommonModule, RouterModule, BookStatusSelectorComponent, ReviewFormComponent, LibraryStatsComponent],
+    template: `
     <div class="container mt-4">
       <div class="row">
         <div class="col-12">
@@ -253,7 +252,7 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
       (modalClosed)="closeReviewForm()">
     </app-review-form>
   `,
-  styles: [`
+    styles: [`
     .nav-tabs .nav-link {
       color: #6c757d;
       border: 1px solid transparent;

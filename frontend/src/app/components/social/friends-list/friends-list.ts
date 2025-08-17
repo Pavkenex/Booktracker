@@ -8,11 +8,10 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-friends-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './friends-list.component.html',
-  styleUrls: ['./friends-list.component.css']
+    selector: 'app-friends-list',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './friends-list.component.html',
+    styleUrls: ['./friends-list.component.css']
 })
 export class FriendsListComponent implements OnInit, OnDestroy {
   friends: Friendship[] = [];

@@ -8,17 +8,16 @@ import { SocialService } from '../../../services/social.service';
 import { NotificationCount } from '../../../models/social.model';
 
 @Component({
-  selector: 'app-social-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule, 
-    RouterModule,
-    FriendsListComponent,
-    FriendRequestsComponent,
-    RecommendationsComponent
-  ],
-  templateUrl: './social-dashboard.component.html',
-  styleUrls: ['./social-dashboard.component.css']
+    selector: 'app-social-dashboard',
+    imports: [
+        CommonModule,
+        RouterModule,
+        FriendsListComponent,
+        FriendRequestsComponent,
+        RecommendationsComponent
+    ],
+    templateUrl: './social-dashboard.component.html',
+    styleUrls: ['./social-dashboard.component.css']
 })
 export class SocialDashboardComponent implements OnInit, OnDestroy {
   activeTab: 'friends' | 'requests' | 'recommendations' = 'friends';

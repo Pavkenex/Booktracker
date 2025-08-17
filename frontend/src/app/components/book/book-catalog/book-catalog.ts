@@ -9,16 +9,15 @@ import { BookPaginationComponent } from '../book-pagination/book-pagination';
 import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filter-toggle';
 
 @Component({
-  selector: 'app-book-catalog',
-  standalone: true,
-  imports: [
-    CommonModule, 
-    BookFiltersComponent, 
-    BookListComponent, 
-    BookPaginationComponent, 
-    MobileFilterToggleComponent
-  ],
-  template: `
+    selector: 'app-book-catalog',
+    imports: [
+        CommonModule,
+        BookFiltersComponent,
+        BookListComponent,
+        BookPaginationComponent,
+        MobileFilterToggleComponent
+    ],
+    template: `
     <div class="container-fluid">
       <div class="row">
         <!-- Mobile Filter Toggle -->
@@ -58,7 +57,7 @@ import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filt
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     @media (max-width: 767.98px) {
       .container-fluid {
         padding-left: 0.75rem;

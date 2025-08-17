@@ -5,10 +5,9 @@ import { LibraryService } from '../../../services/library.service';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
-  selector: 'app-review-form',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  template: `
+    selector: 'app-review-form',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    template: `
     <!-- Modal Backdrop -->
     <div class="modal-backdrop fade show" (click)="closeModal()"></div>
     
@@ -126,7 +125,7 @@ import { UserBook } from '../../../models/library.model';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .modal {
       background-color: rgba(0, 0, 0, 0.5);
     }
