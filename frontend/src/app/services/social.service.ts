@@ -91,7 +91,6 @@ export class SocialService {
   private loadNotificationCount(): void {
     this.getNotificationCount().subscribe({
       next: (count) => {
-        console.log('Notification count updated:', count);
         this.notificationCountSubject.next(count);
       },
       error: (error) => console.error('Error loading notification count:', error)

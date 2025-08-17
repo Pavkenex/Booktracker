@@ -205,7 +205,6 @@ export class UserLibraryComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (books) => {
-          console.log("Books received from service:", books);
           this.books = books;
           this.calculateStats();
           this.isLoading = false;

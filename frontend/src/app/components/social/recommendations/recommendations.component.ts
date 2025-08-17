@@ -277,7 +277,6 @@ export class RecommendationsComponent implements OnInit {
       next: (userBook) => {
         // Update ownership map so button disables
         this.userBooksMap.set(book.id, userBook);
-        console.log('Book added to library successfully');
       },
       error: (error) => {
         console.error('Error adding book to library:', error);
