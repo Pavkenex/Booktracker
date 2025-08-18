@@ -2,15 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { SocialService } from '../../../services/social.service';
+import { SocialApi } from '../../../services/social-api';
 import { NotificationCount } from '../../../models/social.model';
-import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
+import { ClickOutsideDirective } from '../../../directives/click-outside';
 
 @Component({
     selector: 'app-notifications',
     imports: [RouterModule, ClickOutsideDirective],
-    templateUrl: './notifications.component.html',
-    styleUrls: ['./notifications.component.css']
+    templateUrl: './notifications.html',
+    styleUrls: ['./notifications.css']
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
   notificationCount: NotificationCount = {
@@ -23,18 +23,18 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   isRefreshing: boolean = false;
   private subscription: Subscription = new Subscription();
 
-  constructor(private socialService: SocialService) {}
+  constructor(private socialApi: SocialApi) {}
 
   ngOnInit(): void {
     this.subscription.add(
-      this.socialService.notificationCount$.subscribe(count => {
+      this.socialApi.notificationCount$.subscribe(count => {
         this.notificationCount = count;
         this.isRefreshing = false;
       })
     );
     
     // Force an immediate refresh when component loads
-    this.socialService.forceRefreshNotifications();
+    this.socialApi.forceRefreshNotifications();
   }
 
   ngOnDestroy(): void {
@@ -51,7 +51,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   refreshNotifications(): void {
     this.isRefreshing = true;
-    this.socialService.forceRefreshNotifications();
+    this.socialApi.forceRefreshNotifications();
     
     // Reset refreshing state after a short delay if no update comes
     setTimeout(() => {

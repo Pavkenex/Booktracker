@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable, map, take } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthStore } from '../services/auth-store';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService,
+    private authStore: AuthStore,
     private router: Router
   ) {}
 
@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     
-    return this.authService.isAuthenticated$.pipe(
+    return this.authStore.isAuthenticated$.pipe(
       take(1),
       map(isAuthenticated => {
         if (isAuthenticated) {
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
 export class AdminGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService,
+    private authStore: AuthStore,
     private router: Router
   ) {}
 
@@ -49,10 +49,10 @@ export class AdminGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     
-    return this.authService.isAuthenticated$.pipe(
+    return this.authStore.isAuthenticated$.pipe(
       take(1),
       map(isAuthenticated => {
-        if (isAuthenticated && this.authService.isAdmin()) {
+        if (isAuthenticated && this.authStore.isAdmin()) {
           return true;
         } else if (isAuthenticated) {
           this.router.navigate(['/']);
@@ -74,12 +74,12 @@ export class AdminGuard implements CanActivate {
 export class GuestGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService,
+    private authStore: AuthStore,
     private router: Router
   ) {}
 
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    return this.authService.isAuthenticated$.pipe(
+    return this.authStore.isAuthenticated$.pipe(
       take(1),
       map(isAuthenticated => {
         if (!isAuthenticated) {

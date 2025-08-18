@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { RouterModule } from "@angular/router";
-import { AdminService, AdminStats } from "../../../services/admin.service";
+import { AdminApi, AdminStats } from '../../../services/admin-api';
 
 @Component({
     selector: "app-admin-dashboard",
@@ -384,7 +384,7 @@ export class AdminDashboardComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminApi: AdminApi) {}
 
   ngOnInit(): void {
     this.loadStats();
@@ -394,7 +394,7 @@ export class AdminDashboardComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.adminService.getAdminStats().subscribe({
+    this.adminApi.getAdminStats().subscribe({
       next: (stats) => {
         this.stats = stats;
         this.loading = false;

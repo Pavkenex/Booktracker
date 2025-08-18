@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
+import { AuthStore } from '../services/auth-store';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService) {}
+  constructor(private authStore: AuthStore) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Get the auth token from the service
-    const authToken = this.authService.getToken();
+    const authToken = this.authStore.getToken();
 
     // Clone the request and add the authorization header if token exists
     let authReq = req;
@@ -28,7 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Token is invalid or expired, logout the user
-          this.authService.logout();
+          this.authStore.logout();
         }
         return throwError(() => error);
       })

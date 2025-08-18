@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
-import { BookService } from '../../../services/book.service';
+import { BookApi } from '../../../services/book-api';
 import { Book, BookSearchParams, PagedResponse } from '../../../models/book.model';
 import { BookFiltersComponent } from '../book-filters/book-filters';
 import { BookListComponent } from '../book-list/book-list';
@@ -88,7 +88,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private bookService: BookService) {}
+  constructor(private bookApi: BookApi) {}
 
   ngOnInit(): void {
     // Ensure genreId is properly initialized
@@ -105,7 +105,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    this.bookService.getBooks(this.searchParams)
+    this.bookApi.getBooks(this.searchParams)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {

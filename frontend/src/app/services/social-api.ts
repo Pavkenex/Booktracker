@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ApiService } from './api.service';
+import { ApiClient } from './api-client';
 import {
   Friendship,
   FriendRequest,
@@ -17,7 +17,7 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class SocialService {
+export class SocialApi {
   private notificationCountSubject = new BehaviorSubject<NotificationCount>({
     friendRequests: 0,
     recommendations: 0,
@@ -27,65 +27,65 @@ export class SocialService {
   public notificationCount$ = this.notificationCountSubject.asObservable();
   private notificationInterval: any;
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiClient: ApiClient) {
     this.loadNotificationCount();
     this.startNotificationPolling();
   }
 
   // Friends Management
   getFriends(): Observable<Friendship[]> {
-    return this.apiService.get<Friendship[]>('/friends');
+    return this.apiClient.get<Friendship[]>('/friends');
   }
 
   sendFriendRequest(request: SendFriendRequestRequest): Observable<any> {
-    return this.apiService.post('/friends/request', request)
+    return this.apiClient.post('/friends/request', request)
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   getFriendRequests(): Observable<FriendRequest[]> {
-    return this.apiService.get<FriendRequest[]>('/friends/requests');
+    return this.apiClient.get<FriendRequest[]>('/friends/requests');
   }
 
   respondToFriendRequest(request: RespondToFriendRequestRequest): Observable<any> {
-    return this.apiService.put(`/friends/request/${request.requestId}`, { accept: request.accept })
+    return this.apiClient.put(`/friends/request/${request.requestId}`, { accept: request.accept })
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   removeFriend(friendId: number): Observable<any> {
-    return this.apiService.delete(`/friends/${friendId}`);
+    return this.apiClient.delete(`/friends/${friendId}`);
   }
 
   searchUsers(query: string): Observable<FriendSearchResult[]> {
-    return this.apiService.get<FriendSearchResult[]>(`/friends/search?q=${encodeURIComponent(query)}`);
+    return this.apiClient.get<FriendSearchResult[]>(`/friends/search?q=${encodeURIComponent(query)}`);
   }
 
   // Recommendations
   getRecommendations(): Observable<Recommendation[]> {
-    return this.apiService.get<Recommendation[]>('/recommendations/received');
+    return this.apiClient.get<Recommendation[]>('/recommendations/received');
   }
 
   getSentRecommendations(): Observable<Recommendation[]> {
-    return this.apiService.get<Recommendation[]>('/recommendations/sent');
+    return this.apiClient.get<Recommendation[]>('/recommendations/sent');
   }
 
   sendRecommendation(request: SendRecommendationRequest): Observable<any> {
-    return this.apiService.post('/recommendations', request)
+    return this.apiClient.post('/recommendations', request)
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   markRecommendationAsRead(recommendationId: number): Observable<any> {
-    return this.apiService.put(`/recommendations/${recommendationId}/read`, {})
+    return this.apiClient.put(`/recommendations/${recommendationId}/read`, {})
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   deleteRecommendation(recommendationId: number): Observable<any> {
-    return this.apiService.delete(`/recommendations/${recommendationId}`)
+    return this.apiClient.delete(`/recommendations/${recommendationId}`)
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   // Notifications
   getNotificationCount(): Observable<NotificationCount> {
-    return this.apiService.get<NotificationCount>('/notifications/count');
+    return this.apiClient.get<NotificationCount>('/notifications/count');
   }
 
   private loadNotificationCount(): void {

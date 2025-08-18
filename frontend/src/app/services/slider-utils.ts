@@ -23,7 +23,7 @@ export interface SliderState<T> {
 @Injectable({
   providedIn: "root",
 })
-export class SliderService {
+export class SliderUtils {
   /**
    * Creates a slider state object with all computed properties
    */

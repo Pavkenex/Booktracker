@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ErrorService } from '../services/error.service';
+import { ErrorHandler } from '../services/error-handler';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private errorService: ErrorService) {}
+  constructor(private ErrorHandler: ErrorHandler) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
@@ -55,15 +55,15 @@ export class ErrorInterceptor implements HttpInterceptor {
         errorMessage = error.error.message;
       } else if (error.error && error.error.errors) {
         // Handle validation errors
-        this.errorService.handleValidationErrors(error.error.errors);
+        this.ErrorHandler.handleValidationErrors(error.error.errors);
         return;
       } else {
-        errorMessage = this.errorService.handleHttpError(error);
+        errorMessage = this.ErrorHandler.handleHttpError(error);
       }
     }
 
     // Show the error message
-    this.errorService.showError(errorMessage);
+    this.ErrorHandler.showError(errorMessage);
 
     // Log the error for debugging
     console.error('HTTP Error:', error);

@@ -41,7 +41,7 @@ export interface PasswordResetConfirm {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthStore {
   private readonly API_URL = `${environment.apiUrl}/auth`;
   private readonly TOKEN_KEY = 'booktracker_token';
   private readonly USER_KEY = 'booktracker_user';

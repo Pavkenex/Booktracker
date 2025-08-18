@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { FallbackImageDirective } from '../../../../directives/fallback-image.directive';
+import { FallbackImageDirective } from '../../../../directives/fallback-image';
 import { Book } from '../../../../models/book.model';
 
 @Component({

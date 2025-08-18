@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
-import { BookService } from "../../../services/book.service";
-import { LibraryService } from "../../../services/library.service";
-import { AuthService } from "../../../services/auth.service";
-import { LibraryEventsService } from "../../../services/library-events.service";
+import { BookApi } from '../../../services/book-api';
+import { LibraryApi } from '../../../services/library-api';
+import { AuthStore } from '../../../services/auth-store';
+import { LibraryEvents } from '../../../services/library-events';
 import { Book } from "../../../models/book.model";
 import { UserBook } from "../../../models/library.model";
 import { BookDetailsHeaderComponent } from './book-details-header/book-details-header';
@@ -95,14 +95,14 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private bookService: BookService,
-    private libraryService: LibraryService,
-    private authService: AuthService,
-    private libraryEventsService: LibraryEventsService
+    private bookApi: BookApi,
+    private libraryApi: LibraryApi,
+    private authStore: AuthStore,
+    private libraryEvents: LibraryEvents
   ) {}
 
   get isAuthenticated(): boolean {
-    return this.authService.isAuthenticated();
+    return this.authStore.isAuthenticated();
   }
 
   get defaultPlaceholder(): string {
@@ -118,7 +118,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.authService.isAuthenticated$
+    this.authStore.isAuthenticated$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isAuthenticated) => {
         if (isAuthenticated && this.book) {
@@ -138,7 +138,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     const id = bookId || +this.route.snapshot.params["id"];
     this.error = null;
 
-    this.bookService
+    this.bookApi
       .getBookById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -166,7 +166,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   private loadReviews(): void {
     if (!this.book) return;
     this.loadingReviews = true;
-    this.libraryService.getBookReviews(this.book.id, this.reviewPage, this.reviewPageSize)
+    this.libraryApi.getBookReviews(this.book.id, this.reviewPage, this.reviewPageSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: page => {
@@ -188,7 +188,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   }
 
   private loadSimilarBooks(bookId: number): void {
-    this.bookService.getSimilarBooks(bookId, 15)
+    this.bookApi.getSimilarBooks(bookId, 15)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: books => { this.similarBooks = books; },
@@ -202,12 +202,12 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   }
 
   private checkLibraryStatus(bookId: number): void {
-    if (!this.authService.isAuthenticated()) {
+    if (!this.authStore.isAuthenticated()) {
       this.userBook = null;
       return;
     }
 
-    this.libraryService
+    this.libraryApi
       .checkBookInLibrary(bookId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -224,7 +224,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     if (this.viewRecorded) return;
     this.viewRecorded = true;
 
-    this.bookService
+    this.bookApi
       .recordBookView(bookId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -242,7 +242,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   addToLibrary(status: "read" | "currently_reading" | "to_read"): void {
     if (!this.book || this.addingToLibrary) return;
 
-    if (!this.authService.isAuthenticated()) {
+    if (!this.authStore.isAuthenticated()) {
       this.router.navigate(["/login"], {
         queryParams: { returnUrl: this.router.url },
       });
@@ -253,7 +253,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.error = null;
 
     const request = { bookId: this.book.id, status };
-    this.libraryService
+    this.libraryApi
       .addBookToLibrary(request)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -262,7 +262,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.addingToLibrary = false;
           this.libraryMessage = `Book added to library as "${this.getStatusDisplayText(status)}"`;
           this.clearMessageAfterTimeout();
-          this.libraryEventsService.notifyLibraryUpdated();
+          this.libraryEvents.notifyLibraryUpdated();
         },
         error: (error) => {
           console.error("Error adding book to library:", error);
@@ -278,7 +278,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.removingFromLibrary = true;
     this.error = null;
 
-    this.libraryService
+    this.libraryApi
       .removeBookFromLibrary(this.userBook.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -287,7 +287,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.removingFromLibrary = false;
           this.libraryMessage = "Book removed from library";
           this.clearMessageAfterTimeout();
-          this.libraryEventsService.notifyLibraryUpdated();
+          this.libraryEvents.notifyLibraryUpdated();
         },
         error: (error) => {
           console.error("Error removing book from library:", error);
@@ -303,7 +303,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.togglingFavorite = true;
     this.error = null;
 
-    this.libraryService
+    this.libraryApi
       .toggleFavorite(this.userBook.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -324,7 +324,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
   onStatusChanged(updatedUserBook: UserBook): void {
     this.userBook = updatedUserBook;
-    this.libraryEventsService.notifyLibraryUpdated();
+    this.libraryEvents.notifyLibraryUpdated();
   }
 
   startRecommendation(): void {

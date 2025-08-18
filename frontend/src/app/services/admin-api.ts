@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { ApiService } from "./api.service";
-import { BookService } from "./book.service";
+import { ApiClient } from './api-client';
+import { BookApi } from './book-api';
 import { Book, Genre } from "../models/book.model";
 
 export interface AdminStats {
@@ -39,10 +39,10 @@ export interface PopularityStatistics {
 @Injectable({
   providedIn: "root",
 })
-export class AdminService {
+export class AdminApi {
   constructor(
-    private apiService: ApiService,
-    private bookService: BookService
+    private apiClient: ApiClient,
+    private bookApi: BookApi
   ) {}
 
   // Dashboard stats
@@ -64,34 +64,34 @@ export class AdminService {
 
   // Book management
   createBook(book: Omit<Book, "id">): Observable<Book> {
-    return this.apiService.post<Book>("/books", book);
+    return this.apiClient.post<Book>("/books", book);
   }
 
   updateBook(id: number, book: Partial<Book>): Observable<Book> {
-    return this.apiService.put<Book>(`/books/${id}`, book);
+    return this.apiClient.put<Book>(`/books/${id}`, book);
   }
 
   deleteBook(id: number): Observable<void> {
-    return this.apiService.delete<void>(`/books/${id}`);
+    return this.apiClient.delete<void>(`/books/${id}`);
   }
 
   // Genre management
   createGenre(genre: Omit<Genre, "id">): Observable<Genre> {
-    return this.apiService
+    return this.apiClient
       .post<Genre>("/admin/genres", genre);
   }
 
   updateGenre(id: number, genre: Partial<Genre>): Observable<Genre> {
-    return this.apiService
+    return this.apiClient
       .put<Genre>(`/admin/genres/${id}`, genre);
   }
 
   deleteGenre(id: number): Observable<void> {
-    return this.apiService.delete<void>(`/admin/genres/${id}`);
+    return this.apiClient.delete<void>(`/admin/genres/${id}`);
   }
 
   getAllGenres(): Observable<Genre[]> {
-    return this.apiService
+    return this.apiClient
       .get<Genre[]>("/admin/genres");
   }
 
@@ -139,13 +139,13 @@ export class AdminService {
 
   // Popularity statistics
   getPopularityStatistics(): Observable<PopularityStatistics[]> {
-    return this.apiService.get<PopularityStatistics[]>(
+    return this.apiClient.get<PopularityStatistics[]>(
       "/admin/popularity/statistics"
     );
   }
 
   exportPopularityStatistics(format: "csv" | "pdf"): Observable<Blob> {
-    return this.apiService.getBlob(`/admin/popularity/export?format=${format}`);
+    return this.apiClient.getBlob(`/admin/popularity/export?format=${format}`);
   }
 
   // Export reports
@@ -179,12 +179,12 @@ export class AdminService {
       const startDateStr = startDate.toISOString().split("T")[0];
       const endDateStr = endDate.toISOString().split("T")[0];
 
-      return this.apiService.getBlob(
+      return this.apiClient.getBlob(
         `${endpoint}?format=${format}&startDate=${startDateStr}&endDate=${endDateStr}`
       );
     }
 
     // For other reports, just pass the format parameter
-    return this.apiService.getBlob(`${endpoint}?format=${format}`);
+    return this.apiClient.getBlob(`${endpoint}?format=${format}`);
   }
 }

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, debounceTime } from 'rxjs';
-import { BookService } from '../../../services/book.service';
+import { BookApi } from '../../../services/book-api';
 import { Genre, BookSearchParams } from '../../../models/book.model';
 
 @Component({
@@ -145,7 +145,7 @@ export class BookFiltersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<void>();
 
-  constructor(private bookService: BookService) {}
+  constructor(private bookApi: BookApi) {}
 
   ngOnInit(): void {
     this.loadGenres();
@@ -167,7 +167,7 @@ export class BookFiltersComponent implements OnInit, OnDestroy {
   }
 
   loadGenres(): void {
-    this.bookService.getGenres()
+    this.bookApi.getGenres()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (genres) => {

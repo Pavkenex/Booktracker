@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class LibraryEventsService {
+export class LibraryEvents {
   private libraryUpdatedSubject = new Subject<void>();
   
   // Observable that components can subscribe to

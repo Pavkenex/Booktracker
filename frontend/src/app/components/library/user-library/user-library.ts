@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
-import { LibraryService } from "../../../services/library.service";
-import { SocialService } from "../../../services/social.service";
+import { LibraryApi } from '../../../services/library-api';
+import { SocialApi } from '../../../services/social-api';
 import { UserBook } from "../../../models/library.model";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -174,8 +174,7 @@ import { takeUntil } from "rxjs/operators";
           </div>
         </div>
       </div>
-    `,
-    styleUrls: ["./user-library.component.css"]
+    `
 })
 export class UserLibraryComponent implements OnInit, OnDestroy {
   books: UserBook[] = [];
@@ -195,8 +194,8 @@ export class UserLibraryComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private libraryService: LibraryService,
-    private socialService: SocialService
+    private libraryApi: LibraryApi,
+    private socialApi: SocialApi
   ) {}
 
   ngOnInit(): void {
@@ -216,7 +215,7 @@ export class UserLibraryComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.error = "";
 
-    this.libraryService
+    this.libraryApi
       .getUserLibrary(this.userId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

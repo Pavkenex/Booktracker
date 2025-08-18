@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from '../../../services/admin.service';
+import { AdminApi } from '../../../services/admin-api';
 import { Genre } from '../../../models/book.model';
 
 @Component({
@@ -255,7 +255,7 @@ export class GenreManagementComponent implements OnInit {
   successMessage: string | null = null;
 
   constructor(
-    private adminService: AdminService,
+    private adminApi: AdminApi,
     private fb: FormBuilder
   ) {
     this.genreForm = this.fb.group({
@@ -270,7 +270,7 @@ export class GenreManagementComponent implements OnInit {
   loadGenres(): void {
     this.loading = true;
     
-    this.adminService.getAllGenres().subscribe({
+    this.adminApi.getAllGenres().subscribe({
       next: (genres) => {
         this.genres = genres;
         this.filteredGenres = genres;
@@ -318,8 +318,8 @@ export class GenreManagementComponent implements OnInit {
       const genreData = this.genreForm.value;
 
       const operation = this.isEditing && this.editingGenre
-        ? this.adminService.updateGenre(this.editingGenre.id, genreData)
-        : this.adminService.createGenre(genreData);
+        ? this.adminApi.updateGenre(this.editingGenre.id, genreData)
+        : this.adminApi.createGenre(genreData);
 
       operation.subscribe({
         next: (genre) => {
@@ -351,7 +351,7 @@ export class GenreManagementComponent implements OnInit {
       this.deleting = true;
       this.clearMessages();
       
-      this.adminService.deleteGenre(this.genreToDelete.id).subscribe({
+      this.adminApi.deleteGenre(this.genreToDelete.id).subscribe({
         next: () => {
           this.deleting = false;
           this.successMessage = 'Genre deleted successfully!';

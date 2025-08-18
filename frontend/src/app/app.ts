@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
-import { AuthService, User } from './services/auth.service';
+import { AuthStore, User } from './services/auth-store';
 import { NotificationsComponent } from './components/social/notifications/notifications';
 import { ToastNotificationsComponent } from './components/shared/toast-notifications/toast-notifications';
 import { Observable } from 'rxjs';
@@ -321,15 +321,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   isNavbarOpen = false;
 
   constructor(
-    private authService: AuthService,
+    private authStore: AuthStore,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.isAuthenticated$ = this.authService.isAuthenticated$;
-    this.currentUser$ = this.authService.currentUser$;
+    this.isAuthenticated$ = this.authStore.isAuthenticated$;
+    this.currentUser$ = this.authStore.currentUser$;
   }
 
   ngOnInit(): void {
-    // Authentication state is initialized in the AuthService constructor
+    // Authentication state is initialized in the AuthStore constructor
   }
 
   ngAfterViewInit(): void {
@@ -362,7 +362,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   logout(): void {
-    this.authService.logout();
+    this.authStore.logout();
   }
 
   closeDropdown(): void {

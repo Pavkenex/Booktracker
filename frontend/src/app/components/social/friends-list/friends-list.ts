@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SocialService } from '../../../services/social.service';
+import { SocialApi } from '../../../services/social-api';
 import { Friendship, FriendSearchResult } from '../../../models/social.model';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -10,8 +10,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
     selector: 'app-friends-list',
     imports: [FormsModule],
-    templateUrl: './friends-list.component.html',
-    styleUrls: ['./friends-list.component.css']
+    templateUrl: './friends-list.html',
+    styleUrls: ['./friends-list.css']
 })
 export class FriendsListComponent implements OnInit, OnDestroy {
   friends: Friendship[] = [];
@@ -25,7 +25,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
 
   constructor(
-    private socialService: SocialService,
+    private socialApi: SocialApi,
     private router: Router
   ) {
     // Set up debounced search
@@ -53,7 +53,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.error = '';
     
-    this.socialService.getFriends().subscribe({
+    this.socialApi.getFriends().subscribe({
       next: (friends) => {
         this.friends = friends;
         this.isLoading = false;
@@ -85,7 +85,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
 
   private performSearch(query: string): void {
     this.isSearching = true;
-    this.socialService.searchUsers(query).subscribe({
+    this.socialApi.searchUsers(query).subscribe({
       next: (results) => {
         this.searchResults = results;
         this.isSearching = false;
@@ -98,7 +98,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   }
 
   sendFriendRequest(userId: number): void {
-    this.socialService.sendFriendRequest({ friendId: userId }).subscribe({
+    this.socialApi.sendFriendRequest({ friendId: userId }).subscribe({
       next: () => {
         // Update the search results to reflect the sent request
         const user = this.searchResults.find(u => u.id === userId);
@@ -106,7 +106,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
           user.hasPendingRequest = true;
         }
         // Refresh notifications for the receiver
-        this.socialService.refreshNotifications();
+        this.socialApi.refreshNotifications();
       },
       error: (error) => {
         console.error('Error sending friend request:', error);
@@ -117,7 +117,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
 
   removeFriend(friendId: number): void {
     if (confirm('Are you sure you want to remove this friend?')) {
-      this.socialService.removeFriend(friendId).subscribe({
+      this.socialApi.removeFriend(friendId).subscribe({
         next: () => {
           this.friends = this.friends.filter(f => f.friendId !== friendId);
         },

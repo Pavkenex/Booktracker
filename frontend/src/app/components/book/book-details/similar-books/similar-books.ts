@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
-import { FallbackImageDirective } from '../../../../directives/fallback-image.directive';
+import { FallbackImageDirective } from '../../../../directives/fallback-image';
 import { Book } from '../../../../models/book.model';
 
 @Component({

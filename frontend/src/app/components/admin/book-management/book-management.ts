@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from '../../../services/admin.service';
-import { BookService } from '../../../services/book.service';
+import { AdminApi } from '../../../services/admin-api';
+import { BookApi } from '../../../services/book-api';
 import { Book, Genre, PagedResponse } from '../../../models/book.model';
 
 @Component({
@@ -332,8 +332,8 @@ export class BookManagementComponent implements OnInit {
   deleting = false;
 
   constructor(
-    private adminService: AdminService,
-    private bookService: BookService,
+    private adminApi: AdminApi,
+    private bookApi: BookApi,
     private fb: FormBuilder
   ) {
     this.bookForm = this.fb.group({
@@ -351,7 +351,7 @@ export class BookManagementComponent implements OnInit {
   }
 
   loadGenres(): void {
-    this.bookService.getGenres().subscribe({
+    this.bookApi.getGenres().subscribe({
       next: (genres) => {
         this.genres = genres;
       },
@@ -372,7 +372,7 @@ export class BookManagementComponent implements OnInit {
       genreId: this.selectedGenreId ? parseInt(this.selectedGenreId) : undefined
     };
 
-    this.bookService.getBooks(params).subscribe({
+    this.bookApi.getBooks(params).subscribe({
       next: (response) => {
         this.booksResponse = response;
         this.loading = false;
@@ -456,8 +456,8 @@ export class BookManagementComponent implements OnInit {
       };
 
       const operation = this.isEditing && this.editingBook
-        ? this.adminService.updateBook(this.editingBook.id, bookData)
-        : this.adminService.createBook(bookData);
+        ? this.adminApi.updateBook(this.editingBook.id, bookData)
+        : this.adminApi.createBook(bookData);
 
       operation.subscribe({
         next: () => {
@@ -488,7 +488,7 @@ export class BookManagementComponent implements OnInit {
     if (this.bookToDelete) {
       this.deleting = true;
       
-      this.adminService.deleteBook(this.bookToDelete.id).subscribe({
+      this.adminApi.deleteBook(this.bookToDelete.id).subscribe({
         next: () => {
           this.deleting = false;
           this.loadBooks();

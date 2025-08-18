@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
-import { BookService } from '../../../services/book.service';
+import { BookApi } from '../../../services/book-api';
 import { Book, BookSearchParams, PagedResponse } from '../../../models/book.model';
-import { BookFiltersComponent } from '../book-filters/book-filters.component';
-import { BookListComponent } from '../book-list/book-list.component';
-import { BookPaginationComponent } from '../book-pagination/book-pagination.component';
-import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filter-toggle.component';
+import { BookFiltersComponent } from '../book-filters/book-filters';
+import { BookListComponent } from '../book-list/book-list';
+import { BookPaginationComponent } from '../book-pagination/book-pagination';
+import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filter-toggle';
 
 @Component({
   selector: 'app-book-catalog',
@@ -89,7 +89,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private bookService: BookService) {}
+  constructor(private bookApi: BookApi) {}
 
   ngOnInit(): void {
     // Ensure genreId is properly initialized
@@ -106,7 +106,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    this.bookService.getBooks(this.searchParams)
+    this.bookApi.getBooks(this.searchParams)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {

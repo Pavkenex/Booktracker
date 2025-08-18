@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AuthService, PasswordResetRequest } from '../../../services/auth.service';
+import { AuthStore, PasswordResetRequest } from '../../../services/auth-store';
 
 @Component({
     selector: 'app-forgot-password',
@@ -145,7 +145,7 @@ export class ForgotPasswordComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authStore: AuthStore
   ) {
     this.forgotPasswordForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]]
@@ -170,7 +170,7 @@ export class ForgotPasswordComponent {
       email: this.forgotPasswordForm.value.email
     };
 
-    this.authService.requestPasswordReset(resetRequest).subscribe({
+    this.authStore.requestPasswordReset(resetRequest).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response.success) {

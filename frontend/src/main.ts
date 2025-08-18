@@ -6,8 +6,8 @@ import { importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { routes } from './app/app.routes';
-import { AuthInterceptor } from './app/interceptors/auth.interceptor';
-import { ErrorInterceptor } from './app/interceptors/error.interceptor';
+import { AuthInterceptor } from './app/interceptors/auth-interceptor';
+import { ErrorInterceptor } from './app/interceptors/error-interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
-import { LibraryService } from '../../../services/library.service';
-import { LibraryEventsService } from '../../../services/library-events.service';
+import { LibraryApi } from '../../../services/library-api';
+import { LibraryEvents } from '../../../services/library-events';
 import { LibraryStats } from '../../../models/library.model';
 
 @Component({
@@ -134,15 +134,15 @@ export class LibraryStatsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private libraryService: LibraryService,
-    private libraryEventsService: LibraryEventsService
+    private libraryApi: LibraryApi,
+    private libraryEvents: LibraryEvents
   ) {}
 
   ngOnInit(): void {
     this.loadStats();
     
     // Listen for library update events
-    this.libraryEventsService.libraryUpdated$
+    this.libraryEvents.libraryUpdated$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.loadStats();
@@ -156,7 +156,7 @@ export class LibraryStatsComponent implements OnInit, OnDestroy {
 
   loadStats(): void {
     this.loading = true;
-    this.libraryService.getLibraryStats()
+    this.libraryApi.getLibraryStats()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (stats) => {

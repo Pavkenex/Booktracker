@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { AuthService, User } from "../../services/auth.service";
-import { SocialService } from "../../services/social.service";
+import { AuthStore, User } from '../../services/auth-store';
+import { SocialApi } from '../../services/social-api';
 import { Recommendation } from "../../models/social.model";
 import { Observable } from "rxjs";
 import { PopularBooksSectionComponent } from '../shared/popular-books-section/popular-books-section';
@@ -245,11 +245,11 @@ export class HomeComponent implements OnInit {
   isLoadingRecommendations: boolean = false;
 
   constructor(
-    private authService: AuthService,
-    private socialService: SocialService
+    private authStore: AuthStore,
+    private socialApi: SocialApi
   ) {
-    this.isAuthenticated$ = this.authService.isAuthenticated$;
-    this.currentUser$ = this.authService.currentUser$;
+    this.isAuthenticated$ = this.authStore.isAuthenticated$;
+    this.currentUser$ = this.authStore.currentUser$;
   }
 
   ngOnInit(): void {
@@ -262,7 +262,7 @@ export class HomeComponent implements OnInit {
 
   loadRecentRecommendations(): void {
     this.isLoadingRecommendations = true;
-    this.socialService.getRecommendations().subscribe({
+    this.socialApi.getRecommendations().subscribe({
       next: (recommendations) => {
         this.recentRecommendations = recommendations.slice(0, 3); // Show only 3 most recent
         this.isLoadingRecommendations = false;
@@ -275,7 +275,7 @@ export class HomeComponent implements OnInit {
   }
 
   markAsRead(recommendationId: number): void {
-    this.socialService.markRecommendationAsRead(recommendationId).subscribe({
+    this.socialApi.markRecommendationAsRead(recommendationId).subscribe({
       next: () => {
         const recommendation = this.recentRecommendations.find(
           (r) => r.id === recommendationId

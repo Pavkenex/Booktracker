@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AdminService } from '../../../services/admin.service';
+import { AdminApi } from '../../../services/admin-api';
 
 interface ReportData {
   booksByCategory?: { category: string; count: number }[];
@@ -317,7 +317,7 @@ export class ReportsPanelComponent implements OnInit {
   exportSuccess = false;
   error: string | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminApi: AdminApi) {}
 
   ngOnInit(): void {
     // Component initialized
@@ -331,13 +331,13 @@ export class ReportsPanelComponent implements OnInit {
     
     switch (reportType) {
       case 'books-by-category':
-        reportObservable = this.adminService.getBooksByCategoryReport();
+        reportObservable = this.adminApi.getBooksByCategoryReport();
         break;
       case 'daily-activity':
-        reportObservable = this.adminService.getDailyActivityReport();
+        reportObservable = this.adminApi.getDailyActivityReport();
         break;
       case 'user-engagement':
-        reportObservable = this.adminService.getUserEngagementReport();
+        reportObservable = this.adminApi.getUserEngagementReport();
         break;
       default:
         this.loadingReports[reportType] = false;
@@ -371,7 +371,7 @@ export class ReportsPanelComponent implements OnInit {
     this.exporting = true;
     this.exportSuccess = false;
 
-    this.adminService.exportReport(reportType, format).subscribe({
+    this.adminApi.exportReport(reportType, format).subscribe({
       next: (blob) => {
         // Create download link
         const url = window.URL.createObjectURL(blob);

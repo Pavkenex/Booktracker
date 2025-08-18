@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LibraryService } from '../../../services/library.service';
+import { LibraryApi } from '../../../services/library-api';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
@@ -192,7 +192,7 @@ export class ReviewFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private libraryService: LibraryService
+    private libraryApi: LibraryApi
   ) {}
 
   ngOnInit(): void {
@@ -239,7 +239,7 @@ export class ReviewFormComponent implements OnInit {
       isFavourite: formValue.isFavourite
     };
 
-    this.libraryService.updateBookStatus(this.userBook.id, updateRequest).subscribe({
+    this.libraryApi.updateBookStatus(this.userBook.id, updateRequest).subscribe({
       next: (updatedBook) => {
         this.reviewSubmitted.emit(updatedBook);
         this.submitting = false;

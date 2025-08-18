@@ -2,9 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import {
-  AdminService,
+  AdminApi,
   PopularityStatistics,
-} from "../../../services/admin.service";
+} from '../../../services/admin-api';
 
 @Component({
     selector: "app-popularity-statistics",
@@ -402,7 +402,7 @@ export class PopularityStatisticsComponent implements OnInit {
     message: "",
   };
 
-  constructor(private adminService: AdminService) {}
+  constructor(private adminApi: AdminApi) {}
 
   ngOnInit(): void {
     this.loadStatistics();
@@ -412,7 +412,7 @@ export class PopularityStatisticsComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.adminService.getPopularityStatistics().subscribe({
+    this.adminApi.getPopularityStatistics().subscribe({
       next: (statistics) => {
         this.statistics = statistics;
         this.applyFilters();
@@ -478,7 +478,7 @@ export class PopularityStatisticsComponent implements OnInit {
   exportData(format: "csv" | "pdf"): void {
     this.showExportStatus(`Preparing ${format.toUpperCase()} export...`);
 
-    this.adminService.exportPopularityStatistics(format).subscribe({
+    this.adminApi.exportPopularityStatistics(format).subscribe({
       next: (blob) => {
         // Create download link
         const url = window.URL.createObjectURL(blob);

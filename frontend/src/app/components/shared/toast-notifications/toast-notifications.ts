@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { ErrorService, ErrorMessage } from '../../../services/error.service';
+import { ErrorHandler, ErrorMessage } from '../../../services/error-handler';
 
 @Component({
     selector: 'app-toast-notifications',
@@ -65,10 +65,10 @@ export class ToastNotificationsComponent implements OnInit, OnDestroy {
   errors: ErrorMessage[] = [];
   private subscription: Subscription = new Subscription();
 
-  constructor(private errorService: ErrorService) {}
+  constructor(private ErrorHandler: ErrorHandler) {}
 
   ngOnInit(): void {
-    this.subscription = this.errorService.errors$.subscribe(
+    this.subscription = this.ErrorHandler.errors$.subscribe(
       errors => this.errors = errors
     );
   }
@@ -78,7 +78,7 @@ export class ToastNotificationsComponent implements OnInit, OnDestroy {
   }
 
   removeError(id: string): void {
-    this.errorService.removeError(id);
+    this.ErrorHandler.removeError(id);
   }
 
   getToastClass(type: string): string {

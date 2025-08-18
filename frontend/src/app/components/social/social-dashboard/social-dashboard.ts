@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FriendsListComponent } from '../friends-list/friends-list';
 import { FriendRequestsComponent } from '../friend-requests/friend-requests';
 import { RecommendationsComponent } from '../recommendations/recommendations';
-import { SocialService } from '../../../services/social.service';
+import { SocialApi } from '../../../services/social-api';
 import { NotificationCount } from '../../../models/social.model';
 
 @Component({
@@ -15,8 +15,8 @@ import { NotificationCount } from '../../../models/social.model';
     FriendRequestsComponent,
     RecommendationsComponent
 ],
-    templateUrl: './social-dashboard.component.html',
-    styleUrls: ['./social-dashboard.component.css']
+    templateUrl: './social-dashboard.html',
+    styleUrls: ['./social-dashboard.css']
 })
 export class SocialDashboardComponent implements OnInit, OnDestroy {
   activeTab: 'friends' | 'requests' | 'recommendations' = 'friends';
@@ -26,29 +26,29 @@ export class SocialDashboardComponent implements OnInit, OnDestroy {
     total: 0
   };
 
-  constructor(private socialService: SocialService) {}
+  constructor(private socialApi: SocialApi) {}
 
   ngOnInit(): void {
-    this.socialService.notificationCount$.subscribe(count => {
+    this.socialApi.notificationCount$.subscribe(count => {
       this.notificationCount = count;
     });
     
     // Start frequent polling when user is on social dashboard
-    this.socialService.startFrequentPolling();
+    this.socialApi.startFrequentPolling();
     
     // Force immediate refresh
-    this.socialService.forceRefreshNotifications();
+    this.socialApi.forceRefreshNotifications();
   }
 
   ngOnDestroy(): void {
     // Resume normal polling when leaving social dashboard
-    this.socialService.resumeNormalPolling();
+    this.socialApi.resumeNormalPolling();
   }
 
   setActiveTab(tab: 'friends' | 'requests' | 'recommendations'): void {
     this.activeTab = tab;
     
     // Force refresh when switching tabs
-    this.socialService.forceRefreshNotifications();
+    this.socialApi.forceRefreshNotifications();
   }
 }

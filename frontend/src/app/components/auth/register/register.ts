@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService, RegisterRequest } from '../../../services/auth.service';
+import { AuthStore, RegisterRequest } from '../../../services/auth-store';
 
 @Component({
     selector: 'app-register',
@@ -373,7 +373,7 @@ export class RegisterComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    private authStore: AuthStore,
     private router: Router
   ) {
     this.registerForm = this.formBuilder.group({
@@ -431,7 +431,7 @@ export class RegisterComponent {
         password: this.registerForm.value.password
       };
 
-      this.authService.register(registerRequest).subscribe({
+      this.authStore.register(registerRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LibraryService } from '../../../services/library.service';
-import { LibraryEventsService } from '../../../services/library-events.service';
+import { LibraryApi } from '../../../services/library-api';
+import { LibraryEvents } from '../../../services/library-events';
 import { UserBook } from '../../../models/library.model';
 import { BookStatusSelectorComponent } from '../book-status-selector/book-status-selector';
 import { ReviewFormComponent } from '../review-form/review-form';
@@ -400,8 +400,8 @@ export class PersonalLibraryComponent implements OnInit {
   selectedBookForReview: UserBook | null = null;
 
   constructor(
-    private libraryService: LibraryService,
-    private libraryEventsService: LibraryEventsService
+    private libraryApi: LibraryApi,
+    private libraryEvents: LibraryEvents
   ) {}
 
   ngOnInit(): void {
@@ -410,7 +410,7 @@ export class PersonalLibraryComponent implements OnInit {
 
   loadLibrary(): void {
     this.loading = true;
-    this.libraryService.getLibrary().subscribe({
+    this.libraryApi.getLibrary().subscribe({
       next: (books) => {
         this.allBooks = books;
         this.loading = false;
@@ -462,18 +462,18 @@ export class PersonalLibraryComponent implements OnInit {
     if (index !== -1) {
       this.allBooks[index] = updatedBook;
       // Notify that library has been updated
-      this.libraryEventsService.notifyLibraryUpdated();
+      this.libraryEvents.notifyLibraryUpdated();
     }
   }
 
   toggleFavorite(userBook: UserBook): void {
-    this.libraryService.toggleFavorite(userBook.id).subscribe({
+    this.libraryApi.toggleFavorite(userBook.id).subscribe({
       next: (updatedBook) => {
         const index = this.allBooks.findIndex(book => book.id === updatedBook.id);
         if (index !== -1) {
           this.allBooks[index] = updatedBook;
           // Notify that library has been updated
-          this.libraryEventsService.notifyLibraryUpdated();
+          this.libraryEvents.notifyLibraryUpdated();
         }
       },
       error: (error) => {
@@ -495,18 +495,18 @@ export class PersonalLibraryComponent implements OnInit {
     if (index !== -1) {
       this.allBooks[index] = updatedBook;
       // Notify that library has been updated
-      this.libraryEventsService.notifyLibraryUpdated();
+      this.libraryEvents.notifyLibraryUpdated();
     }
     this.closeReviewForm();
   }
 
   removeBook(userBook: UserBook): void {
     if (confirm(`Are you sure you want to remove "${userBook.book.title}" from your library?`)) {
-      this.libraryService.removeBookFromLibrary(userBook.id).subscribe({
+      this.libraryApi.removeBookFromLibrary(userBook.id).subscribe({
         next: () => {
           this.allBooks = this.allBooks.filter(book => book.id !== userBook.id);
           // Notify that library has been updated
-          this.libraryEventsService.notifyLibraryUpdated();
+          this.libraryEvents.notifyLibraryUpdated();
         },
         error: (error) => {
           console.error('Error removing book:', error);

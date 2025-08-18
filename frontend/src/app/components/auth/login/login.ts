@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { AuthService, LoginRequest } from '../../../services/auth.service';
-import { ErrorService } from '../../../services/error.service';
+import { AuthStore, LoginRequest } from '../../../services/auth-store';
+import { ErrorHandler } from '../../../services/error-handler';
 
 @Component({
     selector: 'app-login',
@@ -277,10 +277,10 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    private authStore: AuthStore,
     private router: Router,
     private route: ActivatedRoute,
-    private errorService: ErrorService
+    private ErrorHandler: ErrorHandler
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
@@ -303,11 +303,11 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.value.password
       };
 
-      this.authService.login(loginRequest).subscribe({
+      this.authStore.login(loginRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
-            this.errorService.showSuccess('Login successful!');
+            this.ErrorHandler.showSuccess('Login successful!');
             this.router.navigate([this.returnUrl]);
           } else {
             this.errorMessage = response.message || 'Login failed. Please try again.';
@@ -319,7 +319,7 @@ export class LoginComponent implements OnInit {
             this.errorMessage = 'Invalid username or password.';
           } else {
             // Let the error interceptor handle other errors
-            this.errorMessage = this.errorService.handleHttpError(error);
+            this.errorMessage = this.ErrorHandler.handleHttpError(error);
           }
         }
       });

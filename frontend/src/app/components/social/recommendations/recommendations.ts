@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { SocialService } from '../../../services/social.service';
-import { BookService } from '../../../services/book.service';
-import { LibraryService } from '../../../services/library.service';
+import { SocialApi } from '../../../services/social-api';
+import { BookApi } from '../../../services/book-api';
+import { LibraryApi } from '../../../services/library-api';
 import { ActivatedRoute } from '@angular/router';
 import { Recommendation, Friendship, SendRecommendationRequest } from '../../../models/social.model';
 import { Book } from '../../../models/book.model';
@@ -12,8 +12,8 @@ import { UserBook } from '../../../models/library.model';
 @Component({
     selector: 'app-recommendations',
     imports: [FormsModule],
-    templateUrl: './recommendations.component.html',
-    styleUrls: ['./recommendations.component.css']
+    templateUrl: './recommendations.html',
+    styleUrls: ['./recommendations.css']
 })
 export class RecommendationsComponent implements OnInit {
   receivedRecommendations: Recommendation[] = [];
@@ -38,9 +38,9 @@ export class RecommendationsComponent implements OnInit {
   private pendingAction: 'send' | null = null;
 
   constructor(
-    private socialService: SocialService,
-    private bookService: BookService,
-    private libraryService: LibraryService,
+    private socialApi: SocialApi,
+    private bookApi: BookApi,
+    private libraryApi: LibraryApi,
     private route: ActivatedRoute
   ) {}
 
@@ -73,7 +73,7 @@ export class RecommendationsComponent implements OnInit {
     this.error = '';
     
     // Load received recommendations
-    this.socialService.getRecommendations().subscribe({
+    this.socialApi.getRecommendations().subscribe({
       next: (recommendations) => {
         this.receivedRecommendations = recommendations;
         this.loadSentRecommendations();
@@ -87,7 +87,7 @@ export class RecommendationsComponent implements OnInit {
   }
 
   loadSentRecommendations(): void {
-    this.socialService.getSentRecommendations().subscribe({
+    this.socialApi.getSentRecommendations().subscribe({
       next: (recommendations) => {
         this.sentRecommendations = recommendations;
         this.isLoading = false;
@@ -100,7 +100,7 @@ export class RecommendationsComponent implements OnInit {
   }
 
   loadFriends(): void {
-    this.socialService.getFriends().subscribe({
+    this.socialApi.getFriends().subscribe({
       next: (friends) => {
         this.friends = friends;
       },
@@ -111,7 +111,7 @@ export class RecommendationsComponent implements OnInit {
   }
 
   loadUserBooks(): void {
-    this.libraryService.getLibrary().subscribe({
+    this.libraryApi.getLibrary().subscribe({
       next: (userBooks) => {
         this.books = userBooks.map(ub => {
           this.userBooksMap.set(ub.book.id, ub);
@@ -139,7 +139,7 @@ export class RecommendationsComponent implements OnInit {
   markAsReadDirect(book: Book): void {
     const ub = this.getUserBook(book);
     if (!ub || ub.status === 'read') return;
-    this.libraryService.updateBookStatus(ub.id, { status: 'read' }).subscribe({
+    this.libraryApi.updateBookStatus(ub.id, { status: 'read' }).subscribe({
       next: updated => { this.userBooksMap.set(book.id, { ...ub, ...updated }); },
       error: err => console.error('Failed to mark as read', err)
     });
@@ -148,7 +148,7 @@ export class RecommendationsComponent implements OnInit {
   startReading(book: Book): void {
     const ub = this.getUserBook(book);
     if (!ub || ub.status === 'currently_reading') return;
-    this.libraryService.updateBookStatus(ub.id, { status: 'currently_reading' }).subscribe({
+    this.libraryApi.updateBookStatus(ub.id, { status: 'currently_reading' }).subscribe({
       next: updated => { this.userBooksMap.set(book.id, { ...ub, ...updated }); },
       error: err => console.error('Failed to set currently reading', err)
     });
@@ -156,7 +156,7 @@ export class RecommendationsComponent implements OnInit {
 
   addToLibraryQuick(book: Book): void {
     if (this.hasBook(book)) return;
-    this.libraryService.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
+    this.libraryApi.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
       next: ub => { this.userBooksMap.set(book.id, { ...ub }); },
       error: err => console.error('Failed quick add', err)
     });
@@ -175,7 +175,7 @@ export class RecommendationsComponent implements OnInit {
       this.pendingAction = null;
     } else {
       // If not in library fetch directly and add temporarily
-      this.bookService.getBookById(this.pendingBookId).subscribe({
+      this.bookApi.getBookById(this.pendingBookId).subscribe({
         next: fetched => {
           this.books.push(fetched);
           this.filteredBooks = [...this.books];
@@ -197,7 +197,7 @@ export class RecommendationsComponent implements OnInit {
 
   deleteRecommendation(recommendationId: number, type: 'received' | 'sent'): void {
     if (confirm('Are you sure you want to delete this recommendation?')) {
-      this.socialService.deleteRecommendation(recommendationId).subscribe({
+      this.socialApi.deleteRecommendation(recommendationId).subscribe({
         next: () => {
           if (type === 'received') {
             this.receivedRecommendations = this.receivedRecommendations.filter(r => r.id !== recommendationId);
@@ -246,7 +246,7 @@ export class RecommendationsComponent implements OnInit {
       message: this.recommendationMessage.trim() || undefined
     };
 
-    this.socialService.sendRecommendation(request).subscribe({
+    this.socialApi.sendRecommendation(request).subscribe({
       next: () => {
         // Reset form
         this.selectedFriendId = null;
@@ -272,7 +272,7 @@ export class RecommendationsComponent implements OnInit {
 
   addBookToLibrary(book: Book): void {
     if (this.hasBook(book)) return; // safety
-    this.libraryService.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
+    this.libraryApi.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
       next: (userBook) => {
         // Update ownership map so button disables
         this.userBooksMap.set(book.id, userBook);

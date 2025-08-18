@@ -3,7 +3,7 @@ import { Component, Input } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Book } from "../../../models/book.model";
 import { APP_CONSTANTS } from "../../../constants/app.constants";
-import { FallbackImageDirective } from "../../../directives/fallback-image.directive";
+import { FallbackImageDirective } from '../../../directives/fallback-image';
 
 @Component({
   selector: "app-popular-book-card",

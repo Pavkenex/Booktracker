@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SocialService } from '../../../services/social.service';
+import { SocialApi } from '../../../services/social-api';
 import { FriendRequest } from '../../../models/social.model';
 
 @Component({
     selector: 'app-friend-requests',
     imports: [],
-    templateUrl: './friend-requests.component.html',
-    styleUrls: ['./friend-requests.component.css']
+    templateUrl: './friend-requests.html',
+    styleUrls: ['./friend-requests.css']
 })
 export class FriendRequestsComponent implements OnInit {
   friendRequests: FriendRequest[] = [];
@@ -15,20 +15,20 @@ export class FriendRequestsComponent implements OnInit {
   error: string = '';
   processingRequests: Set<number> = new Set();
 
-  constructor(private socialService: SocialService) {}
+  constructor(private socialApi: SocialApi) {}
 
   ngOnInit(): void {
     this.loadFriendRequests();
     
     // Force refresh notifications when component loads
-    this.socialService.forceRefreshNotifications();
+    this.socialApi.forceRefreshNotifications();
   }
 
   loadFriendRequests(): void {
     this.isLoading = true;
     this.error = '';
     
-    this.socialService.getFriendRequests().subscribe({
+    this.socialApi.getFriendRequests().subscribe({
       next: (requests) => {
         this.friendRequests = requests.filter(req => req.status === 'pending');
         this.isLoading = false;
@@ -44,11 +44,11 @@ export class FriendRequestsComponent implements OnInit {
   acceptFriendRequest(requestId: number): void {
     this.processingRequests.add(requestId);
     
-    this.socialService.respondToFriendRequest({ requestId, accept: true }).subscribe({
+    this.socialApi.respondToFriendRequest({ requestId, accept: true }).subscribe({
       next: () => {
         this.friendRequests = this.friendRequests.filter(req => req.id !== requestId);
         this.processingRequests.delete(requestId);
-        this.socialService.refreshNotifications();
+        this.socialApi.refreshNotifications();
       },
       error: (error) => {
         console.error('Error accepting friend request:', error);
@@ -61,11 +61,11 @@ export class FriendRequestsComponent implements OnInit {
   declineFriendRequest(requestId: number): void {
     this.processingRequests.add(requestId);
     
-    this.socialService.respondToFriendRequest({ requestId, accept: false }).subscribe({
+    this.socialApi.respondToFriendRequest({ requestId, accept: false }).subscribe({
       next: () => {
         this.friendRequests = this.friendRequests.filter(req => req.id !== requestId);
         this.processingRequests.delete(requestId);
-        this.socialService.refreshNotifications();
+        this.socialApi.refreshNotifications();
       },
       error: (error) => {
         console.error('Error declining friend request:', error);

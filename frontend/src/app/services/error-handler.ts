@@ -12,7 +12,7 @@ export interface ErrorMessage {
 @Injectable({
   providedIn: 'root'
 })
-export class ErrorService {
+export class ErrorHandler {
   private errorsSubject = new BehaviorSubject<ErrorMessage[]>([]);
   public errors$ = this.errorsSubject.asObservable();
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { AuthService, PasswordResetConfirm } from '../../../services/auth.service';
+import { AuthStore, PasswordResetConfirm } from '../../../services/auth-store';
 
 @Component({
     selector: 'app-reset-password',
@@ -193,7 +193,7 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    private authStore: AuthStore,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -248,7 +248,7 @@ export class ResetPasswordComponent implements OnInit {
         newPassword: this.resetPasswordForm.value.newPassword
       };
 
-      this.authService.resetPassword(resetRequest).subscribe({
+      this.authStore.resetPassword(resetRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
           if (response.success) {

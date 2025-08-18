@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { LibraryService } from '../../../services/library.service';
+import { LibraryApi } from '../../../services/library-api';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
@@ -61,7 +61,7 @@ export class BookStatusSelectorComponent {
   
   updating = false;
 
-  constructor(private libraryService: LibraryService) {}
+  constructor(private libraryApi: LibraryApi) {}
 
   onStatusChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
@@ -81,7 +81,7 @@ export class BookStatusSelectorComponent {
       isFavourite: this.userBook.isFavourite
     };
 
-    this.libraryService.updateBookStatus(this.userBook.id, updateRequest).subscribe({
+    this.libraryApi.updateBookStatus(this.userBook.id, updateRequest).subscribe({
       next: (updatedBook) => {
         this.statusChanged.emit(updatedBook);
         this.updating = false;

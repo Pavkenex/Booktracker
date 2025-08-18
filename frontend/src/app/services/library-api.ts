@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { ApiService } from "./api.service";
+import { ApiClient } from './api-client';
 import {
   UserBook,
   LibraryStats,
@@ -14,22 +14,22 @@ import { ApiResponse } from "../models/book.model";
 @Injectable({
   providedIn: "root",
 })
-export class LibraryService {
-  constructor(private apiService: ApiService) {}
+export class LibraryApi {
+  constructor(private apiClient: ApiClient) {}
 
   getLibrary(): Observable<UserBook[]> {
-    return this.apiService
+    return this.apiClient
       .get<PagedResponse<UserBook>>("/library?size=1000")
       .pipe(map((response) => response.content ?? []));
   }
 
   getLibraryStats(): Observable<LibraryStats> {
-    return this.apiService
+    return this.apiClient
       .get<LibraryStats>("/library/stats");
   }
 
   addBookToLibrary(request: AddBookToLibraryRequest): Observable<UserBook> {
-    return this.apiService
+    return this.apiClient
       .post<UserBook>("/library/books", request);
   }
 
@@ -37,35 +37,35 @@ export class LibraryService {
     userBookId: number,
     request: UpdateBookStatusRequest
   ): Observable<UserBook> {
-    return this.apiService
+    return this.apiClient
       .put<UserBook>(`/library/books/${userBookId}`, request);
   }
 
   removeBookFromLibrary(userBookId: number): Observable<void> {
-    return this.apiService
+    return this.apiClient
       .delete<void>(`/library/books/${userBookId}`);
   }
 
   toggleFavorite(userBookId: number): Observable<UserBook> {
-    return this.apiService
+    return this.apiClient
       .put<UserBook>(`/library/books/${userBookId}/favorite`, {});
   }
 
   checkBookInLibrary(
     bookId: number
   ): Observable<{ hasBook: boolean; userBook?: UserBook }> {
-    return this.apiService
+    return this.apiClient
       .get<{ hasBook: boolean; userBook?: UserBook }>(`/library/books/check/${bookId}`);
   }
 
   getUserLibrary(userId: number): Observable<UserBook[]> {
-    return this.apiService
+    return this.apiClient
       .get<PagedResponse<UserBook>>(`/library/user/${userId}?size=1000`)
       .pipe(map((response) => response.content ?? []));
   }
 
   getBookReviews(bookId: number, page: number = 0, size: number = 5): Observable<PagedResponse<UserBook>> {
-    return this.apiService
+    return this.apiClient
       .get<PagedResponse<UserBook>>(`/library/book/${bookId}/reviews?page=${page}&size=${size}`);
   }
 }
