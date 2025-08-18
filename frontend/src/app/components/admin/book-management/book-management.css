@@ -1,0 +1,106 @@
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  padding: 0.75rem 1rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.btn {
+  border-radius: 0.25rem;
+  min-height: 38px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-sm {
+  min-height: 32px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 0.25rem;
+  min-height: 42px;
+}
+
+.table th {
+  font-weight: 600;
+  color: #495057;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+  border-radius: 0.25rem;
+}
+
+.page-link {
+  border-radius: 0.25rem;
+  color: #0d6efd;
+  transition: all 0.2s ease-in-out;
+}
+
+.page-link:hover {
+  background-color: #e9ecef;
+  color: #0a58ca;
+}
+
+.page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767.98px) {
+  .card-body {
+    padding: 1rem;
+  }
+
+  h1.h3 {
+    font-size: 1.5rem;
+  }
+
+  .table {
+    font-size: 0.875rem;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  h1.h3 {
+    font-size: 1.25rem;
+  }
+
+  .pagination {
+    font-size: 0.875rem;
+  }
+}

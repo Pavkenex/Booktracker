@@ -16,61 +16,8 @@ import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filt
     BookPaginationComponent,
     MobileFilterToggleComponent
 ],
-    template: `
-    <div class="container-fluid">
-      <div class="row">
-        <!-- Mobile Filter Toggle -->
-        <app-mobile-filter-toggle
-          [showMobileFilters]="showMobileFilters"
-          [activeFiltersCount]="getActiveFiltersCount()"
-          (toggleMobileFilters)="toggleMobileFilters()">
-        </app-mobile-filter-toggle>
-
-        <!-- Search and Filter Sidebar -->
-        <div class="col-lg-3 col-md-4 mb-4">
-          <app-book-filters
-            [searchParams]="searchParams"
-            [showMobileFilters]="showMobileFilters"
-            (searchParamsChange)="onSearchParamsChange($event)"
-            (filtersChanged)="loadBooks()"
-            (closeMobileFilters)="closeMobileFilters()">
-          </app-book-filters>
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-lg-9 col-md-8">
-          <app-book-list
-            [booksResponse]="booksResponse"
-            [loading]="loading"
-            [error]="error"
-            [pageSize]="searchParams.size || 12"
-            (pageSizeChange)="onPageSizeChange($event)"
-            (retryLoad)="loadBooks()">
-          </app-book-list>
-
-          <app-book-pagination
-            [pagedResponse]="booksResponse"
-            (pageChange)="goToPage($event)">
-          </app-book-pagination>
-        </div>
-      </div>
-    </div>
-  `,
-    styles: [`
-    @media (max-width: 767.98px) {
-      .container-fluid {
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-      }
-    }
-
-    @media (max-width: 575.98px) {
-      .col-12 {
-        padding-left: 0.375rem;
-        padding-right: 0.375rem;
-      }
-    }
-  `]
+    templateUrl: './book-catalog.html',
+    styleUrls: ['./book-catalog.css']
 })
 export class BookCatalogComponent implements OnInit, OnDestroy {
   booksResponse: PagedResponse<Book> | null = null;

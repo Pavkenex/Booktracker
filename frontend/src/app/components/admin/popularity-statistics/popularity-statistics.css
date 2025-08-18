@@ -1,0 +1,103 @@
+.container-fluid {
+  padding: 1rem;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.book-thumbnail {
+  width: 50px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  border-top: none;
+  font-weight: 600;
+  color: #495057;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.badge {
+  font-size: 0.75em;
+}
+
+.toast {
+  min-width: 300px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767.98px) {
+  .container-fluid {
+    padding: 0.75rem;
+  }
+
+  .h3 {
+    font-size: 1.5rem;
+  }
+
+  .card-body {
+    padding: 1rem 0.75rem;
+  }
+
+  .book-thumbnail {
+    width: 40px;
+    height: 56px;
+  }
+
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+
+  .badge {
+    font-size: 0.7em;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding: 0.5rem;
+  }
+
+  .card-body {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .book-thumbnail {
+    width: 35px;
+    height: 49px;
+  }
+
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+}
+
+/* Improve touch targets */
+.btn {
+  min-height: 44px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-sm {
+  min-height: 36px;
+}
+
+.form-control,
+.form-select {
+  min-height: 44px;
+}

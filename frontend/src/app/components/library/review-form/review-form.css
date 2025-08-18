@@ -1,0 +1,42 @@
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.star-rating {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.star-input {
+  color: #ddd;
+  transition: color 0.2s ease;
+}
+
+.star-input.active,
+.star-input.hover {
+  color: #ffc107;
+}
+
+.star-input:hover {
+  color: #ffc107;
+}
+
+.rating-input {
+  display: flex;
+  align-items: center;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  opacity: 0.5;
+}
+
+.modal {
+  z-index: 1050;
+}

@@ -1,0 +1,22 @@
+/* Filter toggle button styling */
+.btn[data-bs-toggle="collapse"] {
+  position: relative;
+}
+
+.btn[data-bs-toggle="collapse"]:not(.collapsed)::after {
+  transform: rotate(180deg);
+}
+
+/* Badge styling for active filters */
+.badge {
+  font-size: 0.7rem;
+}
+
+/* Filter chevron animation */
+.filter-chevron {
+  transition: transform 0.3s ease;
+}
+
+.filter-chevron.rotated {
+  transform: rotate(180deg);
+}

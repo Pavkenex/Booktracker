@@ -1,0 +1,192 @@
+<div class="book-actions mt-4">
+  <!-- User not authenticated -->
+  @if (!isAuthenticated) {
+  <div class="text-center">
+    <p class="text-muted mb-3">Sign in to add this book to your library</p>
+    <div class="btn-group" role="group">
+      <a routerLink="/login" class="btn btn-success">
+        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+      </a>
+      <a routerLink="/register" class="btn btn-outline-primary">
+        <i class="fas fa-user-plus me-2"></i>Sign Up
+      </a>
+      <button class="btn btn-outline-info" (click)="onRecommend()">
+        <i class="fas fa-share me-2"></i>Recommend
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- User authenticated but book not in library -->
+  @if (isAuthenticated && !userBook) {
+  <div>
+    <!-- Desktop / larger screens: split button group -->
+    <div class="btn-group dropdown d-none d-sm-inline-flex" role="group">
+      <button
+        class="btn btn-success"
+        (click)="onAddToLibrary('to_read')"
+        [disabled]="addingToLibrary"
+      >
+        @if (addingToLibrary) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        } @if (!addingToLibrary) {
+        <i class="fas fa-plus me-2"></i>
+        } Want to Read
+      </button>
+      <button
+        class="btn btn-success dropdown-toggle dropdown-toggle-split"
+        type="button"
+        (click)="toggleDropdown()"
+        [attr.aria-expanded]="dropdownOpen"
+        [disabled]="addingToLibrary"
+      >
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" [class.show]="dropdownOpen">
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            (click)="$event.preventDefault(); selectOption('to_read')"
+          >
+            <i class="fas fa-plus me-2 text-success"></i>Want to Read
+          </a>
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            (click)="$event.preventDefault(); selectOption('currently_reading')"
+          >
+            <i class="fas fa-book-open me-2 text-warning"></i>Currently Reading
+          </a>
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            (click)="$event.preventDefault(); selectOption('read')"
+          >
+            <i class="fas fa-check me-2 text-primary"></i>Mark as Read
+          </a>
+        </li>
+      </ul>
+      <button class="btn btn-outline-info" (click)="onRecommend()">
+        <i class="fas fa-share me-2"></i>Recommend
+      </button>
+    </div>
+    <!-- Mobile: single full-width dropdown button -->
+    <div class="dropdown d-sm-none">
+      <button
+        class="btn btn-success w-100"
+        type="button"
+        (click)="toggleDropdown()"
+        [attr.aria-expanded]="dropdownOpen"
+        [disabled]="addingToLibrary"
+      >
+        @if (addingToLibrary) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        } @if (!addingToLibrary) {
+        <i class="fas fa-plus me-2"></i>
+        } Add to Library
+        <i class="fas fa-caret-down ms-2"></i>
+      </button>
+      <ul
+        class="dropdown-menu w-100 mobile-dropdown"
+        [class.show]="dropdownOpen"
+      >
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            (click)="$event.preventDefault(); selectOption('to_read')"
+          >
+            <i class="fas fa-plus me-2 text-success"></i>Want to Read
+          </a>
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            (click)="$event.preventDefault(); selectOption('currently_reading')"
+          >
+            <i class="fas fa-book-open me-2 text-warning"></i>Currently Reading
+          </a>
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            (click)="$event.preventDefault(); selectOption('read')"
+          >
+            <i class="fas fa-check me-2 text-primary"></i>Mark as Read
+          </a>
+        </li>
+      </ul>
+      <button class="btn btn-outline-info w-100 mt-2" (click)="onRecommend()">
+        <i class="fas fa-share me-2"></i>Recommend
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- User authenticated and book already in library -->
+  @if (isAuthenticated && userBook) {
+  <div class="library-status-section">
+    <div class="alert alert-info d-flex align-items-center mb-3">
+      <i class="fas fa-book me-2"></i>
+      <span>This book is in your library</span>
+      <button
+        class="btn btn-sm btn-outline-danger ms-auto"
+        (click)="onRemoveFromLibrary()"
+        [disabled]="removingFromLibrary"
+      >
+        @if (removingFromLibrary) {
+        <span class="spinner-border spinner-border-sm me-1"></span>
+        } @if (!removingFromLibrary) {
+        <i class="fas fa-trash me-1"></i>
+        } Remove
+      </button>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <app-book-status-selector
+          [userBook]="userBook"
+          (statusChanged)="onStatusChanged($event)"
+        ></app-book-status-selector>
+      </div>
+      <div class="col-md-6 favorite-toggle">
+        <button
+          class="btn btn-outline-warning"
+          (click)="onToggleFavorite()"
+          [disabled]="togglingFavorite"
+        >
+          @if (togglingFavorite) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+          } @if (!togglingFavorite) {
+          <i
+            [class]="userBook.isFavourite ? 'fas fa-heart' : 'far fa-heart'"
+            class="me-1"
+          ></i>
+          } {{ userBook.isFavourite ? 'Remove from Favorites' : 'Add to
+          Favorites' }}
+        </button>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12">
+        <button class="btn btn-outline-info" (click)="onRecommend()">
+          <i class="fas fa-share me-2"></i>Recommend
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Success/Error Messages -->
+  @if (libraryMessage) {
+  <div class="alert alert-success mt-3">{{ libraryMessage }}</div>
+  } @if (error) {
+  <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+</div>

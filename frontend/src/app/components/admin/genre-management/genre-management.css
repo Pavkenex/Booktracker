@@ -1,0 +1,74 @@
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  padding: 0.75rem 1rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.btn {
+  border-radius: 0.25rem;
+  min-height: 38px;
+}
+
+.btn-sm {
+  min-height: 32px;
+}
+
+.form-control {
+  border-radius: 0.25rem;
+  min-height: 42px;
+}
+
+.alert {
+  border-radius: 0.25rem;
+}
+
+/* Improve touch targets */
+@media (max-width: 767.98px) {
+  .card-body {
+    padding: 1rem;
+  }
+
+  h1.h3 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .btn-sm {
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  h1.h3 {
+    font-size: 1.25rem;
+  }
+}

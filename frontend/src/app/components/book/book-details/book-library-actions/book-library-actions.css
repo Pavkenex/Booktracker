@@ -1,0 +1,42 @@
+.book-actions {
+  border-top: 1px solid #dee2e6;
+  padding-top: 1rem;
+}
+
+.library-status-section {
+  width: 100%;
+}
+
+.favorite-toggle {
+  text-align: right;
+}
+
+.dropdown-toggle-split {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.dropdown-menu {
+  min-width: 180px;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-item i {
+  width: 20px;
+}
+
+@media (max-width: 575.98px) {
+  .btn-group .btn {
+    margin-bottom: 0.5rem;
+    border-radius: 0.375rem !important;
+  }
+}

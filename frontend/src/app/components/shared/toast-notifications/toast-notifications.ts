@@ -6,60 +6,8 @@ import { ErrorHandler, ErrorMessage } from '../../../services/error-handler';
 @Component({
     selector: 'app-toast-notifications',
     imports: [CommonModule],
-    template: `
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-      @for (error of errors; track error) {
-        <div
-          class="toast show"
-          [ngClass]="getToastClass(error.type)"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-          >
-          <div class="toast-header">
-            <i class="me-2" [ngClass]="getIconClass(error.type)"></i>
-            <strong class="me-auto">{{ getTitle(error.type) }}</strong>
-            <small class="text-muted">{{ getTimeAgo(error.timestamp) }}</small>
-            <button
-              type="button"
-              class="btn-close"
-              (click)="removeError(error.id)"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="toast-body">
-            {{ error.message }}
-          </div>
-        </div>
-      }
-    </div>
-    `,
-    styles: [`
-    .toast-container {
-      max-width: 400px;
-    }
-    
-    .toast {
-      margin-bottom: 0.5rem;
-      min-width: 300px;
-    }
-    
-    .toast-error {
-      border-left: 4px solid #dc3545;
-    }
-    
-    .toast-warning {
-      border-left: 4px solid #ffc107;
-    }
-    
-    .toast-info {
-      border-left: 4px solid #0dcaf0;
-    }
-    
-    .toast-success {
-      border-left: 4px solid #198754;
-    }
-  `]
+    templateUrl: './toast-notifications.html',
+    styleUrls: ['./toast-notifications.css']
 })
 export class ToastNotificationsComponent implements OnInit, OnDestroy {
   errors: ErrorMessage[] = [];

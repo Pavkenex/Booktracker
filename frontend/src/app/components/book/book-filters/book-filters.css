@@ -1,0 +1,45 @@
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Mobile filter close button */
+.btn-close {
+  background-size: 0.75rem;
+}
+
+/* Filter panel visibility */
+.filter-panel {
+  display: block;
+}
+
+/* Mobile-specific filter panel behavior */
+@media (max-width: 991.98px) {
+  .filter-panel.mobile-hidden {
+    display: none;
+  }
+
+  .filter-panel {
+    transition: all 0.3s ease;
+  }
+}
+
+/* Desktop always shows filter panel */
+@media (min-width: 992px) {
+  .filter-panel {
+    display: block !important;
+  }
+}
+
+/* Improve form controls on mobile */
+@media (max-width: 767.98px) {
+  .form-control,
+  .form-select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}

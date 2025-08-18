@@ -1,0 +1,40 @@
+@if (similarBooks.length > 0) {
+<div class="similar-section mt-5">
+  <h3 class="mb-3">Similar Books</h3>
+  <div class="similar-slider-wrapper">
+    <div class="similar-slider" #similarSlider>
+      @for (book of similarBooks; track trackByBookId($index, book)) {
+      <div class="similar-item" (click)="onNavigateToBook(book.id)">
+        <div class="thumb-wrapper">
+          <img [src]="book.thumbnail" [alt]="book.title" appFallbackImage />
+        </div>
+        <div class="mt-2 text-center">
+          <div class="fw-semibold small text-truncate" [title]="book.title">
+            {{ book.title }}
+          </div>
+          <div class="text-muted small text-truncate" [title]="book.author">
+            {{ book.author }}
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    <button
+      class="btn btn-outline-secondary slider-btn position-absolute top-50 start-0 translate-middle-y"
+      style="left: -20px"
+      (click)="onScrollPrevious()"
+      type="button"
+    >
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button
+      class="btn btn-outline-secondary slider-btn position-absolute top-50 end-0 translate-middle-y"
+      style="right: -20px"
+      (click)="onScrollNext()"
+      type="button"
+    >
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+}

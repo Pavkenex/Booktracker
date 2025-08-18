@@ -1,0 +1,30 @@
+.book-cover-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.book-cover {
+  max-height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-title {
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.book-author {
+  font-style: italic;
+}
+
+.book-meta {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.book-description {
+  margin-top: 2rem;
+}

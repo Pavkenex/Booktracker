@@ -7,53 +7,8 @@ import { UserBook } from '../../../models/library.model';
 @Component({
     selector: 'app-book-status-selector',
     imports: [FormsModule],
-    template: `
-    <div class="status-selector">
-      <label class="form-label small text-muted">Reading Status:</label>
-      <select
-        class="form-select form-select-sm"
-        [value]="userBook.status"
-        (change)="onStatusChange($event)"
-        [disabled]="updating">
-        <option value="to_read">Want to Read</option>
-        <option value="currently_reading">Currently Reading</option>
-        <option value="read">Read</option>
-      </select>
-    
-      <!-- Loading indicator -->
-      @if (updating) {
-        <div class="text-center mt-1">
-          <div class="spinner-border spinner-border-sm" role="status">
-            <span class="visually-hidden">Updating...</span>
-          </div>
-        </div>
-      }
-    
-      <!-- Read date display -->
-      @if (userBook.status === 'read' && userBook.readDate) {
-        <div class="mt-1">
-          <small class="text-muted">
-            <i class="fas fa-calendar-check me-1"></i>
-            Read on {{ formatDate(userBook.readDate) }}
-          </small>
-        </div>
-      }
-    </div>
-    `,
-    styles: [`
-    .status-selector {
-      margin-bottom: 0.5rem;
-    }
-    
-    .form-select-sm {
-      font-size: 0.875rem;
-    }
-    
-    .spinner-border-sm {
-      width: 1rem;
-      height: 1rem;
-    }
-  `]
+    templateUrl: './book-status-selector.html',
+    styleUrls: ['./book-status-selector.css']
 })
 export class BookStatusSelectorComponent {
   @Input() userBook!: UserBook;

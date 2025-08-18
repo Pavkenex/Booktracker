@@ -1,0 +1,24 @@
+.toast-container {
+  max-width: 400px;
+}
+
+.toast {
+  margin-bottom: 0.5rem;
+  min-width: 300px;
+}
+
+.toast-error {
+  border-left: 4px solid #dc3545;
+}
+
+.toast-warning {
+  border-left: 4px solid #ffc107;
+}
+
+.toast-info {
+  border-left: 4px solid #0dcaf0;
+}
+
+.toast-success {
+  border-left: 4px solid #198754;
+}

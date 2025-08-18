@@ -1,0 +1,144 @@
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.nav-link.active {
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0.375rem;
+}
+
+.dropdown-item {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  padding: 1rem;
+  min-height: calc(100vh - 76px); /* Account for navbar height */
+}
+
+/* Mobile-specific styles */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-link {
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin: 0.125rem 0;
+  }
+
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .main-content {
+    padding: 0.75rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+}
+
+/* Ensure proper spacing for mobile navigation */
+.navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+/* Dropdown improvements */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
+  z-index: 1050;
+  min-width: 200px;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: #f8f9fa;
+}
+
+.dropdown-toggle::after {
+  margin-left: 0.5rem;
+}
+
+/* Desktop dropdown positioning */
+@media (min-width: 992px) {
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    transform: none;
+    margin-top: 0.125rem;
+  }
+
+  .dropdown-menu.show {
+    display: block;
+  }
+}
+
+/* Mobile dropdown behavior */
+@media (max-width: 991.98px) {
+  .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    margin-top: 0.5rem;
+    width: 100%;
+    box-shadow: none;
+  }
+
+  .dropdown-item {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+}
+
+/* Ensure dropdown doesn't get cut off */
+.navbar {
+  overflow: visible;
+}
+
+.navbar-nav {
+  overflow: visible;
+}

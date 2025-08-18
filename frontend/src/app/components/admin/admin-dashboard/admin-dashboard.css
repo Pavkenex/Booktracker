@@ -1,0 +1,92 @@
+.container-fluid {
+  padding: 1rem;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.btn-lg {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767.98px) {
+  .container-fluid {
+    padding: 0.75rem;
+  }
+
+  .h3 {
+    font-size: 1.5rem;
+  }
+
+  .card-body {
+    padding: 1rem 0.75rem;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding: 0.5rem;
+  }
+
+  .card-body {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .btn-lg {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Improve touch targets */
+.btn {
+  min-height: 44px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-sm {
+  min-height: 36px;
+}
+
+/* Card hover effects for non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
