@@ -18,143 +18,154 @@ import { Observable } from 'rxjs';
             <span class="d-none d-sm-inline">BookTracker</span>
             <span class="d-inline d-sm-none">BT</span>
           </a>
-          
+    
           <!-- Mobile notifications icon -->
-          <div class="d-flex d-lg-none align-items-center" *ngIf="isAuthenticated$ | async">
-            <app-notifications class="me-2"></app-notifications>
-          </div>
-          
-          <button 
-            class="navbar-toggler" 
-            type="button" 
+          @if (isAuthenticated$ | async) {
+            <div class="d-flex d-lg-none align-items-center">
+              <app-notifications class="me-2"></app-notifications>
+            </div>
+          }
+    
+          <button
+            class="navbar-toggler"
+            type="button"
             aria-controls="navbarNav"
             [attr.aria-expanded]="isNavbarOpen"
             aria-label="Toggle navigation"
             (click)="toggleNavbar()">
             <span class="navbar-toggler-icon"></span>
           </button>
-          
-          <div class="navbar-collapse" 
-               id="navbarNav"
-               [class.collapse]="!isNavbarOpen"
-               [class.show]="isNavbarOpen">
+    
+          <div class="navbar-collapse"
+            id="navbarNav"
+            [class.collapse]="!isNavbarOpen"
+            [class.show]="isNavbarOpen">
             <ul class="navbar-nav me-auto">
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center" 
-                   routerLink="/home" 
-                   routerLinkActive="active"
-                   (click)="closeNavbar()">
+                <a class="nav-link d-flex align-items-center"
+                  routerLink="/home"
+                  routerLinkActive="active"
+                  (click)="closeNavbar()">
                   <i class="fas fa-home me-2 d-lg-none"></i>Home
                 </a>
               </li>
-              <li class="nav-item" *ngIf="isAuthenticated$ | async">
-                <a class="nav-link d-flex align-items-center" 
-                   routerLink="/library" 
-                   routerLinkActive="active"
-                   (click)="closeNavbar()">
-                  <i class="fas fa-book me-2 d-lg-none"></i>My Library
-                </a>
-              </li>
-              <li class="nav-item" *ngIf="isAuthenticated$ | async">
-                <a class="nav-link d-flex align-items-center" 
-                   routerLink="/books" 
-                   routerLinkActive="active"
-                   (click)="closeNavbar()">
-                  <i class="fas fa-search me-2 d-lg-none"></i>Book Catalog
-                </a>
-              </li>
-              <li class="nav-item" *ngIf="isAuthenticated$ | async">
-                <a class="nav-link d-flex align-items-center" 
-                   routerLink="/social" 
-                   routerLinkActive="active"
-                   (click)="closeNavbar()">
-                  <i class="fas fa-users me-2 d-lg-none"></i>Social
-                </a>
-              </li>
+              @if (isAuthenticated$ | async) {
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center"
+                    routerLink="/library"
+                    routerLinkActive="active"
+                    (click)="closeNavbar()">
+                    <i class="fas fa-book me-2 d-lg-none"></i>My Library
+                  </a>
+                </li>
+              }
+              @if (isAuthenticated$ | async) {
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center"
+                    routerLink="/books"
+                    routerLinkActive="active"
+                    (click)="closeNavbar()">
+                    <i class="fas fa-search me-2 d-lg-none"></i>Book Catalog
+                  </a>
+                </li>
+              }
+              @if (isAuthenticated$ | async) {
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center"
+                    routerLink="/social"
+                    routerLinkActive="active"
+                    (click)="closeNavbar()">
+                    <i class="fas fa-users me-2 d-lg-none"></i>Social
+                  </a>
+                </li>
+              }
             </ul>
-            
+    
             <ul class="navbar-nav ms-auto">
               <!-- Desktop notifications -->
-              <li class="nav-item d-none d-lg-block" *ngIf="isAuthenticated$ | async">
-                <app-notifications></app-notifications>
-              </li>
-              
-              <ng-container *ngIf="!(isAuthenticated$ | async); else authenticatedNav">
+              @if (isAuthenticated$ | async) {
+                <li class="nav-item d-none d-lg-block">
+                  <app-notifications></app-notifications>
+                </li>
+              }
+    
+              @if (!(isAuthenticated$ | async)) {
                 <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center" 
-                     routerLink="/login" 
-                     routerLinkActive="active"
-                     (click)="closeNavbar()">
+                  <a class="nav-link d-flex align-items-center"
+                    routerLink="/login"
+                    routerLinkActive="active"
+                    (click)="closeNavbar()">
                     <i class="fas fa-sign-in-alt me-2 d-lg-none"></i>Login
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center" 
-                     routerLink="/register" 
-                     routerLinkActive="active"
-                     (click)="closeNavbar()">
+                  <a class="nav-link d-flex align-items-center"
+                    routerLink="/register"
+                    routerLinkActive="active"
+                    (click)="closeNavbar()">
                     <i class="fas fa-user-plus me-2 d-lg-none"></i>Register
                   </a>
                 </li>
-              </ng-container>
-              
-              <ng-template #authenticatedNav>
+              } @else {
                 <li class="nav-item dropdown" [class.show]="isDropdownOpen">
-                  <a class="nav-link dropdown-toggle d-flex align-items-center" 
-                     href="#" 
-                     id="navbarDropdown" 
-                     role="button" 
-                     [attr.aria-expanded]="isDropdownOpen"
-                     (click)="toggleDropdown($event)">
+                  <a class="nav-link dropdown-toggle d-flex align-items-center"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    [attr.aria-expanded]="isDropdownOpen"
+                    (click)="toggleDropdown($event)">
                     <i class="fas fa-user-circle me-2"></i>
                     <span class="d-none d-md-inline">{{ (currentUser$ | async)?.username }}</span>
                     <span class="d-inline d-md-none">Account</span>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" [class.show]="isDropdownOpen">
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" 
-                         routerLink="/profile"
-                         (click)="closeDropdown(); closeNavbar()">
+                      <a class="dropdown-item d-flex align-items-center"
+                        routerLink="/profile"
+                        (click)="closeDropdown(); closeNavbar()">
                         <i class="fas fa-user me-2"></i>Profile
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" 
-                         routerLink="/social"
-                         (click)="closeDropdown(); closeNavbar()">
+                      <a class="dropdown-item d-flex align-items-center"
+                        routerLink="/social"
+                        (click)="closeDropdown(); closeNavbar()">
                         <i class="fas fa-users me-2"></i>Social Features
                       </a>
                     </li>
-                    <li *ngIf="(currentUser$ | async)?.isAdmin">
-                      <a class="dropdown-item d-flex align-items-center" 
-                         routerLink="/admin"
-                         (click)="closeDropdown(); closeNavbar()">
-                        <i class="fas fa-cog me-2"></i>Admin Panel
-                      </a>
-                    </li>
+                    @if ((currentUser$ | async)?.isAdmin) {
+                      <li>
+                        <a class="dropdown-item d-flex align-items-center"
+                          routerLink="/admin"
+                          (click)="closeDropdown(); closeNavbar()">
+                          <i class="fas fa-cog me-2"></i>Admin Panel
+                        </a>
+                      </li>
+                    }
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                      <button class="dropdown-item d-flex align-items-center" 
-                              (click)="logout(); closeDropdown(); closeNavbar()">
+                      <button class="dropdown-item d-flex align-items-center"
+                        (click)="logout(); closeDropdown(); closeNavbar()">
                         <i class="fas fa-sign-out-alt me-2"></i>Logout
                       </button>
                     </li>
                   </ul>
                 </li>
-              </ng-template>
+              }
+    
             </ul>
           </div>
         </div>
       </nav>
-      
+    
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
-      
+    
       <!-- Toast notifications -->
       <app-toast-notifications></app-toast-notifications>
     </div>
-  `,
+    `,
     styles: [`
     .navbar-brand {
       font-weight: bold;

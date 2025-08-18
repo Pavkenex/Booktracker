@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { FriendsListComponent } from '../friends-list/friends-list';
 import { FriendRequestsComponent } from '../friend-requests/friend-requests';
@@ -10,12 +10,11 @@ import { NotificationCount } from '../../../models/social.model';
 @Component({
     selector: 'app-social-dashboard',
     imports: [
-        CommonModule,
-        RouterModule,
-        FriendsListComponent,
-        FriendRequestsComponent,
-        RecommendationsComponent
-    ],
+    RouterModule,
+    FriendsListComponent,
+    FriendRequestsComponent,
+    RecommendationsComponent
+],
     templateUrl: './social-dashboard.component.html',
     styleUrls: ['./social-dashboard.component.css']
 })

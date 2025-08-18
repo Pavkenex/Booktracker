@@ -1,16 +1,16 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { LibraryService } from '../../../services/library.service';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
     selector: 'app-book-status-selector',
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     template: `
     <div class="status-selector">
       <label class="form-label small text-muted">Reading Status:</label>
-      <select 
+      <select
         class="form-select form-select-sm"
         [value]="userBook.status"
         (change)="onStatusChange($event)"
@@ -19,23 +19,27 @@ import { UserBook } from '../../../models/library.model';
         <option value="currently_reading">Currently Reading</option>
         <option value="read">Read</option>
       </select>
-      
+    
       <!-- Loading indicator -->
-      <div *ngIf="updating" class="text-center mt-1">
-        <div class="spinner-border spinner-border-sm" role="status">
-          <span class="visually-hidden">Updating...</span>
+      @if (updating) {
+        <div class="text-center mt-1">
+          <div class="spinner-border spinner-border-sm" role="status">
+            <span class="visually-hidden">Updating...</span>
+          </div>
         </div>
-      </div>
-      
+      }
+    
       <!-- Read date display -->
-      <div *ngIf="userBook.status === 'read' && userBook.readDate" class="mt-1">
-        <small class="text-muted">
-          <i class="fas fa-calendar-check me-1"></i>
-          Read on {{ formatDate(userBook.readDate) }}
-        </small>
-      </div>
+      @if (userBook.status === 'read' && userBook.readDate) {
+        <div class="mt-1">
+          <small class="text-muted">
+            <i class="fas fa-calendar-check me-1"></i>
+            Read on {{ formatDate(userBook.readDate) }}
+          </small>
+        </div>
+      }
     </div>
-  `,
+    `,
     styles: [`
     .status-selector {
       margin-bottom: 0.5rem;

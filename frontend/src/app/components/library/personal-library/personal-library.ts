@@ -20,22 +20,22 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
           </h2>
         </div>
       </div>
-
+    
       <!-- Library Statistics -->
       <div class="row mb-4">
         <div class="col-12">
           <app-library-stats></app-library-stats>
         </div>
       </div>
-
+    
       <!-- Filter Tabs -->
       <div class="row mb-4">
         <div class="col-12">
           <!-- Mobile dropdown for tabs -->
           <div class="d-md-none mb-3">
-            <select 
-              class="form-select" 
-              [value]="activeTab" 
+            <select
+              class="form-select"
+              [value]="activeTab"
               (change)="setActiveTab($any($event.target).value)">
               <option value="all">All Books ({{ allBooks.length }})</option>
               <option value="to_read">Want to Read ({{ booksToRead.length }})</option>
@@ -44,12 +44,12 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
               <option value="favorites">Favorites ({{ favoriteBooks.length }})</option>
             </select>
           </div>
-          
+    
           <!-- Desktop tabs -->
           <ul class="nav nav-tabs d-none d-md-flex" id="libraryTabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <button 
-                class="nav-link" 
+              <button
+                class="nav-link"
                 [class.active]="activeTab === 'all'"
                 (click)="setActiveTab('all')"
                 type="button">
@@ -59,8 +59,8 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button 
-                class="nav-link" 
+              <button
+                class="nav-link"
                 [class.active]="activeTab === 'to_read'"
                 (click)="setActiveTab('to_read')"
                 type="button">
@@ -70,8 +70,8 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button 
-                class="nav-link" 
+              <button
+                class="nav-link"
                 [class.active]="activeTab === 'currently_reading'"
                 (click)="setActiveTab('currently_reading')"
                 type="button">
@@ -81,8 +81,8 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button 
-                class="nav-link" 
+              <button
+                class="nav-link"
                 [class.active]="activeTab === 'read'"
                 (click)="setActiveTab('read')"
                 type="button">
@@ -90,8 +90,8 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button 
-                class="nav-link" 
+              <button
+                class="nav-link"
                 [class.active]="activeTab === 'favorites'"
                 (click)="setActiveTab('favorites')"
                 type="button">
@@ -104,154 +104,174 @@ import { LibraryStatsComponent } from '../library-stats/library-stats';
           </ul>
         </div>
       </div>
-
+    
       <!-- Books Display -->
       <div class="row">
         <div class="col-12">
           <div class="tab-content" id="libraryTabContent">
             <!-- Loading State -->
-            <div *ngIf="loading" class="text-center py-5">
-              <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
+            @if (loading) {
+              <div class="text-center py-5">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
               </div>
-            </div>
-
+            }
+    
             <!-- Empty State -->
-            <div *ngIf="!loading && filteredBooks.length === 0" class="text-center py-5">
-              <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-              <h4 class="text-muted">No books found</h4>
-              <p class="text-muted">
-                <span *ngIf="activeTab === 'all'">Your library is empty. Start by adding some books!</span>
-                <span *ngIf="activeTab === 'to_read'">No books in your "Want to Read" list.</span>
-                <span *ngIf="activeTab === 'currently_reading'">No books currently being read.</span>
-                <span *ngIf="activeTab === 'read'">No books marked as read yet.</span>
-                <span *ngIf="activeTab === 'favorites'">No favorite books selected.</span>
-              </p>
-              <a routerLink="/books" class="btn btn-primary">
-                <i class="fas fa-search me-2"></i>Browse Books
-              </a>
-            </div>
-
+            @if (!loading && filteredBooks.length === 0) {
+              <div class="text-center py-5">
+                <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No books found</h4>
+                <p class="text-muted">
+                  @if (activeTab === 'all') {
+                    <span>Your library is empty. Start by adding some books!</span>
+                  }
+                  @if (activeTab === 'to_read') {
+                    <span>No books in your "Want to Read" list.</span>
+                  }
+                  @if (activeTab === 'currently_reading') {
+                    <span>No books currently being read.</span>
+                  }
+                  @if (activeTab === 'read') {
+                    <span>No books marked as read yet.</span>
+                  }
+                  @if (activeTab === 'favorites') {
+                    <span>No favorite books selected.</span>
+                  }
+                </p>
+                <a routerLink="/books" class="btn btn-primary">
+                  <i class="fas fa-search me-2"></i>Browse Books
+                </a>
+              </div>
+            }
+    
             <!-- Books Grid -->
-            <div *ngIf="!loading && filteredBooks.length > 0" class="row g-3">
-              <div *ngFor="let userBook of filteredBooks" class="col-lg-4 col-md-6 col-12">
-                <div class="card h-100">
-                  <!-- Book Image -->
-                  <div class="position-relative book-image-container">
-                    <img 
-                      [src]="userBook.book.thumbnail || '/assets/images/book-placeholder.svg'" 
-                      [alt]="userBook.book.title"
-                      class="card-img-top">
-                    
-                    <!-- Favorite Badge -->
-                    <button 
-                      *ngIf="userBook.isFavourite"
-                      class="btn btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
-                      (click)="toggleFavorite(userBook)"
-                      title="Remove from favorites">
-                      <i class="fas fa-heart text-danger"></i>
-                    </button>
-                    <button 
-                      *ngIf="!userBook.isFavourite"
-                      class="btn btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
-                      (click)="toggleFavorite(userBook)"
-                      title="Add to favorites">
-                      <i class="far fa-heart text-muted"></i>
-                    </button>
-                  </div>
-
-                  <div class="card-body d-flex flex-column">
-                    <!-- Book Info -->
-                    <h6 class="card-title">{{ userBook.book.title }}</h6>
-                    <p class="card-text text-muted small mb-2">by {{ userBook.book.author }}</p>
-                    
-                    <!-- Status and Rating -->
-                    <div class="mb-3">
-                      <app-book-status-selector 
-                        [userBook]="userBook"
-                        (statusChanged)="onStatusChanged($event)">
-                      </app-book-status-selector>
-                      
-                      <!-- Rating Display -->
-                      <div *ngIf="userBook.rating" class="mt-2">
-                        <small class="text-muted">My Rating:</small>
-                        <div class="d-inline-block ms-1">
-                          <i *ngFor="let star of [1,2,3,4,5]" 
-                             class="fas fa-star star-rating"
-                             [class.text-warning]="star <= userBook.rating!"
-                             [class.text-muted]="star > userBook.rating!">
-                          </i>
+            @if (!loading && filteredBooks.length > 0) {
+              <div class="row g-3">
+                @for (userBook of filteredBooks; track userBook) {
+                  <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card h-100">
+                      <!-- Book Image -->
+                      <div class="position-relative book-image-container">
+                        <img
+                          [src]="userBook.book.thumbnail || '/assets/images/book-placeholder.svg'"
+                          [alt]="userBook.book.title"
+                          class="card-img-top">
+                          <!-- Favorite Badge -->
+                          @if (userBook.isFavourite) {
+                            <button
+                              class="btn btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
+                              (click)="toggleFavorite(userBook)"
+                              title="Remove from favorites">
+                              <i class="fas fa-heart text-danger"></i>
+                            </button>
+                          }
+                          @if (!userBook.isFavourite) {
+                            <button
+                              class="btn btn-sm position-absolute top-0 end-0 m-2 favorite-btn"
+                              (click)="toggleFavorite(userBook)"
+                              title="Add to favorites">
+                              <i class="far fa-heart text-muted"></i>
+                            </button>
+                          }
                         </div>
-                      </div>
-                    </div>
-
-                    <!-- Review Preview -->
-                    <div *ngIf="userBook.review" class="mb-3 review-preview">
-                      <small class="text-muted">My Review:</small>
-                      <p class="small mt-1" [title]="userBook.review">
-                        {{ userBook.review.length > 80 ? (userBook.review | slice:0:80) + '...' : userBook.review }}
-                      </p>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="mt-auto">
-                      <!-- Mobile: Stacked buttons -->
-                      <div class="d-md-none">
-                        <div class="d-grid gap-2">
-                          <a [routerLink]="['/books', userBook.book.id]" 
-                             class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-eye me-2"></i>View Details
-                          </a>
-                          <div class="btn-group" role="group">
-                            <button 
-                              class="btn btn-outline-secondary btn-sm"
-                              (click)="openReviewForm(userBook)">
-                              <i class="fas fa-edit me-1"></i>Review
-                            </button>
-                            <button 
-                              class="btn btn-outline-danger btn-sm"
-                              (click)="removeBook(userBook)">
-                              <i class="fas fa-trash me-1"></i>Remove
-                            </button>
+                        <div class="card-body d-flex flex-column">
+                          <!-- Book Info -->
+                          <h6 class="card-title">{{ userBook.book.title }}</h6>
+                          <p class="card-text text-muted small mb-2">by {{ userBook.book.author }}</p>
+                          <!-- Status and Rating -->
+                          <div class="mb-3">
+                            <app-book-status-selector
+                              [userBook]="userBook"
+                              (statusChanged)="onStatusChanged($event)">
+                            </app-book-status-selector>
+                            <!-- Rating Display -->
+                            @if (userBook.rating) {
+                              <div class="mt-2">
+                                <small class="text-muted">My Rating:</small>
+                                <div class="d-inline-block ms-1">
+                                  @for (star of [1,2,3,4,5]; track star) {
+                                    <i
+                                      class="fas fa-star star-rating"
+                                      [class.text-warning]="star <= userBook.rating!"
+                                      [class.text-muted]="star > userBook.rating!">
+                                    </i>
+                                  }
+                                </div>
+                              </div>
+                            }
+                          </div>
+                          <!-- Review Preview -->
+                          @if (userBook.review) {
+                            <div class="mb-3 review-preview">
+                              <small class="text-muted">My Review:</small>
+                              <p class="small mt-1" [title]="userBook.review">
+                                {{ userBook.review.length > 80 ? (userBook.review | slice:0:80) + '...' : userBook.review }}
+                              </p>
+                            </div>
+                          }
+                          <!-- Action Buttons -->
+                          <div class="mt-auto">
+                            <!-- Mobile: Stacked buttons -->
+                            <div class="d-md-none">
+                              <div class="d-grid gap-2">
+                                <a [routerLink]="['/books', userBook.book.id]"
+                                  class="btn btn-outline-primary btn-sm">
+                                  <i class="fas fa-eye me-2"></i>View Details
+                                </a>
+                                <div class="btn-group" role="group">
+                                  <button
+                                    class="btn btn-outline-secondary btn-sm"
+                                    (click)="openReviewForm(userBook)">
+                                    <i class="fas fa-edit me-1"></i>Review
+                                  </button>
+                                  <button
+                                    class="btn btn-outline-danger btn-sm"
+                                    (click)="removeBook(userBook)">
+                                    <i class="fas fa-trash me-1"></i>Remove
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Desktop: Button group -->
+                            <div class="btn-group w-100 d-none d-md-flex" role="group">
+                              <a [routerLink]="['/books', userBook.book.id]"
+                                class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>View
+                              </a>
+                              <button
+                                class="btn btn-outline-secondary btn-sm"
+                                (click)="openReviewForm(userBook)">
+                                <i class="fas fa-edit me-1"></i>Review
+                              </button>
+                              <button
+                                class="btn btn-outline-danger btn-sm"
+                                (click)="removeBook(userBook)">
+                                <i class="fas fa-trash me-1"></i>Remove
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      
-                      <!-- Desktop: Button group -->
-                      <div class="btn-group w-100 d-none d-md-flex" role="group">
-                        <a [routerLink]="['/books', userBook.book.id]" 
-                           class="btn btn-outline-primary btn-sm">
-                          <i class="fas fa-eye me-1"></i>View
-                        </a>
-                        <button 
-                          class="btn btn-outline-secondary btn-sm"
-                          (click)="openReviewForm(userBook)">
-                          <i class="fas fa-edit me-1"></i>Review
-                        </button>
-                        <button 
-                          class="btn btn-outline-danger btn-sm"
-                          (click)="removeBook(userBook)">
-                          <i class="fas fa-trash me-1"></i>Remove
-                        </button>
-                      </div>
                     </div>
-                  </div>
+                  }
                 </div>
-              </div>
+              }
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Review Form Modal -->
-    <app-review-form 
-      *ngIf="selectedBookForReview"
-      [userBook]="selectedBookForReview"
-      (reviewSubmitted)="onReviewSubmitted($event)"
-      (modalClosed)="closeReviewForm()">
-    </app-review-form>
-  `,
+    
+      <!-- Review Form Modal -->
+      @if (selectedBookForReview) {
+        <app-review-form
+          [userBook]="selectedBookForReview"
+          (reviewSubmitted)="onReviewSubmitted($event)"
+          (modalClosed)="closeReviewForm()">
+        </app-review-form>
+      }
+    `,
     styles: [`
     .nav-tabs .nav-link {
       color: #6c757d;

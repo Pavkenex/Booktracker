@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Subject, takeUntil } from 'rxjs';
 import { BookService } from '../../../services/book.service';
 import { Book, BookSearchParams, PagedResponse } from '../../../models/book.model';
@@ -12,12 +12,11 @@ import { MobileFilterToggleComponent } from '../mobile-filter-toggle/mobile-filt
   selector: 'app-book-catalog',
   standalone: true,
   imports: [
-    CommonModule, 
-    BookFiltersComponent, 
-    BookListComponent, 
-    BookPaginationComponent, 
+    BookFiltersComponent,
+    BookListComponent,
+    BookPaginationComponent,
     MobileFilterToggleComponent
-  ],
+],
   template: `
     <div class="container-fluid">
       <div class="row">

@@ -23,141 +23,158 @@ import { takeUntil } from "rxjs/operators";
               <i class="fas fa-arrow-left me-2"></i>Back
             </button>
           </div>
-
+    
           <!-- Loading State -->
-          <div *ngIf="isLoading" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+          @if (isLoading) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-3">Loading library...</p>
             </div>
-            <p class="mt-3">Loading library...</p>
-          </div>
-
+          }
+    
           <!-- Error State -->
-          <div *ngIf="error" class="alert alert-danger" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            {{ error }}
-          </div>
-
-          <!-- Library Content -->
-          <div *ngIf="!isLoading && !error">
-            <!-- Library Stats -->
-            <div class="row mb-4">
-              <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card bg-primary text-white">
-                  <div class="card-body text-center">
-                    <h4 class="card-title">{{ totalBooks }}</h4>
-                    <p class="card-text">Total Books</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card bg-success text-white">
-                  <div class="card-body text-center">
-                    <h4 class="card-title">{{ completedBooks }}</h4>
-                    <p class="card-text">Completed</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card bg-warning text-white">
-                  <div class="card-body text-center">
-                    <h4 class="card-title">{{ currentlyReadingBooks }}</h4>
-                    <p class="card-text">Currently Reading</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card bg-info text-white">
-                  <div class="card-body text-center">
-                    <h4 class="card-title">{{ wantToReadBooks }}</h4>
-                    <p class="card-text">Want to Read</p>
-                  </div>
-                </div>
-              </div>
+          @if (error) {
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              {{ error }}
             </div>
-
-            <!-- Books List -->
-            <div *ngIf="books.length > 0">
-              <div class="row">
-                <div
-                  class="col-lg-4 col-md-6 mb-4"
-                  *ngFor="let userBook of books"
-                >
-                  <div class="card h-100">
-                    <div class="card-body">
-                      <div class="d-flex">
-                        <img
-                          [src]="
-                            userBook.book.thumbnail ||
-                            '/assets/images/book-placeholder.png'
-                          "
-                          [alt]="userBook.book.title"
-                          class="book-cover me-3"
-                          style="width: 80px; height: 120px; object-fit: cover;"
-                        />
-                        <div class="flex-grow-1">
-                          <h6 class="card-title">{{ userBook.book.title }}</h6>
-                          <p class="card-text text-muted small mb-2">
-                            by {{ userBook.book.author }}
-                          </p>
-                          <div class="mb-2">
-                            <span
-                              class="badge"
-                              [ngClass]="getStatusBadgeClass(userBook.status)"
-                            >
-                              {{ getStatusDisplayName(userBook.status) }}
-                            </span>
-                            <span
-                              *ngIf="userBook.isFavourite"
-                              class="badge bg-warning ms-1"
-                            >
-                              <i class="fas fa-heart"></i> Favorite
-                            </span>
-                          </div>
-                          <div
-                            *ngIf="userBook.rating && userBook.rating > 0"
-                            class="mb-2"
-                          >
-                            <div class="text-warning">
-                              <i
-                                *ngFor="
-                                  let star of getStarArray(userBook.rating)
-                                "
-                                class="fas fa-star"
-                              ></i>
-                              <i
-                                *ngFor="
-                                  let star of getEmptyStarArray(userBook.rating)
-                                "
-                                class="far fa-star"
-                              ></i>
-                            </div>
-                          </div>
-                          <div *ngIf="userBook.review" class="small text-muted">
-                            <strong>Review:</strong>
-                            <p class="mb-0 mt-1">{{ userBook.review }}</p>
-                          </div>
-                        </div>
-                      </div>
+          }
+    
+          <!-- Library Content -->
+          @if (!isLoading && !error) {
+            <div>
+              <!-- Library Stats -->
+              <div class="row mb-4">
+                <div class="col-md-3 col-sm-6 mb-3">
+                  <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                      <h4 class="card-title">{{ totalBooks }}</h4>
+                      <p class="card-text">Total Books</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                  <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                      <h4 class="card-title">{{ completedBooks }}</h4>
+                      <p class="card-text">Completed</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                  <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                      <h4 class="card-title">{{ currentlyReadingBooks }}</h4>
+                      <p class="card-text">Currently Reading</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                  <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                      <h4 class="card-title">{{ wantToReadBooks }}</h4>
+                      <p class="card-text">Want to Read</p>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Empty State -->
-            <div *ngIf="books.length === 0" class="text-center py-5">
-              <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-              <h4 class="text-muted">No books in library</h4>
-              <p class="text-muted">
-                {{ userName }} hasn't added any books to their library yet.
-              </p>
-            </div>
+              <!-- Books List -->
+              @if (books.length > 0) {
+                <div>
+                  <div class="row">
+                    @for (userBook of books; track userBook) {
+                      <div
+                        class="col-lg-4 col-md-6 mb-4"
+                        >
+                        <div class="card h-100">
+                          <div class="card-body">
+                            <div class="d-flex">
+                              <img
+                          [src]="
+                            userBook.book.thumbnail ||
+                            '/assets/images/book-placeholder.png'
+                          "
+                                [alt]="userBook.book.title"
+                                class="book-cover me-3"
+                                style="width: 80px; height: 120px; object-fit: cover;"
+                                />
+                                <div class="flex-grow-1">
+                                  <h6 class="card-title">{{ userBook.book.title }}</h6>
+                                  <p class="card-text text-muted small mb-2">
+                                    by {{ userBook.book.author }}
+                                  </p>
+                                  <div class="mb-2">
+                                    <span
+                                      class="badge"
+                                      [ngClass]="getStatusBadgeClass(userBook.status)"
+                                      >
+                                      {{ getStatusDisplayName(userBook.status) }}
+                                    </span>
+                                    @if (userBook.isFavourite) {
+                                      <span
+                                        class="badge bg-warning ms-1"
+                                        >
+                                        <i class="fas fa-heart"></i> Favorite
+                                      </span>
+                                    }
+                                  </div>
+                                  @if (userBook.rating && userBook.rating > 0) {
+                                    <div
+                                      class="mb-2"
+                                      >
+                                      <div class="text-warning">
+                                        @for (
+                                          star of getStarArray(userBook.rating)
+                                          ; track
+                                          star) {
+                                          <i
+                                            class="fas fa-star"
+                                          ></i>
+                                        }
+                                        @for (
+                                          star of getEmptyStarArray(userBook.rating)
+                                          ; track
+                                          star) {
+                                          <i
+                                            class="far fa-star"
+                                          ></i>
+                                        }
+                                      </div>
+                                    </div>
+                                  }
+                                  @if (userBook.review) {
+                                    <div class="small text-muted">
+                                      <strong>Review:</strong>
+                                      <p class="mb-0 mt-1">{{ userBook.review }}</p>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+                <!-- Empty State -->
+                @if (books.length === 0) {
+                  <div class="text-center py-5">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No books in library</h4>
+                    <p class="text-muted">
+                      {{ userName }} hasn't added any books to their library yet.
+                    </p>
+                  </div>
+                }
+              </div>
+            }
           </div>
         </div>
       </div>
-    </div>
-  `,
+    `,
     styleUrls: ["./user-library.component.css"]
 })
 export class UserLibraryComponent implements OnInit, OnDestroy {

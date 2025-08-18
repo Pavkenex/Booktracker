@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LibraryService } from '../../../services/library.service';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
     selector: 'app-review-form',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [FormsModule, ReactiveFormsModule],
     template: `
     <!-- Modal Backdrop -->
     <div class="modal-backdrop fade show" (click)="closeModal()"></div>
@@ -21,110 +21,120 @@ import { UserBook } from '../../../models/library.model';
             </h5>
             <button type="button" class="btn-close" (click)="closeModal()"></button>
           </div>
-          
+    
           <div class="modal-body">
             <!-- Book Info -->
             <div class="row mb-4">
               <div class="col-md-3">
-                <img 
-                  [src]="userBook.book.thumbnail || '/assets/images/book-placeholder.svg'" 
+                <img
+                  [src]="userBook.book.thumbnail || '/assets/images/book-placeholder.svg'"
                   [alt]="userBook.book.title"
                   class="img-fluid rounded">
+                </div>
+                <div class="col-md-9">
+                  <h6 class="mb-1">{{ userBook.book.title }}</h6>
+                  <p class="text-muted mb-2">by {{ userBook.book.author }}</p>
+                  @if (userBook.book.description) {
+                    <p class="small text-muted">
+                      {{ userBook.book.description }}
+                    </p>
+                  }
+                </div>
               </div>
-              <div class="col-md-9">
-                <h6 class="mb-1">{{ userBook.book.title }}</h6>
-                <p class="text-muted mb-2">by {{ userBook.book.author }}</p>
-                <p *ngIf="userBook.book.description" class="small text-muted">
-                  {{ userBook.book.description }}
-                </p>
+    
+              <!-- Review Form -->
+              <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
+                <!-- Rating -->
+                <div class="mb-3">
+                  <label class="form-label">Rating</label>
+                  <div class="rating-input">
+                    <div class="star-rating">
+                      @for (star of [1,2,3,4,5]; track star; let i = $index) {
+                        <i
+                          class="fas fa-star star-input"
+                          [class.active]="star <= selectedRating"
+                          [class.hover]="star <= hoverRating"
+                          (click)="setRating(star)"
+                          (mouseenter)="hoverRating = star"
+                          (mouseleave)="hoverRating = 0">
+                        </i>
+                      }
+                    </div>
+                    @if (selectedRating > 0) {
+                      <span class="ms-2 text-muted">
+                        {{ getRatingText(selectedRating) }}
+                      </span>
+                    }
+                  </div>
+                  @if (reviewForm.get('rating')?.invalid && reviewForm.get('rating')?.touched) {
+                    <div
+                      class="text-danger small mt-1">
+                      Please select a rating
+                    </div>
+                  }
+                </div>
+    
+                <!-- Review Text -->
+                <div class="mb-3">
+                  <label for="review" class="form-label">Review (Optional)</label>
+                  <textarea
+                    id="review"
+                    class="form-control"
+                    formControlName="review"
+                    rows="4"
+                    placeholder="Share your thoughts about this book...">
+                  </textarea>
+                  <div class="form-text">
+                    {{ reviewForm.get('review')?.value?.length || 0 }}/500 characters
+                  </div>
+                </div>
+    
+                <!-- Reading Status -->
+                <div class="mb-3">
+                  <label class="form-label">Reading Status</label>
+                  <select class="form-select" formControlName="status">
+                    <option value="to_read">Want to Read</option>
+                    <option value="currently_reading">Currently Reading</option>
+                    <option value="read">Read</option>
+                  </select>
+                </div>
+    
+                <!-- Favorite Toggle -->
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="isFavourite"
+                      formControlName="isFavourite">
+                      <label class="form-check-label" for="isFavourite">
+                        <i class="fas fa-heart text-danger me-1"></i>
+                        Add to favorites
+                      </label>
+                    </div>
+                  </div>
+                </form>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="onSubmit()"
+                  [disabled]="reviewForm.invalid || submitting">
+                  @if (submitting) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                  }
+                  Save Review
+                </button>
               </div>
             </div>
-
-            <!-- Review Form -->
-            <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
-              <!-- Rating -->
-              <div class="mb-3">
-                <label class="form-label">Rating</label>
-                <div class="rating-input">
-                  <div class="star-rating">
-                    <i *ngFor="let star of [1,2,3,4,5]; let i = index" 
-                       class="fas fa-star star-input"
-                       [class.active]="star <= selectedRating"
-                       [class.hover]="star <= hoverRating"
-                       (click)="setRating(star)"
-                       (mouseenter)="hoverRating = star"
-                       (mouseleave)="hoverRating = 0">
-                    </i>
-                  </div>
-                  <span *ngIf="selectedRating > 0" class="ms-2 text-muted">
-                    {{ getRatingText(selectedRating) }}
-                  </span>
-                </div>
-                <div *ngIf="reviewForm.get('rating')?.invalid && reviewForm.get('rating')?.touched" 
-                     class="text-danger small mt-1">
-                  Please select a rating
-                </div>
-              </div>
-
-              <!-- Review Text -->
-              <div class="mb-3">
-                <label for="review" class="form-label">Review (Optional)</label>
-                <textarea 
-                  id="review"
-                  class="form-control" 
-                  formControlName="review"
-                  rows="4" 
-                  placeholder="Share your thoughts about this book...">
-                </textarea>
-                <div class="form-text">
-                  {{ reviewForm.get('review')?.value?.length || 0 }}/500 characters
-                </div>
-              </div>
-
-              <!-- Reading Status -->
-              <div class="mb-3">
-                <label class="form-label">Reading Status</label>
-                <select class="form-select" formControlName="status">
-                  <option value="to_read">Want to Read</option>
-                  <option value="currently_reading">Currently Reading</option>
-                  <option value="read">Read</option>
-                </select>
-              </div>
-
-              <!-- Favorite Toggle -->
-              <div class="mb-3">
-                <div class="form-check">
-                  <input 
-                    class="form-check-input" 
-                    type="checkbox" 
-                    id="isFavourite"
-                    formControlName="isFavourite">
-                  <label class="form-check-label" for="isFavourite">
-                    <i class="fas fa-heart text-danger me-1"></i>
-                    Add to favorites
-                  </label>
-                </div>
-              </div>
-            </form>
-          </div>
-          
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="closeModal()">
-              Cancel
-            </button>
-            <button 
-              type="button" 
-              class="btn btn-primary"
-              (click)="onSubmit()"
-              [disabled]="reviewForm.invalid || submitting">
-              <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
-              Save Review
-            </button>
           </div>
         </div>
-      </div>
-    </div>
-  `,
+    `,
     styles: [`
     .modal {
       background-color: rgba(0, 0, 0, 0.5);

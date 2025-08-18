@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService, PasswordResetConfirm } from '../../../services/auth.service';
 
 @Component({
     selector: 'app-reset-password',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    imports: [ReactiveFormsModule, RouterModule],
     template: `
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-4">
@@ -15,120 +15,142 @@ import { AuthService, PasswordResetConfirm } from '../../../services/auth.servic
             <h4 class="text-center mb-0">Reset Your Password</h4>
           </div>
           <div class="card-body">
-            <div *ngIf="!passwordReset && validToken">
-              <p class="text-muted mb-4">
-                Enter your new password below.
-              </p>
-              
-              <form [formGroup]="resetPasswordForm" (ngSubmit)="onSubmit()">
-                <div class="mb-3">
-                  <label for="newPassword" class="form-label">New Password</label>
-                  <input
-                    type="password"
-                    id="newPassword"
-                    class="form-control"
-                    formControlName="newPassword"
-                    [class.is-invalid]="isFieldInvalid('newPassword')"
-                    placeholder="Enter your new password"
-                  >
-                  <div class="invalid-feedback" *ngIf="isFieldInvalid('newPassword')">
-                    <div *ngIf="resetPasswordForm.get('newPassword')?.errors?.['required']">
-                      Password is required
+            @if (!passwordReset && validToken) {
+              <div>
+                <p class="text-muted mb-4">
+                  Enter your new password below.
+                </p>
+                <form [formGroup]="resetPasswordForm" (ngSubmit)="onSubmit()">
+                  <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input
+                      type="password"
+                      id="newPassword"
+                      class="form-control"
+                      formControlName="newPassword"
+                      [class.is-invalid]="isFieldInvalid('newPassword')"
+                      placeholder="Enter your new password"
+                      >
+                      @if (isFieldInvalid('newPassword')) {
+                        <div class="invalid-feedback">
+                          @if (resetPasswordForm.get('newPassword')?.errors?.['required']) {
+                            <div>
+                              Password is required
+                            </div>
+                          }
+                          @if (resetPasswordForm.get('newPassword')?.errors?.['minlength']) {
+                            <div>
+                              Password must be at least 6 characters long
+                            </div>
+                          }
+                          @if (resetPasswordForm.get('newPassword')?.errors?.['pattern']) {
+                            <div>
+                              Password must contain at least one letter and one number
+                            </div>
+                          }
+                        </div>
+                      }
+                      <div class="form-text">
+                        Password must be at least 6 characters long and contain at least one letter and one number.
+                      </div>
                     </div>
-                    <div *ngIf="resetPasswordForm.get('newPassword')?.errors?.['minlength']">
-                      Password must be at least 6 characters long
+                    <div class="mb-3">
+                      <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                      <input
+                        type="password"
+                        id="confirmPassword"
+                        class="form-control"
+                        formControlName="confirmPassword"
+                        [class.is-invalid]="isFieldInvalid('confirmPassword')"
+                        placeholder="Confirm your new password"
+                        >
+                        @if (isFieldInvalid('confirmPassword')) {
+                          <div class="invalid-feedback">
+                            @if (resetPasswordForm.get('confirmPassword')?.errors?.['required']) {
+                              <div>
+                                Please confirm your password
+                              </div>
+                            }
+                            @if (resetPasswordForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+                              <div>
+                                Passwords do not match
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                      @if (errorMessage) {
+                        <div class="alert alert-danger">
+                          {{ errorMessage }}
+                        </div>
+                      }
+                      <div class="d-grid gap-2">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          [disabled]="resetPasswordForm.invalid || isLoading"
+                          >
+                          @if (isLoading) {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                          }
+                          {{ isLoading ? 'Resetting...' : 'Reset Password' }}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                }
+    
+                @if (passwordReset) {
+                  <div class="text-center">
+                    <div class="alert alert-success">
+                      <i class="bi bi-check-circle-fill me-2"></i>
+                      Your password has been successfully reset!
                     </div>
-                    <div *ngIf="resetPasswordForm.get('newPassword')?.errors?.['pattern']">
-                      Password must contain at least one letter and one number
+                    <p class="text-muted mb-4">
+                      You can now log in with your new password.
+                    </p>
+                    <div class="d-grid">
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="goToLogin()"
+                        >
+                        Go to Login
+                      </button>
                     </div>
                   </div>
-                  <div class="form-text">
-                    Password must be at least 6 characters long and contain at least one letter and one number.
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    class="form-control"
-                    formControlName="confirmPassword"
-                    [class.is-invalid]="isFieldInvalid('confirmPassword')"
-                    placeholder="Confirm your new password"
-                  >
-                  <div class="invalid-feedback" *ngIf="isFieldInvalid('confirmPassword')">
-                    <div *ngIf="resetPasswordForm.get('confirmPassword')?.errors?.['required']">
-                      Please confirm your password
+                }
+    
+                @if (!validToken) {
+                  <div class="text-center">
+                    <div class="alert alert-danger">
+                      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                      Invalid or expired reset token
                     </div>
-                    <div *ngIf="resetPasswordForm.get('confirmPassword')?.errors?.['passwordMismatch']">
-                      Passwords do not match
+                    <p class="text-muted mb-4">
+                      This password reset link is invalid or has expired. Please request a new one.
+                    </p>
+                    <div class="d-grid">
+                      <a routerLink="/forgot-password" class="btn btn-primary">
+                        Request New Reset Link
+                      </a>
                     </div>
                   </div>
-                </div>
-
-                <div class="alert alert-danger" *ngIf="errorMessage">
-                  {{ errorMessage }}
-                </div>
-
-                <div class="d-grid gap-2">
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                    [disabled]="resetPasswordForm.invalid || isLoading"
-                  >
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                    {{ isLoading ? 'Resetting...' : 'Reset Password' }}
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            <div *ngIf="passwordReset" class="text-center">
-              <div class="alert alert-success">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                Your password has been successfully reset!
+                }
+    
+                @if (validToken && !passwordReset) {
+                  <div class="text-center mt-3">
+                    <p class="mb-0">
+                      Remember your password?
+                      <a routerLink="/login" class="text-decoration-none">Back to login</a>
+                    </p>
+                  </div>
+                }
               </div>
-              <p class="text-muted mb-4">
-                You can now log in with your new password.
-              </p>
-              <div class="d-grid">
-                <button 
-                  type="button" 
-                  class="btn btn-primary"
-                  (click)="goToLogin()"
-                >
-                  Go to Login
-                </button>
-              </div>
-            </div>
-
-            <div *ngIf="!validToken" class="text-center">
-              <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                Invalid or expired reset token
-              </div>
-              <p class="text-muted mb-4">
-                This password reset link is invalid or has expired. Please request a new one.
-              </p>
-              <div class="d-grid">
-                <a routerLink="/forgot-password" class="btn btn-primary">
-                  Request New Reset Link
-                </a>
-              </div>
-            </div>
-
-            <div class="text-center mt-3" *ngIf="validToken && !passwordReset">
-              <p class="mb-0">
-                Remember your password? 
-                <a routerLink="/login" class="text-decoration-none">Back to login</a>
-              </p>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  `,
+    `,
     styles: [`
     .card {
       box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);

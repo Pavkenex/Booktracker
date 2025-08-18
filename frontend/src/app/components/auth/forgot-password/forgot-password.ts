@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService, PasswordResetRequest } from '../../../services/auth.service';
 
 @Component({
     selector: 'app-forgot-password',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    imports: [ReactiveFormsModule, RouterModule],
     template: `
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-4">
@@ -15,81 +15,92 @@ import { AuthService, PasswordResetRequest } from '../../../services/auth.servic
             <h4 class="text-center mb-0">Reset Password</h4>
           </div>
           <div class="card-body">
-            <div *ngIf="!emailSent">
-              <p class="text-muted mb-4">
-                Enter your email address and we'll send you a link to reset your password.
-              </p>
-              
-              <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmit()">
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email Address</label>
-                  <input
-                    type="email"
-                    id="email"
-                    class="form-control"
-                    formControlName="email"
-                    [class.is-invalid]="isFieldInvalid('email')"
-                    placeholder="Enter your email address"
-                  >
-                  <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
-                    <div *ngIf="forgotPasswordForm.get('email')?.errors?.['required']">
-                      Email is required
+            @if (!emailSent) {
+              <div>
+                <p class="text-muted mb-4">
+                  Enter your email address and we'll send you a link to reset your password.
+                </p>
+                <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmit()">
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                      type="email"
+                      id="email"
+                      class="form-control"
+                      formControlName="email"
+                      [class.is-invalid]="isFieldInvalid('email')"
+                      placeholder="Enter your email address"
+                      >
+                      @if (isFieldInvalid('email')) {
+                        <div class="invalid-feedback">
+                          @if (forgotPasswordForm.get('email')?.errors?.['required']) {
+                            <div>
+                              Email is required
+                            </div>
+                          }
+                          @if (forgotPasswordForm.get('email')?.errors?.['email']) {
+                            <div>
+                              Please enter a valid email address
+                            </div>
+                          }
+                        </div>
+                      }
                     </div>
-                    <div *ngIf="forgotPasswordForm.get('email')?.errors?.['email']">
-                      Please enter a valid email address
+                    @if (errorMessage) {
+                      <div class="alert alert-danger">
+                        {{ errorMessage }}
+                      </div>
+                    }
+                    <div class="d-grid gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                        [disabled]="forgotPasswordForm.invalid || isLoading"
+                        >
+                        @if (isLoading) {
+                          <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        {{ isLoading ? 'Sending...' : 'Send Reset Link' }}
+                      </button>
                     </div>
+                  </form>
+                </div>
+              }
+    
+              @if (emailSent) {
+                <div class="text-center">
+                  <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Password reset link has been sent to your email address.
                   </div>
+                  <p class="text-muted mb-4">
+                    Please check your email and follow the instructions to reset your password.
+                  </p>
+                  <p class="text-muted small">
+                    Didn't receive the email? Check your spam folder or
+                    <button
+                      type="button"
+                      class="btn btn-link p-0 text-decoration-none"
+                      (click)="resendEmail()"
+                      [disabled]="isLoading"
+                      >
+                      try again
+                    </button>.
+                  </p>
                 </div>
-
-                <div class="alert alert-danger" *ngIf="errorMessage">
-                  {{ errorMessage }}
-                </div>
-
-                <div class="d-grid gap-2">
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                    [disabled]="forgotPasswordForm.invalid || isLoading"
-                  >
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                    {{ isLoading ? 'Sending...' : 'Send Reset Link' }}
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            <div *ngIf="emailSent" class="text-center">
-              <div class="alert alert-success">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                Password reset link has been sent to your email address.
+              }
+    
+              <div class="text-center mt-3">
+                <p class="mb-0">
+                  Remember your password?
+                  <a routerLink="/login" class="text-decoration-none">Back to login</a>
+                </p>
               </div>
-              <p class="text-muted mb-4">
-                Please check your email and follow the instructions to reset your password.
-              </p>
-              <p class="text-muted small">
-                Didn't receive the email? Check your spam folder or 
-                <button 
-                  type="button" 
-                  class="btn btn-link p-0 text-decoration-none"
-                  (click)="resendEmail()"
-                  [disabled]="isLoading"
-                >
-                  try again
-                </button>.
-              </p>
-            </div>
-
-            <div class="text-center mt-3">
-              <p class="mb-0">
-                Remember your password? 
-                <a routerLink="/login" class="text-decoration-none">Back to login</a>
-              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  `,
+    `,
     styles: [`
     .card {
       box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);

@@ -15,187 +15,198 @@ import { PopularBooksSectionComponent } from '../shared/popular-books-section/po
       <div class="col-12">
         <div class="jumbotron bg-light p-5 rounded">
           <h1 class="display-4">
-            <span *ngIf="!(isAuthenticated$ | async)"
-              >Welcome to BookTracker</span
-            >
-            <span *ngIf="isAuthenticated$ | async"
-              >Welcome back, {{ (currentUser$ | async)?.username }}!</span
-            >
-          </h1>
-          <p class="lead">
-            Track your reading progress, discover new books, and connect with
-            fellow readers.
-          </p>
-          <hr class="my-4" />
-          <p *ngIf="!(isAuthenticated$ | async)">
-            Get started by creating an account or browsing our book catalog.
-          </p>
-          <p *ngIf="isAuthenticated$ | async">
-            Continue managing your personal library or discover new books.
-          </p>
-          <div class="d-flex gap-2">
-            <ng-container
-              *ngIf="!(isAuthenticated$ | async); else authenticatedButtons"
-            >
-              <a routerLink="/register" class="btn btn-primary btn-lg"
-                >Get Started</a
-              >
-              <a routerLink="/books" class="btn btn-outline-secondary btn-lg"
-                >Browse Books</a
-              >
-            </ng-container>
-            <ng-template #authenticatedButtons>
-              <a routerLink="/library" class="btn btn-primary btn-lg"
-                >My Library</a
-              >
-              <a routerLink="/books" class="btn btn-outline-secondary btn-lg"
-                >Browse Books</a
-              >
-            </ng-template>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Popular Books Section -->
-    <div class="row mt-5">
-      <div class="col-12">
-        <app-popular-books-section></app-popular-books-section>
-      </div>
-    </div>
-
-    <!-- Recent Recommendations Section (only for authenticated users) -->
-    <div *ngIf="isAuthenticated$ | async" class="row mt-5">
-      <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h3>Recent Book Recommendations</h3>
-          <a
-            routerLink="/social/recommendations"
-            class="btn btn-outline-primary btn-sm"
-            >View All</a
-          >
-        </div>
-
-        <div *ngIf="isLoadingRecommendations" class="text-center py-4">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-
-        <div
-          *ngIf="
-            !isLoadingRecommendations && recentRecommendations.length === 0
-          "
-          class="text-center py-4"
-        >
-          <i class="fas fa-book fa-3x text-muted mb-3"></i>
-          <h5 class="text-muted">No recommendations yet</h5>
-          <p class="text-muted">
-            Connect with friends to start receiving book recommendations!
-          </p>
-          <a routerLink="/social" class="btn btn-primary">Go to Social</a>
-        </div>
-
-        <div
-          *ngIf="!isLoadingRecommendations && recentRecommendations.length > 0"
-          class="row"
-        >
-          <div
-            *ngFor="let recommendation of recentRecommendations"
-            class="col-md-4 mb-3"
-          >
-            <div
-              class="card h-100 recommendation-card"
-              [class.unread]="!recommendation.isRead"
-            >
-              <div class="card-body">
-                <div
-                  class="d-flex justify-content-between align-items-start mb-2"
+            @if (!(isAuthenticated$ | async)) {
+              <span
+                >Welcome to BookTracker</span
                 >
-                  <small class="text-muted">{{
-                    getTimeAgo(recommendation.createdAt)
-                  }}</small>
-                  <span *ngIf="!recommendation.isRead" class="badge bg-primary"
-                    >New</span
+              }
+              @if (isAuthenticated$ | async) {
+                <span
+                  >Welcome back, {{ (currentUser$ | async)?.username }}!</span
                   >
-                </div>
-
-                <h6 class="card-title">{{ recommendation.book.title }}</h6>
-                <p class="card-text">
-                  <small class="text-muted"
-                    >by {{ recommendation.book.author }}</small
-                  >
+                }
+              </h1>
+              <p class="lead">
+                Track your reading progress, discover new books, and connect with
+                fellow readers.
+              </p>
+              <hr class="my-4" />
+              @if (!(isAuthenticated$ | async)) {
+                <p>
+                  Get started by creating an account or browsing our book catalog.
                 </p>
-
-                <p *ngIf="recommendation.message" class="card-text">
-                  <em>"{{ recommendation.message }}"</em>
+              }
+              @if (isAuthenticated$ | async) {
+                <p>
+                  Continue managing your personal library or discover new books.
                 </p>
-
-                <div
-                  class="d-flex justify-content-between align-items-center mt-3"
-                >
-                  <small class="text-muted">
-                    From: <strong>{{ recommendation.sender.username }}</strong>
-                  </small>
-                  <div class="btn-group btn-group-sm">
-                    <button
-                      *ngIf="!recommendation.isRead"
-                      class="btn btn-outline-primary btn-sm"
-                      (click)="markAsRead(recommendation.id)"
-                      title="Mark as read"
+              }
+              <div class="d-flex gap-2">
+                @if (!(isAuthenticated$ | async)) {
+                  <a routerLink="/register" class="btn btn-primary btn-lg"
+                    >Get Started</a
                     >
-                      <i class="fas fa-check"></i>
-                    </button>
-                    <a
-                      [routerLink]="['/books', recommendation.book.id]"
-                      class="btn btn-primary btn-sm"
-                      title="View book"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </a>
+                    <a routerLink="/books" class="btn btn-outline-secondary btn-lg"
+                      >Browse Books</a
+                      >
+                    } @else {
+                      <a routerLink="/library" class="btn btn-primary btn-lg"
+                        >My Library</a
+                        >
+                        <a routerLink="/books" class="btn btn-outline-secondary btn-lg"
+                          >Browse Books</a
+                          >
+                        }
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-5">
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Track Your Reading</h5>
-            <p class="card-text">
-              Keep track of books you want to read, are currently reading, and
-              have completed.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Discover Books</h5>
-            <p class="card-text">
-              Browse our extensive catalog and discover your next favorite book.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Connect with Friends</h5>
-            <p class="card-text">
-              Share recommendations and discuss books with your friends.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+    
+                <!-- Popular Books Section -->
+                <div class="row mt-5">
+                  <div class="col-12">
+                    <app-popular-books-section></app-popular-books-section>
+                  </div>
+                </div>
+    
+                <!-- Recent Recommendations Section (only for authenticated users) -->
+                @if (isAuthenticated$ | async) {
+                  <div class="row mt-5">
+                    <div class="col-12">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>Recent Book Recommendations</h3>
+                        <a
+                          routerLink="/social/recommendations"
+                          class="btn btn-outline-primary btn-sm"
+                          >View All</a
+                          >
+                        </div>
+                        @if (isLoadingRecommendations) {
+                          <div class="text-center py-4">
+                            <div class="spinner-border" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                          </div>
+                        }
+                        @if (
+                          !isLoadingRecommendations && recentRecommendations.length === 0
+                          ) {
+                          <div
+                            class="text-center py-4"
+                            >
+                            <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No recommendations yet</h5>
+                            <p class="text-muted">
+                              Connect with friends to start receiving book recommendations!
+                            </p>
+                            <a routerLink="/social" class="btn btn-primary">Go to Social</a>
+                          </div>
+                        }
+                        @if (!isLoadingRecommendations && recentRecommendations.length > 0) {
+                          <div
+                            class="row"
+                            >
+                            @for (recommendation of recentRecommendations; track recommendation) {
+                              <div
+                                class="col-md-4 mb-3"
+                                >
+                                <div
+                                  class="card h-100 recommendation-card"
+                                  [class.unread]="!recommendation.isRead"
+                                  >
+                                  <div class="card-body">
+                                    <div
+                                      class="d-flex justify-content-between align-items-start mb-2"
+                                      >
+                                      <small class="text-muted">{{
+                                        getTimeAgo(recommendation.createdAt)
+                                      }}</small>
+                                      @if (!recommendation.isRead) {
+                                        <span class="badge bg-primary"
+                                          >New</span
+                                          >
+                                        }
+                                      </div>
+                                      <h6 class="card-title">{{ recommendation.book.title }}</h6>
+                                      <p class="card-text">
+                                        <small class="text-muted"
+                                          >by {{ recommendation.book.author }}</small
+                                          >
+                                        </p>
+                                        @if (recommendation.message) {
+                                          <p class="card-text">
+                                            <em>"{{ recommendation.message }}"</em>
+                                          </p>
+                                        }
+                                        <div
+                                          class="d-flex justify-content-between align-items-center mt-3"
+                                          >
+                                          <small class="text-muted">
+                                            From: <strong>{{ recommendation.sender.username }}</strong>
+                                          </small>
+                                          <div class="btn-group btn-group-sm">
+                                            @if (!recommendation.isRead) {
+                                              <button
+                                                class="btn btn-outline-primary btn-sm"
+                                                (click)="markAsRead(recommendation.id)"
+                                                title="Mark as read"
+                                                >
+                                                <i class="fas fa-check"></i>
+                                              </button>
+                                            }
+                                            <a
+                                              [routerLink]="['/books', recommendation.book.id]"
+                                              class="btn btn-primary btn-sm"
+                                              title="View book"
+                                              >
+                                              <i class="fas fa-eye"></i>
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+    
+                      <div class="row mt-5">
+                        <div class="col-md-4">
+                          <div class="card h-100">
+                            <div class="card-body">
+                              <h5 class="card-title">Track Your Reading</h5>
+                              <p class="card-text">
+                                Keep track of books you want to read, are currently reading, and
+                                have completed.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="card h-100">
+                            <div class="card-body">
+                              <h5 class="card-title">Discover Books</h5>
+                              <p class="card-text">
+                                Browse our extensive catalog and discover your next favorite book.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="card h-100">
+                            <div class="card-body">
+                              <h5 class="card-title">Connect with Friends</h5>
+                              <p class="card-text">
+                                Share recommendations and discuss books with your friends.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+    `,
     styles: [
         `
       .jumbotron {

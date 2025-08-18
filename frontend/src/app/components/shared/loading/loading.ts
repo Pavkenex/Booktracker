@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 
 export type LoadingSize = "sm" | "md" | "lg";
 export type LoadingVariant = "spinner" | "dots" | "pulse";
@@ -7,41 +7,47 @@ export type LoadingVariant = "spinner" | "dots" | "pulse";
 @Component({
   selector: "app-loading",
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="loading-container" [class]="containerClass">
       <!-- Spinner variant -->
-      <div
-        *ngIf="variant === 'spinner'"
-        class="spinner-border"
-        [class]="spinnerClass"
-        role="status"
-      >
-        <span class="visually-hidden">{{ message }}</span>
-      </div>
-
+      @if (variant === 'spinner') {
+        <div
+          class="spinner-border"
+          [class]="spinnerClass"
+          role="status"
+          >
+          <span class="visually-hidden">{{ message }}</span>
+        </div>
+      }
+    
       <!-- Dots variant -->
-      <div *ngIf="variant === 'dots'" class="loading-dots" [class]="dotsClass">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-
+      @if (variant === 'dots') {
+        <div class="loading-dots" [class]="dotsClass">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      }
+    
       <!-- Pulse variant -->
-      <div
-        *ngIf="variant === 'pulse'"
-        class="loading-pulse"
-        [class]="pulseClass"
-      >
-        <div class="pulse-circle"></div>
-      </div>
-
+      @if (variant === 'pulse') {
+        <div
+          class="loading-pulse"
+          [class]="pulseClass"
+          >
+          <div class="pulse-circle"></div>
+        </div>
+      }
+    
       <!-- Loading message -->
-      <p *ngIf="showMessage" class="loading-message" [class]="messageClass">
-        {{ message }}
-      </p>
+      @if (showMessage) {
+        <p class="loading-message" [class]="messageClass">
+          {{ message }}
+        </p>
+      }
     </div>
-  `,
+    `,
   styles: [
     `
       .loading-container {

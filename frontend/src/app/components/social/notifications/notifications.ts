@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SocialService } from '../../../services/social.service';
@@ -8,7 +8,7 @@ import { ClickOutsideDirective } from '../../../directives/click-outside.directi
 
 @Component({
     selector: 'app-notifications',
-    imports: [CommonModule, RouterModule, ClickOutsideDirective],
+    imports: [RouterModule, ClickOutsideDirective],
     templateUrl: './notifications.component.html',
     styleUrls: ['./notifications.component.css']
 })

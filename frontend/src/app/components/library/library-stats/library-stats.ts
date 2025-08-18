@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Subject, takeUntil } from 'rxjs';
 import { LibraryService } from '../../../services/library.service';
 import { LibraryEventsService } from '../../../services/library-events.service';
@@ -7,7 +7,7 @@ import { LibraryStats } from '../../../models/library.model';
 
 @Component({
     selector: 'app-library-stats',
-    imports: [CommonModule],
+    imports: [],
     template: `
     <div class="card">
       <div class="card-header">
@@ -16,79 +16,91 @@ import { LibraryStats } from '../../../models/library.model';
         </h5>
       </div>
       <div class="card-body">
-        <div *ngIf="loading" class="text-center py-3">
-          <div class="spinner-border spinner-border-sm" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-
-        <div *ngIf="!loading && stats" class="stats-grid mb-3">
-          <div class="stat-item" aria-label="Total books">
-            <div class="stat-icon text-primary"><i class="fas fa-book"></i></div>
-            <div class="stat-number text-primary">{{ stats.totalBooks }}</div>
-            <div class="stat-label">Total</div>
-          </div>
-          <div class="stat-item" aria-label="Books read">
-            <div class="stat-icon text-success"><i class="fas fa-check"></i></div>
-            <div class="stat-number text-success">{{ stats.booksRead }}</div>
-            <div class="stat-label">Read</div>
-          </div>
-          <div class="stat-item" aria-label="Currently reading">
-            <div class="stat-icon text-info"><i class="fas fa-book-open"></i></div>
-            <div class="stat-number text-info">{{ stats.booksCurrentlyReading }}</div>
-            <div class="stat-label">Reading</div>
-          </div>
-          <div class="stat-item" aria-label="Want to read">
-            <div class="stat-icon text-warning"><i class="fas fa-list"></i></div>
-            <div class="stat-number text-warning">{{ stats.booksToRead }}</div>
-            <div class="stat-label">Want to Read</div>
-          </div>
-            <div class="stat-item" aria-label="Favorite books">
-            <div class="stat-icon text-danger"><i class="fas fa-heart"></i></div>
-            <div class="stat-number text-danger">{{ stats.favoriteBooks }}</div>
-            <div class="stat-label">Favorites</div>
-          </div>
-        </div>
-
-        <!-- Progress Bar -->
-        <div *ngIf="!loading && stats && stats.totalBooks > 0" class="mt-3">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <small class="text-muted">Reading Progress</small>
-            <small class="text-muted">{{ getReadingPercentage() }}%</small>
-          </div>
-          <div class="progress" style="height: 8px;">
-            <div 
-              class="progress-bar bg-success" 
-              role="progressbar" 
-              [style.width.%]="getReadingPercentage()"
-              [attr.aria-valuenow]="getReadingPercentage()"
-              aria-valuemin="0" 
-              aria-valuemax="100">
+        @if (loading) {
+          <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
             </div>
           </div>
-        </div>
-
-        <!-- Average Rating -->
-        <div *ngIf="!loading && stats && stats.averageRating > 0" class="mt-3 text-center">
-          <small class="text-muted d-block">Average Rating</small>
-          <div class="mt-1">
-            <i *ngFor="let star of [1,2,3,4,5]" 
-               class="fas fa-star"
-               [class.text-warning]="star <= stats.averageRating"
-               [class.text-muted]="star > stats.averageRating">
-            </i>
-            <span class="ms-2 text-muted">({{ stats.averageRating.toFixed(1) }})</span>
+        }
+    
+        @if (!loading && stats) {
+          <div class="stats-grid mb-3">
+            <div class="stat-item" aria-label="Total books">
+              <div class="stat-icon text-primary"><i class="fas fa-book"></i></div>
+              <div class="stat-number text-primary">{{ stats.totalBooks }}</div>
+              <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-item" aria-label="Books read">
+              <div class="stat-icon text-success"><i class="fas fa-check"></i></div>
+              <div class="stat-number text-success">{{ stats.booksRead }}</div>
+              <div class="stat-label">Read</div>
+            </div>
+            <div class="stat-item" aria-label="Currently reading">
+              <div class="stat-icon text-info"><i class="fas fa-book-open"></i></div>
+              <div class="stat-number text-info">{{ stats.booksCurrentlyReading }}</div>
+              <div class="stat-label">Reading</div>
+            </div>
+            <div class="stat-item" aria-label="Want to read">
+              <div class="stat-icon text-warning"><i class="fas fa-list"></i></div>
+              <div class="stat-number text-warning">{{ stats.booksToRead }}</div>
+              <div class="stat-label">Want to Read</div>
+            </div>
+            <div class="stat-item" aria-label="Favorite books">
+              <div class="stat-icon text-danger"><i class="fas fa-heart"></i></div>
+              <div class="stat-number text-danger">{{ stats.favoriteBooks }}</div>
+              <div class="stat-label">Favorites</div>
+            </div>
           </div>
-        </div>
-
+        }
+    
+        <!-- Progress Bar -->
+        @if (!loading && stats && stats.totalBooks > 0) {
+          <div class="mt-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <small class="text-muted">Reading Progress</small>
+              <small class="text-muted">{{ getReadingPercentage() }}%</small>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div
+                class="progress-bar bg-success"
+                role="progressbar"
+                [style.width.%]="getReadingPercentage()"
+                [attr.aria-valuenow]="getReadingPercentage()"
+                aria-valuemin="0"
+                aria-valuemax="100">
+              </div>
+            </div>
+          </div>
+        }
+    
+        <!-- Average Rating -->
+        @if (!loading && stats && stats.averageRating > 0) {
+          <div class="mt-3 text-center">
+            <small class="text-muted d-block">Average Rating</small>
+            <div class="mt-1">
+              @for (star of [1,2,3,4,5]; track star) {
+                <i
+                  class="fas fa-star"
+                  [class.text-warning]="star <= stats.averageRating"
+                  [class.text-muted]="star > stats.averageRating">
+                </i>
+              }
+              <span class="ms-2 text-muted">({{ stats.averageRating.toFixed(1) }})</span>
+            </div>
+          </div>
+        }
+    
         <!-- Empty State -->
-        <div *ngIf="!loading && (!stats || stats.totalBooks === 0)" class="text-center py-3">
-          <i class="fas fa-book-open fa-2x text-muted mb-2"></i>
-          <p class="text-muted mb-0">No books in your library yet</p>
-        </div>
+        @if (!loading && (!stats || stats.totalBooks === 0)) {
+          <div class="text-center py-3">
+            <i class="fas fa-book-open fa-2x text-muted mb-2"></i>
+            <p class="text-muted mb-0">No books in your library yet</p>
+          </div>
+        }
       </div>
     </div>
-  `,
+    `,
     styles: [`
     .stats-grid { 
       display: grid; 

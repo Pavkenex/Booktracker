@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { RouterModule } from "@angular/router";
 import { Book } from "../../../models/book.model";
 import { APP_CONSTANTS } from "../../../constants/app.constants";
@@ -8,7 +8,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
 @Component({
   selector: "app-popular-book-card",
   standalone: true,
-  imports: [CommonModule, RouterModule, FallbackImageDirective],
+  imports: [RouterModule, FallbackImageDirective],
   template: `
     <div class="popular-book-card" [routerLink]="['/books', book.id]">
       <div class="book-thumbnail">
@@ -18,31 +18,36 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
           class="book-image"
           appFallbackImage
           [fallbackSrc]="defaultPlaceholder"
-        />
-        <div class="rank-badge">#{{ rank }}</div>
-      </div>
-
-      <div class="book-info">
-        <h6 class="book-title" [title]="book.title">
-          {{ book.title }}
-        </h6>
-        <p class="book-author" [title]="book.author">by {{ book.author }}</p>
-
-        <!-- Genres if available -->
-        <div class="book-genres" *ngIf="book.genres && book.genres.length > 0">
-          <span
-            *ngFor="let genre of book.genres.slice(0, 2)"
-            class="genre-badge"
-          >
-            {{ genre.name }}
-          </span>
-          <span *ngIf="book.genres.length > 2" class="more-genres">
-            +{{ book.genres.length - 2 }}
-          </span>
+          />
+          <div class="rank-badge">#{{ rank }}</div>
+        </div>
+    
+        <div class="book-info">
+          <h6 class="book-title" [title]="book.title">
+            {{ book.title }}
+          </h6>
+          <p class="book-author" [title]="book.author">by {{ book.author }}</p>
+    
+          <!-- Genres if available -->
+          @if (book.genres && book.genres.length > 0) {
+            <div class="book-genres">
+              @for (genre of book.genres.slice(0, 2); track genre) {
+                <span
+                  class="genre-badge"
+                  >
+                  {{ genre.name }}
+                </span>
+              }
+              @if (book.genres.length > 2) {
+                <span class="more-genres">
+                  +{{ book.genres.length - 2 }}
+                </span>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-  `,
+    `,
   styles: [
     `
       .popular-book-card {

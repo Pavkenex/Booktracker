@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SocialService } from '../../../services/social.service';
@@ -9,7 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'app-friends-list',
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     templateUrl: './friends-list.component.html',
     styleUrls: ['./friends-list.component.css']
 })

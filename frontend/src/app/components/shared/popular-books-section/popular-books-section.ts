@@ -5,7 +5,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { RouterModule } from "@angular/router";
 import { BookService } from "../../../services/book.service";
 import { Book } from "../../../models/book.model";
@@ -15,7 +15,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
 
 @Component({
     selector: "app-popular-books-section",
-    imports: [CommonModule, RouterModule, FallbackImageDirective],
+    imports: [RouterModule, FallbackImageDirective],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
     <div class="popular-books-section">
@@ -25,150 +25,156 @@ import { FallbackImageDirective } from "../../../directives/fallback-image.direc
           View All Books
         </a>
       </div>
-
+    
       <!-- Loading State -->
-      <div *ngIf="isLoading" class="text-center py-4">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading popular books...</span>
+      @if (isLoading) {
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading popular books...</span>
+          </div>
+          <p class="text-muted mt-2">Loading popular books...</p>
         </div>
-        <p class="text-muted mt-2">Loading popular books...</p>
-      </div>
-
+      }
+    
       <!-- Error State -->
-      <div
-        *ngIf="hasError && !isLoading"
-        class="alert alert-warning text-center"
-      >
-        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
-        <h5>Unable to load popular books</h5>
-        <p class="mb-2">
-          There was an issue loading the popular books. Please try again later.
-        </p>
-        <button
-          class="btn btn-outline-primary btn-sm"
-          (click)="loadPopularBooks()"
-        >
-          <i class="fas fa-redo me-1"></i>
-          Retry
-        </button>
-      </div>
-
-      <!-- Empty State -->
-      <div
-        *ngIf="!isLoading && !hasError && popularBooks.length === 0"
-        class="text-center py-4"
-      >
-        <i class="fas fa-book fa-3x text-muted mb-3"></i>
-        <h5 class="text-muted">No popular books yet</h5>
-        <p class="text-muted">
-          Popular books will appear here as users discover and view them.
-        </p>
-        <a routerLink="/books" class="btn btn-primary"> Browse All Books </a>
-      </div>
-
-      <!-- Popular Books Slider -->
-      <div
-        *ngIf="!isLoading && !hasError && popularBooks.length > 0"
-        class="popular-books-slider"
-      >
-        <div class="slider-container">
+      @if (hasError && !isLoading) {
+        <div
+          class="alert alert-warning text-center"
+          >
+          <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+          <h5>Unable to load popular books</h5>
+          <p class="mb-2">
+            There was an issue loading the popular books. Please try again later.
+          </p>
           <button
-            class="slider-btn slider-btn-prev"
-            (click)="previousSlide()"
-            (keydown.enter)="previousSlide()"
-            (keydown.space)="$event.preventDefault(); previousSlide()"
-            [disabled]="currentSlide === 0"
+            class="btn btn-outline-primary btn-sm"
+            (click)="loadPopularBooks()"
+            >
+            <i class="fas fa-redo me-1"></i>
+            Retry
+          </button>
+        </div>
+      }
+    
+      <!-- Empty State -->
+      @if (!isLoading && !hasError && popularBooks.length === 0) {
+        <div
+          class="text-center py-4"
+          >
+          <i class="fas fa-book fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No popular books yet</h5>
+          <p class="text-muted">
+            Popular books will appear here as users discover and view them.
+          </p>
+          <a routerLink="/books" class="btn btn-primary"> Browse All Books </a>
+        </div>
+      }
+    
+      <!-- Popular Books Slider -->
+      @if (!isLoading && !hasError && popularBooks.length > 0) {
+        <div
+          class="popular-books-slider"
+          >
+          <div class="slider-container">
+            <button
+              class="slider-btn slider-btn-prev"
+              (click)="previousSlide()"
+              (keydown.enter)="previousSlide()"
+              (keydown.space)="$event.preventDefault(); previousSlide()"
+              [disabled]="currentSlide === 0"
             [attr.aria-label]="
               'Previous books, currently showing slide ' +
               (currentSlide + 1) +
               ' of ' +
               totalSlides
             "
-            type="button"
-          >
-            <i class="fas fa-chevron-left" aria-hidden="true"></i>
-          </button>
-
-          <div class="slider-wrapper">
-            <div class="slider-track">
-              <div
-                *ngFor="
-                  let book of currentSlideBooks;
-                  trackBy: trackByBookId;
-                  let i = index
-                "
-                class="popular-book-card"
-                [routerLink]="['/books', book.id]"
+              type="button"
               >
-                <div class="book-thumbnail">
-                  <img
-                    [src]="book.thumbnail || defaultPlaceholder"
-                    [alt]="book.title"
-                    class="book-image"
-                    appFallbackImage
-                  />
-                  <div class="rank-badge">#{{ getRankForBook(i) }}</div>
-                </div>
-
-                <div class="book-info">
-                  <h6 class="book-title" [title]="book.title">
-                    {{ book.title }}
-                  </h6>
-                  <p class="book-author" [title]="book.author">
-                    by {{ book.author }}
-                  </p>
-
-                  <!-- Genres if available -->
+              <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="slider-wrapper">
+              <div class="slider-track">
+                @for (
+                  book of currentSlideBooks; track trackByBookId(i,
+                  book); let i = $index) {
                   <div
-                    class="book-genres"
-                    *ngIf="book.genres && book.genres.length > 0"
-                  >
-                    <span
-                      *ngFor="let genre of book.genres.slice(0, 2)"
-                      class="genre-badge"
+                    class="popular-book-card"
+                    [routerLink]="['/books', book.id]"
                     >
-                      {{ genre.name }}
-                    </span>
-                    <span *ngIf="book.genres.length > 2" class="more-genres">
-                      +{{ book.genres.length - 2 }}
-                    </span>
-                  </div>
+                    <div class="book-thumbnail">
+                      <img
+                        [src]="book.thumbnail || defaultPlaceholder"
+                        [alt]="book.title"
+                        class="book-image"
+                        appFallbackImage
+                        />
+                        <div class="rank-badge">#{{ getRankForBook(i) }}</div>
+                      </div>
+                      <div class="book-info">
+                        <h6 class="book-title" [title]="book.title">
+                          {{ book.title }}
+                        </h6>
+                        <p class="book-author" [title]="book.author">
+                          by {{ book.author }}
+                        </p>
+                        <!-- Genres if available -->
+                        @if (book.genres && book.genres.length > 0) {
+                          <div
+                            class="book-genres"
+                            >
+                            @for (genre of book.genres.slice(0, 2); track genre) {
+                              <span
+                                class="genre-badge"
+                                >
+                                {{ genre.name }}
+                              </span>
+                            }
+                            @if (book.genres.length > 2) {
+                              <span class="more-genres">
+                                +{{ book.genres.length - 2 }}
+                              </span>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-          </div>
-
-          <button
-            class="slider-btn slider-btn-next"
-            (click)="nextSlide()"
-            (keydown.enter)="nextSlide()"
-            (keydown.space)="$event.preventDefault(); nextSlide()"
-            [disabled]="currentSlide >= maxSlide"
+              <button
+                class="slider-btn slider-btn-next"
+                (click)="nextSlide()"
+                (keydown.enter)="nextSlide()"
+                (keydown.space)="$event.preventDefault(); nextSlide()"
+                [disabled]="currentSlide >= maxSlide"
             [attr.aria-label]="
               'Next books, currently showing slide ' +
               (currentSlide + 1) +
               ' of ' +
               totalSlides
             "
-            type="button"
-          >
-            <i class="fas fa-chevron-right" aria-hidden="true"></i>
-          </button>
-        </div>
-
-        <!-- Slider Indicators -->
-        <div class="slider-indicators" *ngIf="totalSlides > 1">
-          <button
-            *ngFor="let slide of slidesArray; let i = index"
-            class="indicator"
-            [class.active]="i === currentSlide"
-            (click)="goToSlide(i)"
-            [attr.aria-label]="'Go to slide ' + (i + 1)"
-          ></button>
-        </div>
+                type="button"
+                >
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <!-- Slider Indicators -->
+            @if (totalSlides > 1) {
+              <div class="slider-indicators">
+                @for (slide of slidesArray; track slide; let i = $index) {
+                  <button
+                    class="indicator"
+                    [class.active]="i === currentSlide"
+                    (click)="goToSlide(i)"
+                    [attr.aria-label]="'Go to slide ' + (i + 1)"
+                  ></button>
+                }
+              </div>
+            }
+          </div>
+        }
       </div>
-    </div>
-  `,
+    `,
     styles: [
         `
       .popular-books-section {

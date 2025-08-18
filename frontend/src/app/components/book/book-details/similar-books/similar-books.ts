@@ -1,54 +1,57 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { FallbackImageDirective } from '../../../../directives/fallback-image.directive';
 import { Book } from '../../../../models/book.model';
 
 @Component({
     selector: 'app-similar-books',
-    imports: [CommonModule, RouterModule, FallbackImageDirective],
+    imports: [RouterModule, FallbackImageDirective],
     template: `
-    <div class="similar-section mt-5" *ngIf="similarBooks.length > 0">
-      <h3 class="mb-3">Similar Books</h3>
-      <div class="similar-slider-wrapper">
-        <div class="similar-slider" #similarSlider>
-          <div 
-            class="similar-item" 
-            *ngFor="let book of similarBooks; trackBy: trackByBookId"
-            (click)="onNavigateToBook(book.id)">
-            <div class="thumb-wrapper">
-              <img 
-                [src]="book.thumbnail" 
-                [alt]="book.title"
-                appFallbackImage>
+    @if (similarBooks.length > 0) {
+      <div class="similar-section mt-5">
+        <h3 class="mb-3">Similar Books</h3>
+        <div class="similar-slider-wrapper">
+          <div class="similar-slider" #similarSlider>
+            @for (book of similarBooks; track trackByBookId($index, book)) {
+              <div
+                class="similar-item"
+                (click)="onNavigateToBook(book.id)">
+                <div class="thumb-wrapper">
+                  <img
+                    [src]="book.thumbnail"
+                    [alt]="book.title"
+                    appFallbackImage>
+                  </div>
+                  <div class="mt-2 text-center">
+                    <div class="fw-semibold small text-truncate" [title]="book.title">
+                      {{ book.title }}
+                    </div>
+                    <div class="text-muted small text-truncate" [title]="book.author">
+                      {{ book.author }}
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
-            <div class="mt-2 text-center">
-              <div class="fw-semibold small text-truncate" [title]="book.title">
-                {{ book.title }}
-              </div>
-              <div class="text-muted small text-truncate" [title]="book.author">
-                {{ book.author }}
-              </div>
-            </div>
+            <button
+              class="btn btn-outline-secondary slider-btn position-absolute top-50 start-0 translate-middle-y"
+              style="left: -20px;"
+              (click)="onScrollPrevious()"
+              type="button">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button
+              class="btn btn-outline-secondary slider-btn position-absolute top-50 end-0 translate-middle-y"
+              style="right: -20px;"
+              (click)="onScrollNext()"
+              type="button">
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
         </div>
-        <button 
-          class="btn btn-outline-secondary slider-btn position-absolute top-50 start-0 translate-middle-y"
-          style="left: -20px;"
-          (click)="onScrollPrevious()"
-          type="button">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <button 
-          class="btn btn-outline-secondary slider-btn position-absolute top-50 end-0 translate-middle-y"
-          style="right: -20px;"
-          (click)="onScrollNext()"
-          type="button">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-    </div>
-  `,
+      }
+    `,
     styles: [`
     .similar-section {
       border-top: 1px solid #dee2e6;

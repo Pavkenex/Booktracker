@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-mobile-filter-toggle',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="col-12 d-lg-none mb-3">
-      <button 
+      <button
         class="btn btn-outline-primary w-100"
         type="button"
         [attr.aria-expanded]="showMobileFilters"
@@ -15,11 +15,13 @@ import { CommonModule } from '@angular/common';
         (click)="toggleFilters()">
         <i class="fas fa-filter me-2"></i>
         Search & Filter
-        <span *ngIf="activeFiltersCount > 0" class="badge bg-primary ms-2">{{ activeFiltersCount }}</span>
+        @if (activeFiltersCount > 0) {
+          <span class="badge bg-primary ms-2">{{ activeFiltersCount }}</span>
+        }
         <i class="fas fa-chevron-down ms-2 filter-chevron" [class.rotated]="showMobileFilters"></i>
       </button>
     </div>
-  `,
+    `,
   styles: [`
     /* Filter toggle button styling */
     .btn[data-bs-toggle="collapse"] {

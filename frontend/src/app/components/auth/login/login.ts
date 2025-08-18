@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService, LoginRequest } from '../../../services/auth.service';
@@ -7,7 +7,7 @@ import { ErrorService } from '../../../services/error.service';
 
 @Component({
     selector: 'app-login',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    imports: [ReactiveFormsModule, RouterModule],
     template: `
     <div class="container-fluid">
       <div class="row justify-content-center">
@@ -33,80 +33,98 @@ import { ErrorService } from '../../../services/error.service';
                     [class.is-invalid]="isFieldInvalid('username')"
                     placeholder="Enter your username"
                     autocomplete="username"
-                  >
-                  <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
-                    <div *ngIf="loginForm.get('username')?.errors?.['required']">
-                      Username is required
+                    >
+                    @if (isFieldInvalid('username')) {
+                      <div class="invalid-feedback">
+                        @if (loginForm.get('username')?.errors?.['required']) {
+                          <div>
+                            Username is required
+                          </div>
+                        }
+                        @if (loginForm.get('username')?.errors?.['minlength']) {
+                          <div>
+                            Username must be at least 3 characters long
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+    
+                  <div class="mb-4">
+                    <label for="password" class="form-label">
+                      <i class="fas fa-lock me-2"></i>Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control form-control-lg"
+                      formControlName="password"
+                      [class.is-invalid]="isFieldInvalid('password')"
+                      placeholder="Enter your password"
+                      autocomplete="current-password"
+                      >
+                      @if (isFieldInvalid('password')) {
+                        <div class="invalid-feedback">
+                          @if (loginForm.get('password')?.errors?.['required']) {
+                            <div>
+                              Password is required
+                            </div>
+                          }
+                          @if (loginForm.get('password')?.errors?.['minlength']) {
+                            <div>
+                              Password must be at least 6 characters long
+                            </div>
+                          }
+                        </div>
+                      }
                     </div>
-                    <div *ngIf="loginForm.get('username')?.errors?.['minlength']">
-                      Username must be at least 3 characters long
+    
+                    @if (errorMessage) {
+                      <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ errorMessage }}
+                      </div>
+                    }
+    
+                    <div class="d-grid gap-2 mb-4">
+                      <button
+                        type="submit"
+                        class="btn btn-primary btn-lg"
+                        [disabled]="loginForm.invalid || isLoading"
+                        >
+                        @if (isLoading) {
+                          <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        @if (!isLoading) {
+                          <i class="fas fa-sign-in-alt me-2"></i>
+                        }
+                        {{ isLoading ? 'Logging in...' : 'Login' }}
+                      </button>
+                    </div>
+                  </form>
+    
+                  <div class="text-center">
+                    <div class="mb-3">
+                      <a routerLink="/forgot-password" class="text-decoration-none">
+                        <i class="fas fa-question-circle me-1"></i>
+                        Forgot your password?
+                      </a>
+                    </div>
+                    <div class="border-top pt-3">
+                      <p class="mb-0 text-muted">
+                        Don't have an account?
+                      </p>
+                      <a routerLink="/register" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                      </a>
                     </div>
                   </div>
-                </div>
-
-                <div class="mb-4">
-                  <label for="password" class="form-label">
-                    <i class="fas fa-lock me-2"></i>Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    class="form-control form-control-lg"
-                    formControlName="password"
-                    [class.is-invalid]="isFieldInvalid('password')"
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                  >
-                  <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
-                    <div *ngIf="loginForm.get('password')?.errors?.['required']">
-                      Password is required
-                    </div>
-                    <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
-                      Password must be at least 6 characters long
-                    </div>
-                  </div>
-                </div>
-
-                <div class="alert alert-danger" *ngIf="errorMessage">
-                  <i class="fas fa-exclamation-triangle me-2"></i>
-                  {{ errorMessage }}
-                </div>
-
-                <div class="d-grid gap-2 mb-4">
-                  <button
-                    type="submit"
-                    class="btn btn-primary btn-lg"
-                    [disabled]="loginForm.invalid || isLoading"
-                  >
-                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                    <i *ngIf="!isLoading" class="fas fa-sign-in-alt me-2"></i>
-                    {{ isLoading ? 'Logging in...' : 'Login' }}
-                  </button>
-                </div>
-              </form>
-
-              <div class="text-center">
-                <div class="mb-3">
-                  <a routerLink="/forgot-password" class="text-decoration-none">
-                    <i class="fas fa-question-circle me-1"></i>
-                    Forgot your password?
-                  </a>
-                </div>
-                <div class="border-top pt-3">
-                  <p class="mb-0 text-muted">
-                    Don't have an account?
-                  </p>
-                  <a routerLink="/register" class="btn btn-outline-primary btn-sm mt-2">
-                    <i class="fas fa-user-plus me-2"></i>Create Account
-                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  `,
+    `,
     styles: [`
     .container-fluid {
     min-height: calc(100vh - 76px);

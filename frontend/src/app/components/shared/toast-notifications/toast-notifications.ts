@@ -8,31 +8,32 @@ import { ErrorService, ErrorMessage } from '../../../services/error.service';
     imports: [CommonModule],
     template: `
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-      <div 
-        *ngFor="let error of errors" 
-        class="toast show"
-        [ngClass]="getToastClass(error.type)"
-        role="alert" 
-        aria-live="assertive" 
-        aria-atomic="true"
-      >
-        <div class="toast-header">
-          <i class="me-2" [ngClass]="getIconClass(error.type)"></i>
-          <strong class="me-auto">{{ getTitle(error.type) }}</strong>
-          <small class="text-muted">{{ getTimeAgo(error.timestamp) }}</small>
-          <button 
-            type="button" 
-            class="btn-close" 
-            (click)="removeError(error.id)"
-            aria-label="Close"
-          ></button>
+      @for (error of errors; track error) {
+        <div
+          class="toast show"
+          [ngClass]="getToastClass(error.type)"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          >
+          <div class="toast-header">
+            <i class="me-2" [ngClass]="getIconClass(error.type)"></i>
+            <strong class="me-auto">{{ getTitle(error.type) }}</strong>
+            <small class="text-muted">{{ getTimeAgo(error.timestamp) }}</small>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="removeError(error.id)"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="toast-body">
+            {{ error.message }}
+          </div>
         </div>
-        <div class="toast-body">
-          {{ error.message }}
-        </div>
-      </div>
+      }
     </div>
-  `,
+    `,
     styles: [`
     .toast-container {
       max-width: 400px;

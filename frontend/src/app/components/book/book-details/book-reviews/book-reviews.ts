@@ -8,49 +8,65 @@ import { UserBook } from '../../../../models/library.model';
     template: `
     <div class="reviews-section mt-5">
       <h3 class="mb-3">Recent Reviews</h3>
-      
-      <div *ngIf="loadingReviews" class="text-center py-4">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+    
+      @if (loadingReviews) {
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </div>
-      </div>
-      
-      <div *ngIf="!loadingReviews && reviews.length === 0" class="text-muted">
-        No reviews yet.
-      </div>
-      
+      }
+    
+      @if (!loadingReviews && reviews.length === 0) {
+        <div class="text-muted">
+          No reviews yet.
+        </div>
+      }
+    
       <div class="list-group">
-        <div class="list-group-item" *ngFor="let review of reviews">
-          <div class="d-flex justify-content-between align-items-start mb-1">
-            <div>
-              <span class="badge bg-warning text-dark me-2" *ngIf="review.rating">
-                {{ review.rating }}★
-              </span>
-              <span class="fw-semibold" *ngIf="review.username">
-                &#64;{{ review.username }}
-              </span>
+        @for (review of reviews; track review) {
+          <div class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <div>
+                @if (review.rating) {
+                  <span class="badge bg-warning text-dark me-2">
+                    {{ review.rating }}★
+                  </span>
+                }
+                @if (review.username) {
+                  <span class="fw-semibold">
+                    &#64;{{ review.username }}
+                  </span>
+                }
+              </div>
+              @if (review.readDate) {
+                <small class="text-muted">
+                  {{ review.readDate | date:'mediumDate' }}
+                </small>
+              }
             </div>
-            <small class="text-muted" *ngIf="review.readDate">
-              {{ review.readDate | date:'mediumDate' }}
-            </small>
+            @if (review.review) {
+              <div class="review-text">{{ review.review }}</div>
+            }
+            <div class="small text-muted mt-1">
+              Status: {{ review.status.replace('_',' ') }}
+            </div>
           </div>
-          <div *ngIf="review.review" class="review-text">{{ review.review }}</div>
-          <div class="small text-muted mt-1">
-            Status: {{ review.status.replace('_',' ') }}
-          </div>
+        }
+      </div>
+    
+      @if (hasMoreReviews) {
+        <div class="mt-3 text-center">
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="onLoadMoreReviews()"
+            [disabled]="loadingReviews">
+            Show More
+          </button>
         </div>
-      </div>
-      
-      <div class="mt-3 text-center" *ngIf="hasMoreReviews">
-        <button 
-          class="btn btn-outline-primary btn-sm" 
-          (click)="onLoadMoreReviews()" 
-          [disabled]="loadingReviews">
-          Show More
-        </button>
-      </div>
+      }
     </div>
-  `,
+    `,
     styles: [`
     .reviews-section {
       border-top: 1px solid #dee2e6;

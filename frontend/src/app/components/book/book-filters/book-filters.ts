@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, debounceTime } from 'rxjs';
 import { BookService } from '../../../services/book.service';
@@ -7,7 +7,7 @@ import { Genre, BookSearchParams } from '../../../models/book.model';
 
 @Component({
     selector: 'app-book-filters',
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     template: `
     <div class="card">
       <div class="card-header d-none d-lg-block">
@@ -15,23 +15,23 @@ import { Genre, BookSearchParams } from '../../../models/book.model';
           <i class="fas fa-search me-2"></i>Search & Filter
         </h5>
       </div>
-      <div class="card-body filter-panel" 
-           id="mobileFilters" 
-           [class.mobile-hidden]="!showMobileFilters">
-        
+      <div class="card-body filter-panel"
+        id="mobileFilters"
+        [class.mobile-hidden]="!showMobileFilters">
+    
         <!-- Mobile Close Button -->
         <div class="d-flex d-lg-none justify-content-between align-items-center mb-3">
           <h6 class="mb-0">
             <i class="fas fa-search me-2"></i>Search & Filter
           </h6>
-          <button 
-            type="button" 
-            class="btn-close" 
+          <button
+            type="button"
+            class="btn-close"
             aria-label="Close"
             (click)="onCloseMobileFilters()">
           </button>
         </div>
-        
+    
         <!-- Search by Title -->
         <div class="mb-3">
           <label for="titleSearch" class="form-label">Search by Title</label>
@@ -42,49 +42,51 @@ import { Genre, BookSearchParams } from '../../../models/book.model';
             [(ngModel)]="searchParams.title"
             (input)="onSearchChange()"
             placeholder="Enter book title..."
-          />
+            />
+          </div>
+    
+          <!-- Search by Author -->
+          <div class="mb-3">
+            <label for="authorSearch" class="form-label">Search by Author</label>
+            <input
+              type="text"
+              id="authorSearch"
+              class="form-control"
+              [(ngModel)]="searchParams.author"
+              (input)="onSearchChange()"
+              placeholder="Enter author name..."
+              />
+            </div>
+    
+            <!-- Genre Filter -->
+            <div class="mb-3">
+              <label for="genreFilter" class="form-label">Filter by Genre</label>
+              <select
+                id="genreFilter"
+                class="form-select"
+                [(ngModel)]="searchParams.genreId"
+                (change)="onFilterChange()"
+                >
+                <option value="">All Genres</option>
+                @for (genre of genres; track genre) {
+                  <option [value]="genre.id">
+                    {{ genre.name }}
+                  </option>
+                }
+              </select>
+            </div>
+    
+            <!-- Clear Filters -->
+            <button
+              class="btn btn-outline-secondary w-100"
+              (click)="clearFilters()"
+              [disabled]="!hasActiveFilters()"
+              >
+              <i class="fas fa-times me-2"></i>Clear Filters
+            </button>
+          </div>
         </div>
-
-        <!-- Search by Author -->
-        <div class="mb-3">
-          <label for="authorSearch" class="form-label">Search by Author</label>
-          <input
-            type="text"
-            id="authorSearch"
-            class="form-control"
-            [(ngModel)]="searchParams.author"
-            (input)="onSearchChange()"
-            placeholder="Enter author name..."
-          />
-        </div>
-
-        <!-- Genre Filter -->
-        <div class="mb-3">
-          <label for="genreFilter" class="form-label">Filter by Genre</label>
-          <select
-            id="genreFilter"
-            class="form-select"
-            [(ngModel)]="searchParams.genreId"
-            (change)="onFilterChange()"
-          >
-            <option value="">All Genres</option>
-            <option *ngFor="let genre of genres" [value]="genre.id">
-              {{ genre.name }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Clear Filters -->
-        <button
-          class="btn btn-outline-secondary w-100"
-          (click)="clearFilters()"
-          [disabled]="!hasActiveFilters()"
-        >
-          <i class="fas fa-times me-2"></i>Clear Filters
-        </button>
-      </div>
-    </div>
-  `,
+    `,
     styles: [`
     .card-header {
       background-color: #f8f9fa;

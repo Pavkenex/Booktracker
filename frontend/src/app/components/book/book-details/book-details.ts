@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 import { BookService } from "../../../services/book.service";
@@ -16,65 +16,61 @@ import { SimilarBooksComponent } from './similar-books/similar-books';
 @Component({
     selector: "app-book-details",
     imports: [
-        CommonModule,
-        RouterModule,
-        BookDetailsHeaderComponent,
-        BookLibraryActionsComponent,
-        BookReviewsComponent,
-        SimilarBooksComponent,
-    ],
+    RouterModule,
+    BookDetailsHeaderComponent,
+    BookLibraryActionsComponent,
+    BookReviewsComponent,
+    SimilarBooksComponent
+],
     template: `
     <div class="container mt-4">
-      <div *ngIf="book; else loading">
-        <div class="col-12">
-          <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
-            <i class="fas fa-arrow-left me-2"></i>Back to Catalog
-          </button>
+      @if (book) {
+        <div>
+          <div class="col-12">
+            <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
+              <i class="fas fa-arrow-left me-2"></i>Back to Catalog
+            </button>
+          </div>
+          <app-book-details-header
+            [book]="book"
+            [defaultPlaceholder]="defaultPlaceholder">
+          </app-book-details-header>
+          <app-book-library-actions
+            [book]="book"
+            [userBook]="userBook"
+            [isAuthenticated]="isAuthenticated"
+            [addingToLibrary]="addingToLibrary"
+            [removingFromLibrary]="removingFromLibrary"
+            [togglingFavorite]="togglingFavorite"
+            [libraryMessage]="libraryMessage"
+            [error]="error"
+            (addToLibrary)="addToLibrary($event)"
+            (removeFromLibrary)="removeFromLibrary()"
+            (toggleFavorite)="toggleFavorite()"
+            (statusChanged)="onStatusChanged($event)"
+            (recommend)="startRecommendation()">
+          </app-book-library-actions>
+          <app-similar-books
+            [similarBooks]="similarBooks"
+            (navigateToBook)="navigateToSimilar($event)">
+          </app-similar-books>
+          <app-book-reviews
+            [reviews]="reviews"
+            [loadingReviews]="loadingReviews"
+            [hasMoreReviews]="hasMoreReviews"
+            (loadMoreReviews)="loadMoreReviews()">
+          </app-book-reviews>
         </div>
-
-        <app-book-details-header 
-          [book]="book"
-          [defaultPlaceholder]="defaultPlaceholder">
-        </app-book-details-header>
-
-        <app-book-library-actions
-          [book]="book"
-          [userBook]="userBook"
-          [isAuthenticated]="isAuthenticated"
-          [addingToLibrary]="addingToLibrary"
-          [removingFromLibrary]="removingFromLibrary"
-          [togglingFavorite]="togglingFavorite"
-          [libraryMessage]="libraryMessage"
-          [error]="error"
-          (addToLibrary)="addToLibrary($event)"
-          (removeFromLibrary)="removeFromLibrary()"
-          (toggleFavorite)="toggleFavorite()"
-          (statusChanged)="onStatusChanged($event)"
-          (recommend)="startRecommendation()">
-        </app-book-library-actions>
-
-        <app-similar-books
-          [similarBooks]="similarBooks"
-          (navigateToBook)="navigateToSimilar($event)">
-        </app-similar-books>
-
-        <app-book-reviews
-          [reviews]="reviews"
-          [loadingReviews]="loadingReviews"
-          [hasMoreReviews]="hasMoreReviews"
-          (loadMoreReviews)="loadMoreReviews()">
-        </app-book-reviews>
-      </div>
-
-      <ng-template #loading>
+      } @else {
         <div class="text-center py-5">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
-      </ng-template>
+      }
+    
     </div>
-  `
+    `
 })
 export class BookDetailsComponent implements OnInit, OnDestroy {
   private static readonly MESSAGE_TIMEOUT_MS = 5000;

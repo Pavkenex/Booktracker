@@ -1,88 +1,86 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { PagedResponse } from '../../../models/book.model';
 
 @Component({
     selector: 'app-book-pagination',
-    imports: [CommonModule],
+    imports: [],
     template: `
-    <nav aria-label="Book catalog pagination" *ngIf="pagedResponse && pagedResponse.totalPages > 1" class="mt-4">
-      <!-- Mobile pagination (simplified) -->
-      <div class="d-flex d-md-none justify-content-between align-items-center">
-        <button 
-          class="btn btn-outline-primary btn-sm"
-          (click)="goToPage(pagedResponse.page - 1)"
-          [disabled]="pagedResponse.first">
-          <i class="fas fa-chevron-left"></i> Previous
-        </button>
-        
-        <span class="small text-muted">
-          Page {{ pagedResponse.page + 1 }} of {{ pagedResponse.totalPages }}
-        </span>
-        
-        <button 
-          class="btn btn-outline-primary btn-sm"
-          (click)="goToPage(pagedResponse.page + 1)"
-          [disabled]="pagedResponse.last">
-          Next <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      
-      <!-- Desktop pagination (full) -->
-      <ul class="pagination justify-content-center d-none d-md-flex">
-        <li class="page-item" [class.disabled]="pagedResponse.first">
-          <button 
-            class="page-link" 
-            (click)="goToPage(0)"
-            [disabled]="pagedResponse.first"
-          >
-            First
-          </button>
-        </li>
-        <li class="page-item" [class.disabled]="pagedResponse.first">
-          <button 
-            class="page-link" 
+    @if (pagedResponse && pagedResponse.totalPages > 1) {
+      <nav aria-label="Book catalog pagination" class="mt-4">
+        <!-- Mobile pagination (simplified) -->
+        <div class="d-flex d-md-none justify-content-between align-items-center">
+          <button
+            class="btn btn-outline-primary btn-sm"
             (click)="goToPage(pagedResponse.page - 1)"
-            [disabled]="pagedResponse.first"
-          >
-            Previous
+            [disabled]="pagedResponse.first">
+            <i class="fas fa-chevron-left"></i> Previous
           </button>
-        </li>
-        
-        <li 
-          *ngFor="let page of getVisiblePages()" 
-          class="page-item"
-          [class.active]="page === pagedResponse.page"
-        >
-          <button 
-            class="page-link" 
-            (click)="goToPage(page)"
-          >
-            {{ page + 1 }}
-          </button>
-        </li>
-        
-        <li class="page-item" [class.disabled]="pagedResponse.last">
-          <button 
-            class="page-link" 
+          <span class="small text-muted">
+            Page {{ pagedResponse.page + 1 }} of {{ pagedResponse.totalPages }}
+          </span>
+          <button
+            class="btn btn-outline-primary btn-sm"
             (click)="goToPage(pagedResponse.page + 1)"
-            [disabled]="pagedResponse.last"
-          >
-            Next
+            [disabled]="pagedResponse.last">
+            Next <i class="fas fa-chevron-right"></i>
           </button>
-        </li>
-        <li class="page-item" [class.disabled]="pagedResponse.last">
-          <button 
-            class="page-link" 
-            (click)="goToPage(pagedResponse.totalPages - 1)"
-            [disabled]="pagedResponse.last"
-          >
-            Last
-          </button>
-        </li>
-      </ul>
-    </nav>
-  `,
+        </div>
+        <!-- Desktop pagination (full) -->
+        <ul class="pagination justify-content-center d-none d-md-flex">
+          <li class="page-item" [class.disabled]="pagedResponse.first">
+            <button
+              class="page-link"
+              (click)="goToPage(0)"
+              [disabled]="pagedResponse.first"
+              >
+              First
+            </button>
+          </li>
+          <li class="page-item" [class.disabled]="pagedResponse.first">
+            <button
+              class="page-link"
+              (click)="goToPage(pagedResponse.page - 1)"
+              [disabled]="pagedResponse.first"
+              >
+              Previous
+            </button>
+          </li>
+          @for (page of getVisiblePages(); track page) {
+            <li
+              class="page-item"
+              [class.active]="page === pagedResponse.page"
+              >
+              <button
+                class="page-link"
+                (click)="goToPage(page)"
+                >
+                {{ page + 1 }}
+              </button>
+            </li>
+          }
+          <li class="page-item" [class.disabled]="pagedResponse.last">
+            <button
+              class="page-link"
+              (click)="goToPage(pagedResponse.page + 1)"
+              [disabled]="pagedResponse.last"
+              >
+              Next
+            </button>
+          </li>
+          <li class="page-item" [class.disabled]="pagedResponse.last">
+            <button
+              class="page-link"
+              (click)="goToPage(pagedResponse.totalPages - 1)"
+              [disabled]="pagedResponse.last"
+              >
+              Last
+            </button>
+          </li>
+        </ul>
+      </nav>
+    }
+    `,
     styles: [`
     .pagination .page-link {
       color: #007bff;
