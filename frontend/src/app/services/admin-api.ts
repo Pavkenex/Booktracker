@@ -80,44 +80,23 @@ export class AdminApi {
 
   // Reports
   getBooksByCategoryReport(): Observable<any> {
-    // Return mock data for now since backend endpoint might not exist
-    const mockData = [
-      { category: "Fiction", count: 450 },
-      { category: "Non-Fiction", count: 320 },
-      { category: "Science Fiction", count: 180 },
-      { category: "Romance", count: 150 },
-      { category: "Mystery", count: 120 },
-      { category: "Biography", count: 30 },
-    ];
-    return of(mockData);
+    return this.apiClient.get<any>('/admin/reports/books-by-category');
   }
 
   getDailyActivityReport(): Observable<any> {
-    // Return mock data for now since backend endpoint might not exist
-    const mockData = [];
-    const today = new Date();
-    for (let i = 29; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      mockData.push({
-        date: date.toISOString().split("T")[0],
-        users: Math.floor(Math.random() * 10) + 1,
-        books: Math.floor(Math.random() * 5) + 1,
-        reviews: Math.floor(Math.random() * 15) + 1,
-      });
-    }
-    return of(mockData);
+    // Get data for the last 30 days
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - 30);
+    
+    const startDateStr = startDate.toISOString().split('T')[0];
+    const endDateStr = endDate.toISOString().split('T')[0];
+    
+    return this.apiClient.get<any>(`/admin/reports/daily-activity?startDate=${startDateStr}&endDate=${endDateStr}`);
   }
 
   getUserEngagementReport(): Observable<any> {
-    // Return mock data for now since backend endpoint might not exist
-    const mockData = [
-      { metric: "Average Books per User", value: 8.3 },
-      { metric: "Average Reviews per User", value: 12.7 },
-      { metric: "Active Users (30 days)", value: 89 },
-      { metric: "Books Read This Month", value: 234 },
-    ];
-    return of(mockData);
+    return this.apiClient.get<any>('/admin/reports/user-engagement');
   }
 
   // Popularity statistics
