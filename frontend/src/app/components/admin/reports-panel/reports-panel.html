@@ -161,9 +161,9 @@
               <tbody>
                 @for (item of reportData.booksByCategory; track item) {
                 <tr>
-                  <td>{{ item.category }}</td>
-                  <td>{{ item.count }}</td>
-                  <td>{{ getPercentage(item.count, getTotalBooks()) }}%</td>
+                  <td>{{ item.categoryName }}</td>
+                  <td>{{ item.bookCount }}</td>
+                  <td>{{ item.percentage ? item.percentage.toFixed(1) : 0 }}%</td>
                 </tr>
                 }
               </tbody>
@@ -177,13 +177,13 @@
               <div
                 class="d-flex justify-content-between align-items-center mb-1"
               >
-                <small>{{ item.category }}</small>
-                <small>{{ item.count }} books</small>
+                <small>{{ item.categoryName }}</small>
+                <small>{{ item.bookCount }} books</small>
               </div>
               <div class="progress" style="height: 20px">
                 <div
                   class="progress-bar bg-primary"
-                  [style.width.%]="getPercentage(item.count, getTotalBooks())"
+                  [style.width.%]="item.percentage"
                 ></div>
               </div>
             </div>

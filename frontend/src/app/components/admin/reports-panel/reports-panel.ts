@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdminApi } from '../../../services/admin-api';
 
 interface ReportData {
-  booksByCategory?: { category: string; count: number }[];
+  booksByCategory?: { categoryName: string; bookCount: number; percentage: number }[];
   dailyActivity?: { date: string; users: number; books: number; reviews: number }[];
   userEngagement?: { metric: string; value: number }[];
 }
@@ -105,7 +105,7 @@ export class ReportsPanelComponent implements OnInit {
 
   getTotalBooks(): number {
     if (!this.reportData.booksByCategory) return 0;
-    return this.reportData.booksByCategory.reduce((total, item) => total + item.count, 0);
+    return this.reportData.booksByCategory.reduce((total, item) => total + item.bookCount, 0);
   }
 
   getPercentage(count: number, total: number): number {
