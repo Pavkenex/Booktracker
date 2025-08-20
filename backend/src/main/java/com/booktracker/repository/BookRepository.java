@@ -96,4 +96,16 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      */
     @Query("SELECT b FROM Book b ORDER BY b.id DESC")
     List<Book> findRecentlyAddedBooks(Pageable pageable);
+    
+    /**
+     * Count books created today
+     */
+    @Query("SELECT COUNT(b) FROM Book b WHERE CAST(b.createdAt AS date) = CURRENT_DATE")
+    long countBooksCreatedToday();
+    
+    /**
+     * Count books created on specific date
+     */
+    @Query("SELECT COUNT(b) FROM Book b WHERE CAST(b.createdAt AS date) = :date")
+    long countBooksCreatedOnDate(@Param("date") java.time.LocalDate date);
 }

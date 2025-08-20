@@ -213,7 +213,8 @@ public class AdminService {
         LocalDate currentDate = startDate;
         while (!currentDate.isAfter(endDate)) {
             Long userRegistrations = userRepository.countUsersRegisteredOnDate(currentDate);
-            Long booksAdded = userBookRepository.countBooksAddedOnDate(currentDate);
+            // Use the new method to count books created on this date instead of books added to user libraries
+            Long booksAdded = bookRepository.countBooksCreatedOnDate(currentDate);
             Long reviewsPosted = userBookRepository.countReviewsPostedOnDate(currentDate);
             Long friendRequestsSent = friendshipRepository.countFriendRequestsSentOnDate(currentDate);
             Long recommendationsSent = recommendationRepository.countRecommendationsSentOnDate(currentDate);

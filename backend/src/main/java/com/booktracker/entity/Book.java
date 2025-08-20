@@ -34,6 +34,9 @@ public class Book {
     @Size(max = 500, message = "Description must not exceed 500 characters")
     private String description;
     
+    @Column(name = "created_at")
+    private java.time.LocalDate createdAt;
+    
     // Relationships
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -116,6 +119,14 @@ public class Book {
         this.description = description;
     }
     
+    public java.time.LocalDate getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(java.time.LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+    
     public Set<Genre> getGenres() {
         return genres;
     }
@@ -180,6 +191,7 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", publishedYear=" + publishedYear +
                 ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }
