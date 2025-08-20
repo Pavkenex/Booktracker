@@ -20,13 +20,14 @@
           </p>
           <div class="d-grid gap-2">
             <button
-              class="btn btn-outline-primary"
+              [class]="activeReport === 'books-by-category' ? 'btn btn-primary' : 'btn btn-outline-primary'"
               (click)="loadReport('books-by-category')"
               [disabled]="loadingReports['books-by-category']"
             >
               @if (loadingReports['books-by-category']) {
               <span class="spinner-border spinner-border-sm me-2"></span>
-              } Generate Report
+              } {{ activeReport === 'books-by-category' ? 'Hide Report' : 'View
+              Report' }}
             </button>
             @if (reportData.booksByCategory) {
             <div class="btn-group">
@@ -64,13 +65,14 @@
           </p>
           <div class="d-grid gap-2">
             <button
-              class="btn btn-outline-info"
+              [class]="activeReport === 'daily-activity' ? 'btn btn-info text-white' : 'btn btn-outline-info'"
               (click)="loadReport('daily-activity')"
               [disabled]="loadingReports['daily-activity']"
             >
               @if (loadingReports['daily-activity']) {
               <span class="spinner-border spinner-border-sm me-2"></span>
-              } Generate Report
+              } {{ activeReport === 'daily-activity' ? 'Hide Report' : 'View
+              Report' }}
             </button>
             @if (reportData.dailyActivity) {
             <div class="btn-group">
@@ -108,13 +110,14 @@
           </p>
           <div class="d-grid gap-2">
             <button
-              class="btn btn-outline-warning"
+              [class]="activeReport === 'user-engagement' ? 'btn btn-warning' : 'btn btn-outline-warning'"
               (click)="loadReport('user-engagement')"
               [disabled]="loadingReports['user-engagement']"
             >
               @if (loadingReports['user-engagement']) {
               <span class="spinner-border spinner-border-sm me-2"></span>
-              } Generate Report
+              } {{ activeReport === 'user-engagement' ? 'Hide Report' : 'View
+              Report' }}
             </button>
             @if (reportData.userEngagement) {
             <div class="btn-group">
@@ -140,13 +143,22 @@
     </div>
   </div>
 
-  <!-- Books by Category Report -->
-  @if (reportData.booksByCategory) {
-  <div class="row mb-4">
+  <!-- Report Content Section -->
+  <div class="row mb-4" *ngIf="activeReport">
     <div class="col-12">
+      <!-- Books by Category Report -->
+      @if (activeReport === 'books-by-category' && reportData.booksByCategory) {
       <div class="card">
         <div class="card-header">
-          <h5 class="card-title mb-0">Books by Category Distribution</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Books by Category Distribution</h5>
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="activeReport = null"
+            >
+              <i class="fas fa-times"></i> Close
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -163,7 +175,9 @@
                 <tr>
                   <td>{{ item.categoryName }}</td>
                   <td>{{ item.bookCount }}</td>
-                  <td>{{ item.percentage ? item.percentage.toFixed(1) : 0 }}%</td>
+                  <td>
+                    {{ item.percentage ? item.percentage.toFixed(1) : 0 }}%
+                  </td>
                 </tr>
                 }
               </tbody>
@@ -191,17 +205,23 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  }
+      }
 
-  <!-- Daily Activity Report -->
-  @if (reportData.dailyActivity) {
-  <div class="row mb-4">
-    <div class="col-12">
+      <!-- Daily Activity Report -->
+      @if (activeReport === 'daily-activity' && reportData.dailyActivity) {
       <div class="card">
         <div class="card-header">
-          <h5 class="card-title mb-0">Daily Activity Report (Last 30 Days)</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+              Daily Activity Report (Last 30 Days)
+            </h5>
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="activeReport = null"
+            >
+              <i class="fas fa-times"></i> Close
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -234,17 +254,21 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  }
+      }
 
-  <!-- User Engagement Report -->
-  @if (reportData.userEngagement) {
-  <div class="row mb-4">
-    <div class="col-12">
+      <!-- User Engagement Report -->
+      @if (activeReport === 'user-engagement' && reportData.userEngagement) {
       <div class="card">
         <div class="card-header">
-          <h5 class="card-title mb-0">User Engagement Metrics</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">User Engagement Metrics</h5>
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="activeReport = null"
+            >
+              <i class="fas fa-times"></i> Close
+            </button>
+          </div>
         </div>
         <div class="card-body">
           <div class="row">
@@ -261,9 +285,9 @@
           </div>
         </div>
       </div>
+      }
     </div>
   </div>
-  }
 
   <!-- Error State -->
   @if (error) {

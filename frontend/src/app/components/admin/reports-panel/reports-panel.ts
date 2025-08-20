@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 import { AdminApi } from '../../../services/admin-api';
 
@@ -10,7 +11,7 @@ interface ReportData {
 
 @Component({
     selector: 'app-reports-panel',
-    imports: [],
+    imports: [CommonModule],
     templateUrl: './reports-panel.html',
     styleUrls: ['./reports-panel.css']
 })
@@ -20,6 +21,7 @@ export class ReportsPanelComponent implements OnInit {
   exporting = false;
   exportSuccess = false;
   error: string | null = null;
+  activeReport: 'books-by-category' | 'daily-activity' | 'user-engagement' | null = null;
 
   constructor(private adminApi: AdminApi) {}
 
@@ -28,8 +30,25 @@ export class ReportsPanelComponent implements OnInit {
   }
 
   loadReport(reportType: string): void {
+    // If this is the currently active report, toggle it off
+    if (this.activeReport === reportType) {
+      this.activeReport = null;
+      return;
+    }
+    
     this.loadingReports[reportType] = true;
     this.error = null;
+    
+    // Set as active report
+    this.activeReport = reportType as 'books-by-category' | 'daily-activity' | 'user-engagement';
+
+    // Check if we already have the data
+    if ((reportType === 'books-by-category' && this.reportData.booksByCategory) || 
+        (reportType === 'daily-activity' && this.reportData.dailyActivity) ||
+        (reportType === 'user-engagement' && this.reportData.userEngagement)) {
+      this.loadingReports[reportType] = false;
+      return;
+    }
 
     let reportObservable;
     
@@ -67,6 +86,7 @@ export class ReportsPanelComponent implements OnInit {
         console.error(`Error loading ${reportType} report:`, error);
         this.error = `Failed to load ${reportType} report. Please try again.`;
         this.loadingReports[reportType] = false;
+        this.activeReport = null;
       }
     });
   }
