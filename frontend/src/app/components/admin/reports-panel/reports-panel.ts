@@ -5,7 +5,14 @@ import { AdminApi } from '../../../services/admin-api';
 
 interface ReportData {
   booksByCategory?: { categoryName: string; bookCount: number; percentage: number }[];
-  dailyActivity?: { date: string; users: number; books: number; reviews: number }[];
+  dailyActivity?: { 
+    date: string; 
+    userRegistrations: number; 
+    booksAdded: number; 
+    reviewsPosted: number;
+    friendRequestsSent?: number;
+    recommendationsSent?: number;
+  }[];
   userEngagement?: { metric: string; value: number }[];
 }
 
@@ -74,7 +81,10 @@ export class ReportsPanelComponent implements OnInit {
             this.reportData.booksByCategory = data;
             break;
           case 'daily-activity':
-            this.reportData.dailyActivity = data;
+            // Sort by date in reverse order (newest first)
+            this.reportData.dailyActivity = [...data].sort((a, b) => 
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+            );
             break;
           case 'user-engagement':
             this.reportData.userEngagement = data;

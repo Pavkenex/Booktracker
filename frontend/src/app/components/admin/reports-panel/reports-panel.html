@@ -1,4 +1,4 @@
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" id="reports-container">
   <div class="row">
     <div class="col-12">
       <h1 class="h3 mb-4">Reports & Analytics</h1>
@@ -213,7 +213,7 @@
         <div class="card-header">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">
-              Daily Activity Report (Last 30 Days)
+              Daily Activity Report (Most Recent First)
             </h5>
             <button
               class="btn btn-sm btn-outline-secondary"
@@ -224,13 +224,13 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive daily-activity-table">
             <table class="table table-striped">
               <thead>
                 <tr>
                   <th>Date</th>
                   <th>New Users</th>
-                  <th>Books Added</th>
+                  <th>Books Created</th>
                   <th>Reviews Posted</th>
                 </tr>
               </thead>
@@ -239,13 +239,13 @@
                 <tr>
                   <td>{{ formatDate(item.date) }}</td>
                   <td>
-                    <span class="badge bg-primary">{{ item.users }}</span>
+                    <span class="badge bg-primary">{{ item.userRegistrations }}</span>
                   </td>
                   <td>
-                    <span class="badge bg-success">{{ item.books }}</span>
+                    <span class="badge bg-success">{{ item.booksAdded }}</span>
                   </td>
                   <td>
-                    <span class="badge bg-info">{{ item.reviews }}</span>
+                    <span class="badge bg-info">{{ item.reviewsPosted }}</span>
                   </td>
                 </tr>
                 }
