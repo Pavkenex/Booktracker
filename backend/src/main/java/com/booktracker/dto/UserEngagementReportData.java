@@ -100,6 +100,26 @@ public class UserEngagementReportData {
         return reviewsWritten;
     }
     
+    // For frontend metrics format
+    private String metric;
+    private Number value;
+    
+    public String getMetric() {
+        return metric;
+    }
+    
+    public void setMetric(String metric) {
+        this.metric = metric;
+    }
+    
+    public Number getValue() {
+        return value;
+    }
+    
+    public void setValue(Number value) {
+        this.value = value;
+    }
+    
     public void setReviewsWritten(Long reviewsWritten) {
         this.reviewsWritten = reviewsWritten;
     }

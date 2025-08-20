@@ -237,7 +237,8 @@ public class AdminService {
     public List<UserEngagementReportData> getUserEngagementData() {
         List<Object[]> results = userRepository.getUserEngagementData();
         
-        return results.stream()
+        // Process raw user data into individual user records
+        List<UserEngagementReportData> detailedData = results.stream()
             .map(result -> {
                 UserEngagementReportData data = new UserEngagementReportData();
                 data.setUsername((String) result[0]);
@@ -252,6 +253,59 @@ public class AdminService {
                 return data;
             })
             .collect(Collectors.toList());
+        
+        // Create aggregated metrics for frontend display
+        List<UserEngagementReportData> metrics = new ArrayList<>();
+        
+        // Calculate aggregated metrics
+        long totalUsers = userRepository.countTotalUsers();
+        long totalBooksInLibraries = detailedData.stream().mapToLong(UserEngagementReportData::getTotalBooks).sum();
+        long totalBooksRead = detailedData.stream().mapToLong(UserEngagementReportData::getBooksRead).sum();
+        long totalToRead = detailedData.stream().mapToLong(UserEngagementReportData::getBooksToRead).sum();
+        // Removed totalFriends and totalRecommendations calculations
+        long totalReviews = detailedData.stream().mapToLong(UserEngagementReportData::getReviewsWritten).sum();
+        
+        // Average ratings (ignoring nulls)
+        double avgRatingSum = detailedData.stream()
+            .filter(d -> d.getAverageRating() != null)
+            .mapToDouble(UserEngagementReportData::getAverageRating)
+            .average()
+            .orElse(0);
+        
+        // Create metrics
+        UserEngagementReportData totalUsersMetric = new UserEngagementReportData();
+        totalUsersMetric.setMetric("Total Users");
+        totalUsersMetric.setValue(totalUsers);
+        metrics.add(totalUsersMetric);
+        
+        UserEngagementReportData avgBooksPerUser = new UserEngagementReportData();
+        avgBooksPerUser.setMetric("Avg Books Per User");
+        avgBooksPerUser.setValue(totalUsers > 0 ? (double) totalBooksInLibraries / totalUsers : 0);
+        metrics.add(avgBooksPerUser);
+        
+        UserEngagementReportData totalBooksReadMetric = new UserEngagementReportData();
+        totalBooksReadMetric.setMetric("Total Books Read");
+        totalBooksReadMetric.setValue(totalBooksRead);
+        metrics.add(totalBooksReadMetric);
+        
+        UserEngagementReportData totalToReadMetric = new UserEngagementReportData();
+        totalToReadMetric.setMetric("Total Books To Read");
+        totalToReadMetric.setValue(totalToRead);
+        metrics.add(totalToReadMetric);
+        
+        UserEngagementReportData avgRatingMetric = new UserEngagementReportData();
+        avgRatingMetric.setMetric("Average Book Rating");
+        avgRatingMetric.setValue(avgRatingSum);
+        metrics.add(avgRatingMetric);
+        
+        UserEngagementReportData totalReviewsMetric = new UserEngagementReportData();
+        totalReviewsMetric.setMetric("Total Reviews Written");
+        totalReviewsMetric.setValue(totalReviews);
+        metrics.add(totalReviewsMetric);
+        
+        // Removed Total Friendships and Total Recommendations metrics
+        
+        return metrics;
     }
     
     public List<PopularityStatisticsData> getPopularityStatisticsData() {

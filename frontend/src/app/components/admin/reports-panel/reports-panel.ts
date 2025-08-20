@@ -155,4 +155,18 @@ export class ReportsPanelComponent implements OnInit {
   clearError(): void {
     this.error = null;
   }
+  
+  formatMetricValue(value: number): string {
+    if (value === undefined || value === null) {
+      return '0';
+    }
+    
+    // Format as decimal for values like average ratings
+    if (value % 1 !== 0) {
+      return value.toFixed(1);
+    }
+    
+    // Format as integer for whole numbers
+    return value.toString();
+  }
 }
