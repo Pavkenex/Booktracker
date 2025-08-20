@@ -39,6 +39,23 @@ public class AdminService {
     @Autowired
     private UserRepository userRepository;
     
+
+    
+    /**
+     * Get admin dashboard statistics
+     */
+    public AdminStatsDTO getAdminStats() {
+        long totalUsers = userRepository.countTotalUsers();
+        long totalBooks = bookRepository.countTotalBooks();
+        long totalGenres = genreRepository.count();
+        
+        return new AdminStatsDTO(
+            (int) totalUsers,
+            (int) totalBooks,
+            (int) totalGenres
+        );
+    }
+    
     @Autowired
     private UserBookRepository userBookRepository;
     

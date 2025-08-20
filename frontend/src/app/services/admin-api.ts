@@ -9,11 +9,6 @@ export interface AdminStats {
   totalUsers: number;
   totalBooks: number;
   totalGenres: number;
-  recentActivity: {
-    newUsers: number;
-    booksAdded: number;
-    reviewsPosted: number;
-  };
 }
 
 export interface ReportData {
@@ -47,19 +42,7 @@ export class AdminApi {
 
   // Dashboard stats
   getAdminStats(): Observable<AdminStats> {
-    // For now, return mock data since the backend endpoint might not exist yet
-    // TODO: Replace with actual API call when backend is implemented
-    const mockStats: AdminStats = {
-      totalUsers: 150,
-      totalBooks: 1250,
-      totalGenres: 25,
-      recentActivity: {
-        newUsers: 12,
-        booksAdded: 35,
-        reviewsPosted: 48,
-      },
-    };
-    return of(mockStats);
+    return this.apiClient.get<AdminStats>('/admin/stats');
   }
 
   // Book management

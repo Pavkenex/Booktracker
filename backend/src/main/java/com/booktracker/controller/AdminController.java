@@ -28,6 +28,14 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
     
+    // Dashboard Statistics Endpoint
+    
+    @GetMapping("/stats")
+    public ResponseEntity<AdminStatsDTO> getAdminStats() {
+        AdminStatsDTO stats = adminService.getAdminStats();
+        return ResponseEntity.ok(stats);
+    }
+    
     // Book Management Endpoints
     
     @PostMapping("/books")
