@@ -166,11 +166,17 @@ export class BookManagementComponent implements OnInit {
         next: () => {
           this.submitting = false;
           this.loadBooks();
-          // Close modal programmatically
+          // Close modal programmatically and clean up backdrop
           const modal = document.getElementById('bookModal');
           if (modal) {
-            const bsModal = (window as any).bootstrap.Modal.getInstance(modal);
-            if (bsModal) bsModal.hide();
+            let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
+            if (!bsModal) {
+              bsModal = new (window as any).bootstrap.Modal(modal);
+            }
+            bsModal.hide();
+            // Remove leftover backdrops and modal-open class
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
           }
         },
         error: (error) => {
@@ -195,11 +201,16 @@ export class BookManagementComponent implements OnInit {
         next: () => {
           this.deleting = false;
           this.loadBooks();
-          // Close modal
+          // Close modal and clean up backdrop
           const modal = document.getElementById('deleteModal');
           if (modal) {
-            const bsModal = (window as any).bootstrap.Modal.getInstance(modal);
-            if (bsModal) bsModal.hide();
+            let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
+            if (!bsModal) {
+              bsModal = new (window as any).bootstrap.Modal(modal);
+            }
+            bsModal.hide();
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
           }
         },
         error: (error) => {
