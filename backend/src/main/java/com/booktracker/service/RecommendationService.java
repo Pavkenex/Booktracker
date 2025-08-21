@@ -24,17 +24,20 @@ import java.util.stream.Collectors;
 @Transactional
 public class RecommendationService {
     
-    @Autowired
-    private RecommendationRepository recommendationRepository;
+    private final RecommendationRepository recommendationRepository;
+    private final UserRepository userRepository;
+    private final BookRepository bookRepository;
+    private final FriendshipRepository friendshipRepository;
     
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private BookRepository bookRepository;
-    
-    @Autowired
-    private FriendshipRepository friendshipRepository;
+    public RecommendationService(RecommendationRepository recommendationRepository,
+                               UserRepository userRepository,
+                               BookRepository bookRepository,
+                               FriendshipRepository friendshipRepository) {
+        this.recommendationRepository = recommendationRepository;
+        this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
+        this.friendshipRepository = friendshipRepository;
+    }
     
     /**
      * Send a book recommendation to a friend

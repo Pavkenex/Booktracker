@@ -23,12 +23,12 @@ export interface ReportData {
 }
 
 export interface PopularityStatistics {
-  id: number;
+  bookId: number;
   title: string;
   author: string;
   viewCount: number;
-  thumbnail?: string;
-  rating?: number;
+  percentage: number;
+  rank: number;
 }
 
 @Injectable({
@@ -47,15 +47,15 @@ export class AdminApi {
 
   // Book management
   createBook(book: Omit<Book, "id">): Observable<Book> {
-    return this.apiClient.post<Book>("/books", book);
+    return this.apiClient.post<Book>("/admin/books", book);
   }
 
   updateBook(id: number, book: Partial<Book>): Observable<Book> {
-    return this.apiClient.put<Book>(`/books/${id}`, book);
+    return this.apiClient.put<Book>(`/admin/books/${id}`, book);
   }
 
   deleteBook(id: number): Observable<void> {
-    return this.apiClient.delete<void>(`/books/${id}`);
+    return this.apiClient.delete<void>(`/admin/books/${id}`);
   }
 
   // Genre management
@@ -75,7 +75,7 @@ export class AdminApi {
 
   getAllGenres(): Observable<Genre[]> {
     return this.apiClient
-      .get<Genre[]>("/admin/genres");
+      .get<Genre[]>("/genres");
   }
 
   // Reports

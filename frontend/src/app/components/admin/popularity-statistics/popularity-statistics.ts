@@ -132,10 +132,6 @@ export class PopularityStatisticsComponent implements OnInit {
     });
   }
 
-  onImageError(event: any): void {
-    event.target.src = "/assets/images/book-placeholder.svg";
-  }
-
   private showExportStatus(message: string): void {
     this.exportStatus.message = message;
     this.exportStatus.show = true;

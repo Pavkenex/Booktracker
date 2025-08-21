@@ -1,13 +1,14 @@
 package com.booktracker.service;
 
+import com.booktracker.dto.AdminBookRequest;
 import com.booktracker.dto.BookRequest;
 import com.booktracker.dto.BookResponse;
 import com.booktracker.dto.PagedResponse;
 import com.booktracker.entity.Book;
 import com.booktracker.entity.Genre;
+import com.booktracker.exception.ResourceNotFoundException;
 import com.booktracker.repository.BookRepository;
 import com.booktracker.repository.GenreRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +26,17 @@ import java.util.stream.Collectors;
 @Transactional
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
+    private final PopularityService popularityService;
 
-    @Autowired
-    private GenreRepository genreRepository;
-
-    @Autowired
-    private PopularityService popularityService;
+    public BookService(BookRepository bookRepository, 
+                      GenreRepository genreRepository,
+                      PopularityService popularityService) {
+        this.bookRepository = bookRepository;
+        this.genreRepository = genreRepository;
+        this.popularityService = popularityService;
+    }
 
     /**
      * Get all books with pagination
@@ -118,6 +122,16 @@ public class BookService {
     }
 
     /**
+     * Get book by ID (throws exception if not found) - for admin use
+     */
+    @Transactional(readOnly = true)
+    public BookResponse getBookByIdRequired(Long id) {
+        return bookRepository.findById(id)
+                .map(BookResponse::new)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+    }
+
+    /**
      * Create a new book
      */
     public BookResponse createBook(BookRequest bookRequest) {
@@ -165,17 +179,6 @@ public class BookService {
                     Book savedBook = bookRepository.save(book);
                     return new BookResponse(savedBook);
                 });
-    }
-
-    /**
-     * Delete a book
-     */
-    public boolean deleteBook(Long id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -227,5 +230,80 @@ public class BookService {
                 .map(BookResponse::new)
                 .collect(Collectors.toList());
         }).orElse(List.of());
+    }
+
+    // Admin Book Management Methods
+
+    /**
+     * Create a new book (admin only)
+     */
+    public BookResponse createBook(AdminBookRequest request) {
+        Book book = new Book();
+        book.setTitle(request.getTitle());
+        book.setAuthor(request.getAuthor());
+        book.setPublishedYear(request.getPublishedYear());
+        book.setThumbnail(request.getThumbnail());
+        book.setDescription(request.getDescription());
+        
+        // Add genres if provided
+        if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
+            Set<Genre> genres = new HashSet<>();
+            for (Long genreId : request.getGenreIds()) {
+                Genre genre = genreRepository.findById(genreId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
+                genres.add(genre);
+            }
+            book.setGenres(genres);
+        }
+        
+        Book savedBook = bookRepository.save(book);
+        return new BookResponse(savedBook);
+    }
+
+    /**
+     * Update an existing book (admin only)
+     */
+    public BookResponse updateBook(Long bookId, AdminBookRequest request) {
+        Book book = bookRepository.findById(bookId)
+            .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
+        
+        book.setTitle(request.getTitle());
+        book.setAuthor(request.getAuthor());
+        book.setPublishedYear(request.getPublishedYear());
+        book.setThumbnail(request.getThumbnail());
+        book.setDescription(request.getDescription());
+        
+        // Update genres
+        book.getGenres().clear();
+        if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
+            Set<Genre> genres = new HashSet<>();
+            for (Long genreId : request.getGenreIds()) {
+                Genre genre = genreRepository.findById(genreId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
+                genres.add(genre);
+            }
+            book.setGenres(genres);
+        }
+        
+        Book savedBook = bookRepository.save(book);
+        return new BookResponse(savedBook);
+    }
+
+    /**
+     * Delete a book (admin only)
+     */
+    public void deleteBook(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+            .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
+        
+        bookRepository.delete(book);
+    }
+
+    /**
+     * Get all books with pagination (admin version)
+     */
+    public Page<BookResponse> getAllBooksForAdmin(Pageable pageable) {
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(BookResponse::new);
     }
 }

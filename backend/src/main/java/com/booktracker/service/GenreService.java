@@ -1,10 +1,11 @@
 package com.booktracker.service;
 
+import com.booktracker.dto.AdminGenreRequest;
 import com.booktracker.dto.GenreRequest;
 import com.booktracker.dto.GenreResponse;
 import com.booktracker.entity.Genre;
+import com.booktracker.exception.ResourceNotFoundException;
 import com.booktracker.repository.GenreRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,11 @@ import java.util.stream.Collectors;
 @Transactional
 public class GenreService {
 
-    @Autowired
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
+
+    public GenreService(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
+    }
 
     /**
      * Get all genres
@@ -143,5 +147,64 @@ public class GenreService {
     @Transactional(readOnly = true)
     public boolean existsByName(String name) {
         return genreRepository.existsByNameIgnoreCase(name);
+    }
+
+    // Admin Genre Management Methods
+
+    /**
+     * Create a new genre (admin version)
+     */
+    public GenreResponse createGenreForAdmin(AdminGenreRequest request) {
+        if (genreRepository.existsByNameIgnoreCase(request.getName())) {
+            throw new IllegalArgumentException("Genre with name '" + request.getName() + "' already exists");
+        }
+        
+        Genre genre = new Genre();
+        genre.setName(request.getName());
+        
+        Genre savedGenre = genreRepository.save(genre);
+        return new GenreResponse(savedGenre);
+    }
+
+    /**
+     * Update an existing genre (admin version)
+     */
+    public GenreResponse updateGenreForAdmin(Long genreId, AdminGenreRequest request) {
+        Genre genre = genreRepository.findById(genreId)
+            .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
+        
+        // Check if name already exists (excluding current genre)
+        Optional<Genre> existingGenre = genreRepository.findByNameIgnoreCase(request.getName());
+        if (existingGenre.isPresent() && !existingGenre.get().getId().equals(genreId)) {
+            throw new IllegalArgumentException("Genre with name '" + request.getName() + "' already exists");
+        }
+        
+        genre.setName(request.getName());
+        Genre savedGenre = genreRepository.save(genre);
+        return new GenreResponse(savedGenre);
+    }
+
+    /**
+     * Delete a genre (admin version)
+     */
+    public void deleteGenreForAdmin(Long genreId) {
+        Genre genre = genreRepository.findById(genreId)
+            .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
+        
+        // Check if genre has books
+        if (!genre.getBooks().isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete genre that has books assigned to it. Please reassign books to other genres first.");
+        }
+        
+        genreRepository.delete(genre);
+    }
+
+    /**
+     * Get genre by ID (admin version)
+     */
+    public GenreResponse getGenreByIdForAdmin(Long genreId) {
+        Genre genre = genreRepository.findById(genreId)
+            .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
+        return new GenreResponse(genre);
     }
 }

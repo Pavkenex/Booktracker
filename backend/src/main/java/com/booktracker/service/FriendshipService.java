@@ -17,11 +17,14 @@ import java.util.stream.Collectors;
 @Transactional
 public class FriendshipService {
     
-    @Autowired
-    private FriendshipRepository friendshipRepository;
+    private final FriendshipRepository friendshipRepository;
+    private final UserRepository userRepository;
     
-    @Autowired
-    private UserRepository userRepository;
+    public FriendshipService(FriendshipRepository friendshipRepository,
+                           UserRepository userRepository) {
+        this.friendshipRepository = friendshipRepository;
+        this.userRepository = userRepository;
+    }
     
     /**
      * Send a friend request

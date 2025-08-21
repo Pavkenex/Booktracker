@@ -159,30 +159,20 @@
             <table class="table table-hover mb-0">
               <thead class="table-light">
                 <tr>
-                  <th scope="col" class="text-center" style="width: 60px">#</th>
-                  <th scope="col" style="width: 80px">Cover</th>
+                  <th scope="col" class="text-center" style="width: 60px">
+                    Rank
+                  </th>
                   <th scope="col">Title</th>
                   <th scope="col">Author</th>
-                  <th scope="col" class="text-center">Rating</th>
                   <th scope="col" class="text-center">View Count</th>
+                  <th scope="col" class="text-center">Percentage</th>
                 </tr>
               </thead>
               <tbody>
                 @for (book of filteredStatistics; track book; let i = $index) {
                 <tr>
                   <td class="text-center align-middle">
-                    <span class="badge bg-primary">{{ i + 1 }}</span>
-                  </td>
-                  <td class="align-middle">
-                    <img
-                      [src]="
-                        book.thumbnail ||
-                        '/assets/images/book-placeholder.svg'
-                      "
-                      [alt]="book.title"
-                      class="book-thumbnail"
-                      (error)="onImageError($event)"
-                    />
+                    <span class="badge bg-primary">{{ book.rank }}</span>
                   </td>
                   <td class="align-middle">
                     <div class="fw-bold">{{ book.title }}</div>
@@ -191,20 +181,13 @@
                     <div class="text-muted">{{ book.author }}</div>
                   </td>
                   <td class="text-center align-middle">
-                    @if (book.rating) {
-                    <div
-                      class="d-flex align-items-center justify-content-center"
-                    >
-                      <i class="fas fa-star text-warning me-1"></i>
-                      <span>{{ book.rating | number : "1.1-1" }}</span>
-                    </div>
-                    } @if (!book.rating) {
-                    <span class="text-muted">N/A</span>
-                    }
-                  </td>
-                  <td class="text-center align-middle">
                     <span class="badge bg-success fs-6"
                       >{{ book.viewCount | number }}</span
+                    >
+                  </td>
+                  <td class="text-center align-middle">
+                    <span class="badge bg-info fs-6"
+                      >{{ book.percentage | number : "1.1-1" }}%</span
                     >
                   </td>
                 </tr>

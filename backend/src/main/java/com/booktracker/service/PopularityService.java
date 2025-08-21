@@ -22,11 +22,14 @@ public class PopularityService {
 
     private static final Logger logger = LoggerFactory.getLogger(PopularityService.class);
 
-    @Autowired
-    private BookViewRepository bookViewRepository;
+    private final BookViewRepository bookViewRepository;
+    private final BookRepository bookRepository;
 
-    @Autowired
-    private BookRepository bookRepository;
+    public PopularityService(BookViewRepository bookViewRepository,
+                           BookRepository bookRepository) {
+        this.bookViewRepository = bookViewRepository;
+        this.bookRepository = bookRepository;
+    }
 
     /**
      * Record a book view by incrementing the view count atomically
