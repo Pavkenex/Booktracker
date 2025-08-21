@@ -106,6 +106,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     /**
      * Count books created on specific date
      */
-    @Query("SELECT COUNT(b) FROM Book b WHERE CAST(b.createdAt AS date) = :date")
+    @Query("SELECT COUNT(b) FROM Book b WHERE b.createdAt = :date")
     long countBooksCreatedOnDate(@Param("date") java.time.LocalDate date);
 }

@@ -25,27 +25,27 @@ INSERT IGNORE INTO genres (name) VALUES
 ('Adventure');
 
 -- Insert sample books with more comprehensive data
-INSERT IGNORE INTO books (title, author, published_year, description, thumbnail) VALUES 
-('The Great Gatsby', 'F. Scott Fitzgerald', 1925, 'A classic American novel set in the Jazz Age, exploring themes of wealth, love, and the American Dream.', 'https://covers.openlibrary.org/b/isbn/9780743273565-M.jpg'),
-('To Kill a Mockingbird', 'Harper Lee', 1960, 'A gripping tale of racial injustice and childhood innocence in the American South.', 'https://covers.openlibrary.org/b/isbn/9780061120084-M.jpg'),
-('1984', 'George Orwell', 1949, 'A dystopian social science fiction novel about totalitarian control and surveillance.', 'https://covers.openlibrary.org/b/isbn/9780451524935-M.jpg'),
-('Pride and Prejudice', 'Jane Austen', 1813, 'A romantic novel of manners exploring love, marriage, and social class in Regency England.', 'https://covers.openlibrary.org/b/isbn/9780141439518-M.jpg'),
-('The Catcher in the Rye', 'J.D. Salinger', 1951, 'A controversial novel about teenage rebellion and alienation in post-war America.', 'https://covers.openlibrary.org/b/isbn/9780316769174-M.jpg'),
-('Lord of the Flies', 'William Golding', 1954, 'A novel about British boys stranded on an uninhabited island and their disastrous attempt to govern themselves.', 'https://covers.openlibrary.org/b/isbn/9780571056866-M.jpg'),
-('The Hobbit', 'J.R.R. Tolkien', 1937, 'A fantasy adventure novel about Bilbo Baggins and his unexpected journey.', 'https://covers.openlibrary.org/b/isbn/9780547928227-M.jpg'),
-('Harry Potter and the Philosopher''s Stone', 'J.K. Rowling', 1997, 'The first book in the Harry Potter series about a young wizard discovering his magical heritage.', 'https://covers.openlibrary.org/b/isbn/9780747532699-M.jpg'),
-('The Da Vinci Code', 'Dan Brown', 2003, 'A mystery thriller novel involving art, history, and religious conspiracy.', 'https://covers.openlibrary.org/b/isbn/9780307474278-M.jpg'),
-('The Alchemist', 'Paulo Coelho', 1988, 'A philosophical novel about following your dreams and finding your personal legend.', 'https://covers.openlibrary.org/b/isbn/9780061122415-M.jpg'),
-('Dune', 'Frank Herbert', 1965, 'A science fiction epic set on the desert planet Arrakis, exploring politics, religion, and ecology.', 'https://covers.openlibrary.org/b/isbn/9780441172719-M.jpg'),
-('The Lord of the Rings: The Fellowship of the Ring', 'J.R.R. Tolkien', 1954, 'The first volume of the epic fantasy trilogy about the quest to destroy the One Ring.', 'https://covers.openlibrary.org/b/isbn/9780547928210-M.jpg'),
-('Gone Girl', 'Gillian Flynn', 2012, 'A psychological thriller about a marriage gone terribly wrong.', 'https://covers.openlibrary.org/b/isbn/9780307588364-M.jpg'),
-('The Girl with the Dragon Tattoo', 'Stieg Larsson', 2005, 'A crime thriller combining murder mystery, family saga, love story, and financial intrigue.', 'https://covers.openlibrary.org/b/isbn/9780307269751-M.jpg'),
-('Sapiens: A Brief History of Humankind', 'Yuval Noah Harari', 2011, 'A non-fiction exploration of how Homo sapiens came to dominate the world.', 'https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg'),
-('The Hunger Games', 'Suzanne Collins', 2008, 'A dystopian novel about a televised fight to the death in a post-apocalyptic society.', 'https://covers.openlibrary.org/b/isbn/9780439023481-M.jpg'),
-('The Fault in Our Stars', 'John Green', 2012, 'A young adult novel about two teenagers with cancer who fall in love.', 'https://covers.openlibrary.org/b/isbn/9780525478812-M.jpg'),
-('The Kite Runner', 'Khaled Hosseini', 2003, 'A novel about friendship, guilt, and redemption set against the backdrop of Afghanistan.', 'https://covers.openlibrary.org/b/isbn/9781594631931-M.jpg'),
-('Life of Pi', 'Yann Martel', 2001, 'A philosophical adventure novel about a boy stranded on a lifeboat with a Bengal tiger.', 'https://covers.openlibrary.org/b/isbn/9780156027328-M.jpg'),
-('The Book Thief', 'Markus Zusak', 2005, 'A novel narrated by Death about a young girl living in Nazi Germany who steals books.', 'https://covers.openlibrary.org/b/isbn/9780375842207-M.jpg');
+INSERT IGNORE INTO books (title, author, published_year, description, thumbnail, created_at) VALUES 
+('The Great Gatsby', 'F. Scott Fitzgerald', 1925, 'A classic American novel set in the Jazz Age, exploring themes of wealth, love, and the American Dream.', 'https://covers.openlibrary.org/b/isbn/9780743273565-M.jpg', '2024-08-15'),
+('To Kill a Mockingbird', 'Harper Lee', 1960, 'A gripping tale of racial injustice and childhood innocence in the American South.', 'https://covers.openlibrary.org/b/isbn/9780061120084-M.jpg', '2024-08-16'),
+('1984', 'George Orwell', 1949, 'A dystopian social science fiction novel about totalitarian control and surveillance.', 'https://covers.openlibrary.org/b/isbn/9780451524935-M.jpg', '2024-08-17'),
+('Pride and Prejudice', 'Jane Austen', 1813, 'A romantic novel of manners exploring love, marriage, and social class in Regency England.', 'https://covers.openlibrary.org/b/isbn/9780141439518-M.jpg', '2024-08-18'),
+('The Catcher in the Rye', 'J.D. Salinger', 1951, 'A controversial novel about teenage rebellion and alienation in post-war America.', 'https://covers.openlibrary.org/b/isbn/9780316769174-M.jpg', '2024-08-19'),
+('Lord of the Flies', 'William Golding', 1954, 'A novel about British boys stranded on an uninhabited island and their disastrous attempt to govern themselves.', 'https://covers.openlibrary.org/b/isbn/9780571056866-M.jpg', '2024-08-20'),
+('The Hobbit', 'J.R.R. Tolkien', 1937, 'A fantasy adventure novel about Bilbo Baggins and his unexpected journey.', 'https://covers.openlibrary.org/b/isbn/9780547928227-M.jpg', '2025-08-21'),
+('Harry Potter and the Philosopher''s Stone', 'J.K. Rowling', 1997, 'The first book in the Harry Potter series about a young wizard discovering his magical heritage.', 'https://covers.openlibrary.org/b/isbn/9780747532699-M.jpg', '2025-08-21'),
+('The Da Vinci Code', 'Dan Brown', 2003, 'A mystery thriller novel involving art, history, and religious conspiracy.', 'https://covers.openlibrary.org/b/isbn/9780307474278-M.jpg', '2025-08-21'),
+('The Alchemist', 'Paulo Coelho', 1988, 'A philosophical novel about following your dreams and finding your personal legend.', 'https://covers.openlibrary.org/b/isbn/9780061122415-M.jpg', '2024-08-10'),
+('Dune', 'Frank Herbert', 1965, 'A science fiction epic set on the desert planet Arrakis, exploring politics, religion, and ecology.', 'https://covers.openlibrary.org/b/isbn/9780441172719-M.jpg', '2024-08-11'),
+('The Lord of the Rings: The Fellowship of the Ring', 'J.R.R. Tolkien', 1954, 'The first volume of the epic fantasy trilogy about the quest to destroy the One Ring.', 'https://covers.openlibrary.org/b/isbn/9780547928210-M.jpg', '2024-08-12'),
+('Gone Girl', 'Gillian Flynn', 2012, 'A psychological thriller about a marriage gone terribly wrong.', 'https://covers.openlibrary.org/b/isbn/9780307588364-M.jpg', '2024-08-13'),
+('The Girl with the Dragon Tattoo', 'Stieg Larsson', 2005, 'A crime thriller combining murder mystery, family saga, love story, and financial intrigue.', 'https://covers.openlibrary.org/b/isbn/9780307269751-M.jpg', '2024-08-14'),
+('Sapiens: A Brief History of Humankind', 'Yuval Noah Harari', 2011, 'A non-fiction exploration of how Homo sapiens came to dominate the world.', 'https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg', '2025-08-20'),
+('The Hunger Games', 'Suzanne Collins', 2008, 'A dystopian novel about a televised fight to the death in a post-apocalyptic society.', 'https://covers.openlibrary.org/b/isbn/9780439023481-M.jpg', '2025-08-19'),
+('The Fault in Our Stars', 'John Green', 2012, 'A young adult novel about two teenagers with cancer who fall in love.', 'https://covers.openlibrary.org/b/isbn/9780525478812-M.jpg', '2025-08-18'),
+('The Kite Runner', 'Khaled Hosseini', 2003, 'A novel about friendship, guilt, and redemption set against the backdrop of Afghanistan.', 'https://covers.openlibrary.org/b/isbn/9781594631931-M.jpg', '2025-08-17'),
+('Life of Pi', 'Yann Martel', 2001, 'A philosophical adventure novel about a boy stranded on a lifeboat with a Bengal tiger.', 'https://covers.openlibrary.org/b/isbn/9780156027328-M.jpg', '2025-08-16'),
+('The Book Thief', 'Markus Zusak', 2005, 'A novel narrated by Death about a young girl living in Nazi Germany who steals books.', 'https://covers.openlibrary.org/b/isbn/9780375842207-M.jpg', '2025-08-15');
 
 -- Link books to genres
 INSERT IGNORE INTO book_genres (book_id, genre_id) VALUES 

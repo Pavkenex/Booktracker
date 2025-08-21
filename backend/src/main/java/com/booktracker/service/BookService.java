@@ -141,6 +141,7 @@ public class BookService {
         book.setPublishedYear(bookRequest.getPublishedYear());
         book.setThumbnail(bookRequest.getThumbnail());
         book.setDescription(bookRequest.getDescription());
+        book.setCreatedAt(java.time.LocalDate.now()); // Set creation date
 
         // Set genres if provided
         if (bookRequest.getGenreIds() != null && !bookRequest.getGenreIds().isEmpty()) {
@@ -244,6 +245,7 @@ public class BookService {
         book.setPublishedYear(request.getPublishedYear());
         book.setThumbnail(request.getThumbnail());
         book.setDescription(request.getDescription());
+        book.setCreatedAt(java.time.LocalDate.now()); // Set creation date
         
         // Add genres if provided
         if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
