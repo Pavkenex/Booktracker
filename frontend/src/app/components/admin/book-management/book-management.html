@@ -179,7 +179,7 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal"
+          (click)="closeModal('bookModal')"
         ></button>
       </div>
       <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
@@ -258,7 +258,7 @@
           <button
             type="button"
             class="btn btn-secondary"
-            data-bs-dismiss="modal"
+            (click)="closeModal('bookModal')"
           >
             Cancel
           </button>
@@ -286,7 +286,7 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal"
+          (click)="closeModal('deleteModal')"
         ></button>
       </div>
       <div class="modal-body">
@@ -301,7 +301,7 @@
         </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" (click)="closeModal('deleteModal')">
           Cancel
         </button>
         <button

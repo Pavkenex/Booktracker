@@ -166,18 +166,8 @@ export class BookManagementComponent implements OnInit {
         next: () => {
           this.submitting = false;
           this.loadBooks();
-          // Close modal programmatically and clean up backdrop
-          const modal = document.getElementById('bookModal');
-          if (modal) {
-            let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
-            if (!bsModal) {
-              bsModal = new (window as any).bootstrap.Modal(modal);
-            }
-            bsModal.hide();
-            // Remove leftover backdrops and modal-open class
-            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-            document.body.classList.remove('modal-open');
-          }
+          // Close modal using the centralized method
+          this.closeModal('bookModal');
         },
         error: (error) => {
           console.error('Error saving book:', error);
@@ -201,23 +191,49 @@ export class BookManagementComponent implements OnInit {
         next: () => {
           this.deleting = false;
           this.loadBooks();
-          // Close modal and clean up backdrop
-          const modal = document.getElementById('deleteModal');
-          if (modal) {
-            let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
-            if (!bsModal) {
-              bsModal = new (window as any).bootstrap.Modal(modal);
-            }
-            bsModal.hide();
-            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-            document.body.classList.remove('modal-open');
-          }
+          // Close modal using the centralized method
+          this.closeModal('deleteModal');
         },
         error: (error) => {
           console.error('Error deleting book:', error);
           this.deleting = false;
         }
       });
+    }
+  }
+
+  closeModal(modalId: string): void {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      // Get or create modal instance
+      let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
+      if (!bsModal) {
+        bsModal = new (window as any).bootstrap.Modal(modal);
+      }
+      
+      // Hide the modal
+      bsModal.hide();
+      
+      // Force cleanup after modal animation
+      setTimeout(() => {
+        // Remove any lingering backdrops
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+        
+        // Remove modal-open class from body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Clean up form state
+        if (modalId === 'bookModal') {
+          this.bookForm.reset();
+          this.isEditing = false;
+          this.editingBook = null;
+          this.selectedGenres = [];
+        } else if (modalId === 'deleteModal') {
+          this.bookToDelete = null;
+        }
+      }, 200);
     }
   }
 }
