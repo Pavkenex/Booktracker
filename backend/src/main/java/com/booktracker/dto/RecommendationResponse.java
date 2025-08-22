@@ -9,8 +9,8 @@ public class RecommendationResponse {
     private Long senderId;
     private Long receiverId;
     private Long bookId;
-    private UserResponse sender;
-    private UserResponse receiver;
+    private UserDto sender;
+    private UserDto receiver;
     private BookResponse book;
     private String message;
     private Boolean isRead;
@@ -23,8 +23,8 @@ public class RecommendationResponse {
         this.senderId = recommendation.getSender().getId();
         this.receiverId = recommendation.getReceiver().getId();
         this.bookId = recommendation.getBook().getId();
-        this.sender = new UserResponse(recommendation.getSender());
-        this.receiver = new UserResponse(recommendation.getReceiver());
+        this.sender = new UserDto(recommendation.getSender());
+        this.receiver = new UserDto(recommendation.getReceiver());
         this.book = new BookResponse(recommendation.getBook());
         this.message = recommendation.getMessage();
         this.isRead = recommendation.isRead();
@@ -40,19 +40,19 @@ public class RecommendationResponse {
         this.id = id;
     }
     
-    public UserResponse getSender() {
+    public UserDto getSender() {
         return sender;
     }
     
-    public void setSender(UserResponse sender) {
+    public void setSender(UserDto sender) {
         this.sender = sender;
     }
     
-    public UserResponse getReceiver() {
+    public UserDto getReceiver() {
         return receiver;
     }
     
-    public void setReceiver(UserResponse receiver) {
+    public void setReceiver(UserDto receiver) {
         this.receiver = receiver;
     }
     

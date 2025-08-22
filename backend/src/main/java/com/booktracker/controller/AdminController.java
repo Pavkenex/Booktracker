@@ -31,21 +31,21 @@ public class AdminController {
     // Dashboard Statistics Endpoint
     
     @GetMapping("/stats")
-    public ResponseEntity<AdminStatsDTO> getAdminStats() {
-        AdminStatsDTO stats = adminService.getAdminStats();
+    public ResponseEntity<AdminStatsResponseDto> getAdminStats() {
+        AdminStatsResponseDto stats = adminService.getAdminStats();
         return ResponseEntity.ok(stats);
     }
     
     // Book Management Endpoints
     
     @PostMapping("/books")
-    public ResponseEntity<BookResponse> createBook(@Valid @RequestBody AdminBookRequest request) {
+    public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequestDto request) {
         BookResponse book = adminService.createBook(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
     
     @PutMapping("/books/{id}")
-    public ResponseEntity<BookResponse> updateBook(@PathVariable Long id, @Valid @RequestBody AdminBookRequest request) {
+    public ResponseEntity<BookResponse> updateBook(@PathVariable Long id, @Valid @RequestBody BookRequestDto request) {
         BookResponse book = adminService.updateBook(id, request);
         return ResponseEntity.ok(book);
     }
@@ -82,13 +82,13 @@ public class AdminController {
     // Genre Management Endpoints
     
     @PostMapping("/genres")
-    public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody AdminGenreRequest request) {
+    public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody GenreRequestDto request) {
         GenreResponse genre = adminService.createGenre(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(genre);
     }
     
     @PutMapping("/genres/{id}")
-    public ResponseEntity<GenreResponse> updateGenre(@PathVariable Long id, @Valid @RequestBody AdminGenreRequest request) {
+    public ResponseEntity<GenreResponse> updateGenre(@PathVariable Long id, @Valid @RequestBody GenreRequestDto request) {
         GenreResponse genre = adminService.updateGenre(id, request);
         return ResponseEntity.ok(genre);
     }

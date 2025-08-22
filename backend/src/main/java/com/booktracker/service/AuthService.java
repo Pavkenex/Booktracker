@@ -98,7 +98,7 @@ public class AuthService {
         }
     }
 
-    public AuthResponse requestPasswordReset(PasswordResetRequest request) {
+    public AuthResponse requestPasswordReset(PasswordResetDto request) {
         try {
             Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
             
@@ -123,7 +123,7 @@ public class AuthService {
         }
     }
 
-    public AuthResponse resetPassword(PasswordResetConfirmRequest request) {
+    public AuthResponse resetPassword(PasswordResetDto request) {
         try {
             // Validate reset token
             if (!jwtUtil.validatePasswordResetToken(request.getToken())) {

@@ -177,18 +177,12 @@ public class UserService {
     /**
      * Get all users (admin only)
      */
-    public List<UserProfileResponse.UserInfo> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();
             
             return users.stream()
-                    .map(user -> new UserProfileResponse.UserInfo(
-                            user.getId(),
-                            user.getUsername(),
-                            user.getEmail(),
-                            user.getCreatedAt(),
-                            user.getIsAdmin()
-                    ))
+                    .map(UserDto::new)
                     .collect(Collectors.toList());
                     
         } catch (Exception e) {

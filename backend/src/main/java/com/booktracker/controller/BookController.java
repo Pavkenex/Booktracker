@@ -1,6 +1,6 @@
 package com.booktracker.controller;
 
-import com.booktracker.dto.BookRequest;
+import com.booktracker.dto.BookRequestDto;
 import com.booktracker.dto.BookResponse;
 import com.booktracker.dto.PagedResponse;
 import com.booktracker.service.BookService;
@@ -213,7 +213,7 @@ public class BookController {
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequestDto bookRequest) {
         BookResponse createdBook = bookService.createBook(bookRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
     }
@@ -225,7 +225,7 @@ public class BookController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookResponse> updateBook(
             @PathVariable Long id,
-            @Valid @RequestBody BookRequest bookRequest) {
+            @Valid @RequestBody BookRequestDto bookRequest) {
         
         Optional<BookResponse> updatedBook = bookService.updateBook(id, bookRequest);
         return updatedBook.map(ResponseEntity::ok)

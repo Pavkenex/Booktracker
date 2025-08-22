@@ -1,6 +1,7 @@
 package com.booktracker.controller;
 
 import com.booktracker.dto.*;
+import com.booktracker.dto.FriendRequestActionDto;
 import com.booktracker.entity.User;
 import com.booktracker.util.SecurityUtils;
 import com.booktracker.service.FriendshipService;
@@ -39,7 +40,7 @@ public class FriendshipController {
      */
     @PostMapping("/request")
     public ResponseEntity<FriendshipResponse> sendFriendRequest(
-            @Valid @RequestBody FriendRequestRequest request) {
+            @Valid @RequestBody FriendRequestActionDto request) {
         
         Long userId = securityUtils.getCurrentUserId();
         FriendshipResponse friendship = friendshipService.sendFriendRequest(userId, request.getFriendId());
@@ -52,7 +53,7 @@ public class FriendshipController {
     @PutMapping("/request/{friendshipId}")
     public ResponseEntity<FriendshipResponse> respondToFriendRequest(
             @PathVariable Long friendshipId,
-            @RequestBody FriendRequestRespondRequest request) {
+            @RequestBody FriendRequestActionDto request) {
         
         Long userId = securityUtils.getCurrentUserId();
         
@@ -121,11 +122,11 @@ public class FriendshipController {
      * Get mutual friends
      */
     @GetMapping("/mutual/{friendId}")
-    public ResponseEntity<List<UserResponse>> getMutualFriends(@PathVariable Long friendId) {
+    public ResponseEntity<List<UserDto>> getMutualFriends(@PathVariable Long friendId) {
         Long userId = securityUtils.getCurrentUserId();
         List<User> mutualFriends = friendshipService.getMutualFriends(userId, friendId);
-        List<UserResponse> userResponses = mutualFriends.stream()
-            .map(UserResponse::new)
+        List<UserDto> userResponses = mutualFriends.stream()
+            .map(UserDto::new)
             .toList();
         return ResponseEntity.ok(userResponses);
     }

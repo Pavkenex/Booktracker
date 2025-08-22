@@ -7,10 +7,10 @@ public class FriendshipResponse {
     private Long id;
     private Long userId;
     private Long friendId;
-    private UserResponse user;
-    private UserResponse friend;
-    private UserResponse sender;
-    private UserResponse receiver;
+    private UserDto user;
+    private UserDto friend;
+    private UserDto sender;
+    private UserDto receiver;
     private String status;
     private LocalDateTime createdAt;
     
@@ -20,10 +20,10 @@ public class FriendshipResponse {
         this.id = friendship.getId();
         this.userId = friendship.getUser().getId();
         this.friendId = friendship.getFriend().getId();
-        this.user = new UserResponse(friendship.getUser());
-        this.friend = new UserResponse(friendship.getFriend());
-        this.sender = new UserResponse(friendship.getUser()); // sender is the user who initiated
-        this.receiver = new UserResponse(friendship.getFriend()); // receiver is the friend
+        this.user = new UserDto(friendship.getUser());
+        this.friend = new UserDto(friendship.getFriend());
+        this.sender = new UserDto(friendship.getUser()); // sender is the user who initiated
+        this.receiver = new UserDto(friendship.getFriend()); // receiver is the friend
         this.status = friendship.getStatus().name();
         this.createdAt = friendship.getCreatedAt();
     }
@@ -31,22 +31,22 @@ public class FriendshipResponse {
     // Constructor that takes the current user's perspective into account
     public FriendshipResponse(Friendship friendship, Long currentUserId) {
         this.id = friendship.getId();
-        this.sender = new UserResponse(friendship.getUser()); // sender is always the user who initiated
-        this.receiver = new UserResponse(friendship.getFriend()); // receiver is always the friend who received
+        this.sender = new UserDto(friendship.getUser()); // sender is always the user who initiated
+        this.receiver = new UserDto(friendship.getFriend()); // receiver is always the friend who received
         this.status = friendship.getStatus().name();
         this.createdAt = friendship.getCreatedAt();
         
         // Set user and friend based on current user's perspective
         if (friendship.getUser().getId().equals(currentUserId)) {
             // Current user is the one who sent the request
-            this.user = new UserResponse(friendship.getUser());
-            this.friend = new UserResponse(friendship.getFriend());
+            this.user = new UserDto(friendship.getUser());
+            this.friend = new UserDto(friendship.getFriend());
             this.userId = friendship.getUser().getId();
             this.friendId = friendship.getFriend().getId();
         } else {
             // Current user is the one who received the request
-            this.user = new UserResponse(friendship.getFriend());
-            this.friend = new UserResponse(friendship.getUser());
+            this.user = new UserDto(friendship.getFriend());
+            this.friend = new UserDto(friendship.getUser());
             this.userId = friendship.getFriend().getId();
             this.friendId = friendship.getUser().getId();
         }
@@ -61,19 +61,19 @@ public class FriendshipResponse {
         this.id = id;
     }
     
-    public UserResponse getUser() {
+    public UserDto getUser() {
         return user;
     }
     
-    public void setUser(UserResponse user) {
+    public void setUser(UserDto user) {
         this.user = user;
     }
     
-    public UserResponse getFriend() {
+    public UserDto getFriend() {
         return friend;
     }
     
-    public void setFriend(UserResponse friend) {
+    public void setFriend(UserDto friend) {
         this.friend = friend;
     }
     
@@ -101,19 +101,19 @@ public class FriendshipResponse {
         this.friendId = friendId;
     }
     
-    public UserResponse getSender() {
+    public UserDto getSender() {
         return sender;
     }
     
-    public void setSender(UserResponse sender) {
+    public void setSender(UserDto sender) {
         this.sender = sender;
     }
     
-    public UserResponse getReceiver() {
+    public UserDto getReceiver() {
         return receiver;
     }
     
-    public void setReceiver(UserResponse receiver) {
+    public void setReceiver(UserDto receiver) {
         this.receiver = receiver;
     }
     

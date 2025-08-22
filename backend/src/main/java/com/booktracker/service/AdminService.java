@@ -39,12 +39,12 @@ public class AdminService {
     /**
      * Get admin dashboard statistics
      */
-    public AdminStatsDTO getAdminStats() {
+    public AdminStatsResponseDto getAdminStats() {
         long totalUsers = userRepository.countTotalUsers();
         long totalBooks = bookRepository.countTotalBooks();
         long totalGenres = genreRepository.count();
         
-        return new AdminStatsDTO(
+        return new AdminStatsResponseDto(
             (int) totalUsers,
             (int) totalBooks,
             (int) totalGenres
@@ -53,12 +53,12 @@ public class AdminService {
     
     // Book Management - Delegate to BookService
     
-    public BookResponse createBook(AdminBookRequest request) {
+    public BookResponse createBook(BookRequestDto request) {
         return bookService.createBook(request);
     }
     
-    public BookResponse updateBook(Long bookId, AdminBookRequest request) {
-        return bookService.updateBook(bookId, request);
+    public BookResponse updateBook(Long bookId, BookRequestDto request) {
+        return bookService.updateBook(bookId, request).orElse(null);
     }
     
     public void deleteBook(Long bookId) {
@@ -75,11 +75,11 @@ public class AdminService {
     
     // Genre Management - Delegate to GenreService
     
-    public GenreResponse createGenre(AdminGenreRequest request) {
+    public GenreResponse createGenre(GenreRequestDto request) {
         return genreService.createGenreForAdmin(request);
     }
     
-    public GenreResponse updateGenre(Long genreId, AdminGenreRequest request) {
+    public GenreResponse updateGenre(Long genreId, GenreRequestDto request) {
         return genreService.updateGenreForAdmin(genreId, request);
     }
     

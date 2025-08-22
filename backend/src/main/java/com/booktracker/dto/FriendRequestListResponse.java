@@ -3,21 +3,21 @@ package com.booktracker.dto;
 import java.util.List;
 
 public class FriendRequestListResponse {
-    private List<FriendRequestResponse> requests;
+    private List<FriendRequestDto> requests;
     private int count;
 
     public FriendRequestListResponse() {}
 
-    public FriendRequestListResponse(List<FriendRequestResponse> requests) {
+    public FriendRequestListResponse(List<FriendRequestDto> requests) {
         this.requests = requests;
         this.count = requests != null ? requests.size() : 0;
     }
 
-    public List<FriendRequestResponse> getRequests() {
+    public List<FriendRequestDto> getRequests() {
         return requests;
     }
 
-    public void setRequests(List<FriendRequestResponse> requests) {
+    public void setRequests(List<FriendRequestDto> requests) {
         this.requests = requests;
         this.count = requests != null ? requests.size() : 0;
     }

@@ -1,7 +1,6 @@
 package com.booktracker.service;
 
-import com.booktracker.dto.AdminGenreRequest;
-import com.booktracker.dto.GenreRequest;
+import com.booktracker.dto.GenreRequestDto;
 import com.booktracker.dto.GenreResponse;
 import com.booktracker.entity.Genre;
 import com.booktracker.exception.ResourceNotFoundException;
@@ -74,7 +73,7 @@ public class GenreService {
     /**
      * Create a new genre
      */
-    public GenreResponse createGenre(GenreRequest genreRequest) {
+    public GenreResponse createGenre(GenreRequestDto genreRequest) {
         // Check if genre already exists
         if (genreRepository.existsByNameIgnoreCase(genreRequest.getName())) {
             throw new IllegalArgumentException("Genre with name '" + genreRequest.getName() + "' already exists");
@@ -90,7 +89,7 @@ public class GenreService {
     /**
      * Update an existing genre
      */
-    public Optional<GenreResponse> updateGenre(Long id, GenreRequest genreRequest) {
+    public Optional<GenreResponse> updateGenre(Long id, GenreRequestDto genreRequest) {
         return genreRepository.findById(id)
                 .map(genre -> {
                     // Check if new name conflicts with existing genre (excluding current one)
@@ -154,7 +153,7 @@ public class GenreService {
     /**
      * Create a new genre (admin version)
      */
-    public GenreResponse createGenreForAdmin(AdminGenreRequest request) {
+    public GenreResponse createGenreForAdmin(GenreRequestDto request) {
         if (genreRepository.existsByNameIgnoreCase(request.getName())) {
             throw new IllegalArgumentException("Genre with name '" + request.getName() + "' already exists");
         }
@@ -169,7 +168,7 @@ public class GenreService {
     /**
      * Update an existing genre (admin version)
      */
-    public GenreResponse updateGenreForAdmin(Long genreId, AdminGenreRequest request) {
+    public GenreResponse updateGenreForAdmin(Long genreId, GenreRequestDto request) {
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
         

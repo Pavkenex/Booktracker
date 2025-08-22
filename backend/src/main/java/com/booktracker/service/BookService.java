@@ -1,7 +1,6 @@
 package com.booktracker.service;
 
-import com.booktracker.dto.AdminBookRequest;
-import com.booktracker.dto.BookRequest;
+import com.booktracker.dto.BookRequestDto;
 import com.booktracker.dto.BookResponse;
 import com.booktracker.dto.PagedResponse;
 import com.booktracker.entity.Book;
@@ -134,7 +133,7 @@ public class BookService {
     /**
      * Create a new book
      */
-    public BookResponse createBook(BookRequest bookRequest) {
+    public BookResponse createBook(BookRequestDto bookRequest) {
         Book book = new Book();
         book.setTitle(bookRequest.getTitle());
         book.setAuthor(bookRequest.getAuthor());
@@ -159,7 +158,7 @@ public class BookService {
     /**
      * Update an existing book
      */
-    public Optional<BookResponse> updateBook(Long id, BookRequest bookRequest) {
+    public Optional<BookResponse> updateBook(Long id, BookRequestDto bookRequest) {
         return bookRepository.findById(id)
                 .map(book -> {
                     book.setTitle(bookRequest.getTitle());
@@ -236,36 +235,9 @@ public class BookService {
     // Admin Book Management Methods
 
     /**
-     * Create a new book (admin only)
+     * This method has been consolidated with the other updateBook method
      */
-    public BookResponse createBook(AdminBookRequest request) {
-        Book book = new Book();
-        book.setTitle(request.getTitle());
-        book.setAuthor(request.getAuthor());
-        book.setPublishedYear(request.getPublishedYear());
-        book.setThumbnail(request.getThumbnail());
-        book.setDescription(request.getDescription());
-        book.setCreatedAt(java.time.LocalDate.now()); // Set creation date
-        
-        // Add genres if provided
-        if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
-            Set<Genre> genres = new HashSet<>();
-            for (Long genreId : request.getGenreIds()) {
-                Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
-                genres.add(genre);
-            }
-            book.setGenres(genres);
-        }
-        
-        Book savedBook = bookRepository.save(book);
-        return new BookResponse(savedBook);
-    }
-
-    /**
-     * Update an existing book (admin only)
-     */
-    public BookResponse updateBook(Long bookId, AdminBookRequest request) {
+    /*public BookResponse updateBook(Long bookId, AdminBookRequest request) {
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
         

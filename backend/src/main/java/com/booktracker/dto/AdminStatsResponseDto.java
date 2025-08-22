@@ -1,14 +1,17 @@
 package com.booktracker.dto;
 
-public class AdminStatsDTO {
+/**
+ * Response DTO for admin statistics
+ */
+public class AdminStatsResponseDto {
     private int totalUsers;
     private int totalBooks;
     private int totalGenres;
 
-    public AdminStatsDTO() {
+    public AdminStatsResponseDto() {
     }
 
-    public AdminStatsDTO(int totalUsers, int totalBooks, int totalGenres) {
+    public AdminStatsResponseDto(int totalUsers, int totalBooks, int totalGenres) {
         this.totalUsers = totalUsers;
         this.totalBooks = totalBooks;
         this.totalGenres = totalGenres;

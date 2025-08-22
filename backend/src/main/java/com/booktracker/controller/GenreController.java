@@ -1,6 +1,6 @@
 package com.booktracker.controller;
 
-import com.booktracker.dto.GenreRequest;
+import com.booktracker.dto.GenreRequestDto;
 import com.booktracker.dto.GenreResponse;
 import com.booktracker.service.GenreService;
 import jakarta.validation.Valid;
@@ -83,7 +83,7 @@ public class GenreController {
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody GenreRequest genreRequest) {
+    public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody GenreRequestDto genreRequest) {
         try {
             GenreResponse createdGenre = genreService.createGenre(genreRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdGenre);
@@ -99,7 +99,7 @@ public class GenreController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GenreResponse> updateGenre(
             @PathVariable Long id,
-            @Valid @RequestBody GenreRequest genreRequest) {
+            @Valid @RequestBody GenreRequestDto genreRequest) {
         
         try {
             Optional<GenreResponse> updatedGenre = genreService.updateGenre(id, genreRequest);

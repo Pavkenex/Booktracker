@@ -1,6 +1,10 @@
 package com.booktracker.controller;
 
-import com.booktracker.dto.*;
+import com.booktracker.dto.AuthResponse;
+import com.booktracker.dto.ChangePasswordRequest;
+import com.booktracker.dto.UpdateProfileRequest;
+import com.booktracker.dto.UserDto;
+import com.booktracker.dto.UserProfileResponse;
 import com.booktracker.service.AuthService;
 import com.booktracker.service.UserService;
 import com.booktracker.util.SecurityUtils;
@@ -148,9 +152,9 @@ public class UserController {
      */
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserProfileResponse.UserInfo>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         try {
-            List<UserProfileResponse.UserInfo> users = userService.getAllUsers();
+            List<UserDto> users = userService.getAllUsers();
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

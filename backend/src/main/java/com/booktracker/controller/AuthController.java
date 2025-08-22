@@ -46,13 +46,21 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<AuthResponse> forgotPassword(@Valid @RequestBody PasswordResetRequest request) {
+    public ResponseEntity<AuthResponse> forgotPassword(@Valid @RequestBody PasswordResetDto request) {
+        // Ensure it's a request type
+        if (!request.isRequestType()) {
+            return ResponseEntity.badRequest().body(new AuthResponse(false, "Invalid request type"));
+        }
         AuthResponse response = authService.requestPasswordReset(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<AuthResponse> resetPassword(@Valid @RequestBody PasswordResetConfirmRequest request) {
+    public ResponseEntity<AuthResponse> resetPassword(@Valid @RequestBody PasswordResetDto request) {
+        // Ensure it's a confirm type
+        if (!request.isConfirmType()) {
+            return ResponseEntity.badRequest().body(new AuthResponse(false, "Invalid request type"));
+        }
         AuthResponse response = authService.resetPassword(request);
         
         if (response.isSuccess()) {
