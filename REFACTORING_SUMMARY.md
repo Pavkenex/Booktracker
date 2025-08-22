@@ -12,6 +12,7 @@ We analyzed the DTO layer and identified multiple redundant DTOs with similar st
 ## 2. Implementation
 
 ### Created New Consolidated DTOs
+
 - `BookRequestDto`: Single DTO for all book creation/update operations
 - `GenreRequestDto`: Single DTO for all genre creation/update operations
 - `UserDto`: Comprehensive user data representation
@@ -19,6 +20,7 @@ We analyzed the DTO layer and identified multiple redundant DTOs with similar st
 - `FriendRequestActionDto`: For friend request actions (accept/reject)
 
 ### Updated Service Classes
+
 - `BookService`: Removed redundant methods, consolidated to use `BookRequestDto`
 - `AdminService`: Updated to use new consolidated DTOs
 - `GenreService`: Updated to use `GenreRequestDto`
@@ -26,6 +28,7 @@ We analyzed the DTO layer and identified multiple redundant DTOs with similar st
 - `FriendshipService`: Updated to use new friend-related DTOs
 
 ### Updated Controller Classes
+
 - `BookController`: Updated to use consolidated DTOs
 - `AdminController`: Updated to use consolidated DTOs
 - `GenreController`: Updated to use `GenreRequestDto`
@@ -33,6 +36,7 @@ We analyzed the DTO layer and identified multiple redundant DTOs with similar st
 - `FriendshipController`: Updated to use `FriendRequestActionDto`
 
 ### Removed Redundant DTOs
+
 - `BookRequest`
 - `AdminBookRequest`
 - `GenreRequest`

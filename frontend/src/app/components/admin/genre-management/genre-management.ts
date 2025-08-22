@@ -103,8 +103,12 @@ export class GenreManagementComponent implements OnInit {
           this.successMessage = this.isEditing 
             ? 'Genre updated successfully!' 
             : 'Genre created successfully!';
-          this.loadGenres();
+          
+          // Immediately close modal and clean up
           this.closeModal('genreModal');
+          
+          // Reload genres to show the new/updated entry
+          this.loadGenres();
         },
         error: (error) => {
           console.error('Error saving genre:', error);
@@ -147,8 +151,33 @@ export class GenreManagementComponent implements OnInit {
   private closeModal(modalId: string): void {
     const modal = document.getElementById(modalId);
     if (modal) {
-      const bsModal = (window as any).bootstrap.Modal.getInstance(modal);
-      if (bsModal) bsModal.hide();
+      // Get or create modal instance
+      let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
+      if (!bsModal) {
+        bsModal = new (window as any).bootstrap.Modal(modal);
+      }
+      
+      // Hide the modal
+      bsModal.hide();
+      
+      // Force cleanup after modal animation
+      setTimeout(() => {
+        // Remove any lingering backdrops
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+        
+        // Remove modal-open class from body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Clean up form state
+        if (modalId === 'genreModal') {
+          this.genreForm.reset();
+          this.isEditing = false;
+          this.editingGenre = null;
+          this.clearMessages();
+        }
+      }, 200);
     }
   }
 
