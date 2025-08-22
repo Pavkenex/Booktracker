@@ -165,10 +165,13 @@ export class GenreManagementComponent implements OnInit {
         // Remove any lingering backdrops
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
         
-        // Remove modal-open class from body
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
+        // Only reset body styles if no other modals are open
+        const openModals = document.querySelectorAll('.modal.show');
+        if (openModals.length === 0) {
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
         
         // Clean up form state
         if (modalId === 'genreModal') {
