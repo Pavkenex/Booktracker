@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ApiClient } from './api-client';
+import { AuthStore } from './auth-store';
 import {
   Friendship,
   FriendRequest,
@@ -27,9 +28,22 @@ export class SocialApi {
   public notificationCount$ = this.notificationCountSubject.asObservable();
   private notificationInterval: any;
 
-  constructor(private apiClient: ApiClient) {
-    this.loadNotificationCount();
-    this.startNotificationPolling();
+  constructor(private apiClient: ApiClient, private authStore: AuthStore) {
+    // Subscribe to authentication changes and start/stop polling accordingly
+    this.authStore.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this.loadNotificationCount();
+        this.startNotificationPolling();
+      } else {
+        this.stopNotificationPolling();
+        // Reset notification count when user logs out
+        this.notificationCountSubject.next({
+          friendRequests: 0,
+          recommendations: 0,
+          total: 0
+        });
+      }
+    });
   }
 
   // Friends Management
@@ -89,11 +103,22 @@ export class SocialApi {
   }
 
   private loadNotificationCount(): void {
+    // Only load notifications if user is authenticated
+    if (!this.authStore.isAuthenticated()) {
+      return;
+    }
+    
     this.getNotificationCount().subscribe({
       next: (count) => {
         this.notificationCountSubject.next(count);
       },
-      error: (error) => console.error('Error loading notification count:', error)
+      error: (error) => {
+        // If we get a 403, user is likely not authenticated - stop polling
+        if (error.status === 403) {
+          this.stopNotificationPolling();
+        }
+        console.error('Error loading notification count:', error);
+      }
     });
   }
 

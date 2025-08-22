@@ -96,11 +96,22 @@ export class AuthStore {
   }
 
   requestPasswordReset(request: PasswordResetRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/forgot-password`, request);
+    // Map to backend DTO format
+    const dto = {
+      type: 'REQUEST',
+      email: request.email
+    };
+    return this.http.post<AuthResponse>(`${this.API_URL}/forgot-password`, dto);
   }
 
   resetPassword(request: PasswordResetConfirm): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/reset-password`, request);
+    // Map to backend DTO format  
+    const dto = {
+      type: 'CONFIRM',
+      token: request.token,
+      newPassword: request.newPassword
+    };
+    return this.http.post<AuthResponse>(`${this.API_URL}/reset-password`, dto);
   }
 
   verifyToken(): Observable<AuthResponse> {

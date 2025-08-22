@@ -5,6 +5,8 @@ import com.booktracker.entity.User;
 import com.booktracker.repository.UserRepository;
 import com.booktracker.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,15 +26,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final JavaMailSender javaMailSender;
 
     public AuthService(UserRepository userRepository,
                       PasswordEncoder passwordEncoder,
                       JwtUtil jwtUtil,
-                      AuthenticationManager authenticationManager) {
+                      AuthenticationManager authenticationManager,
+                      JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+        this.javaMailSender = javaMailSender;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -112,9 +117,23 @@ public class AuthService {
             // Generate password reset token
             String resetToken = jwtUtil.generatePasswordResetToken(user.getEmail());
             
-            // TODO: In a real application, you would send this token via email
-            // For now, we'll just return success (the token would be sent via email)
-            System.out.println("Password reset token for " + user.getEmail() + ": " + resetToken);
+            // Construct the full password reset URL for the frontend application
+            String resetUrl = "http://localhost:4200/reset-password?token=" + resetToken;
+            
+            // Create and send email
+            SimpleMailMessage emailMessage = new SimpleMailMessage();
+            emailMessage.setTo(user.getEmail());
+            emailMessage.setSubject("Password Reset Request");
+            emailMessage.setText("Dear " + user.getUsername() + ",\n\n" +
+                    "You have requested to reset your password for your BookTracker account.\n\n" +
+                    "Please click the following link to reset your password:\n" +
+                    resetUrl + "\n\n" +
+                    "This link will expire in 1 hour for security reasons.\n\n" +
+                    "If you did not request this password reset, please ignore this email.\n\n" +
+                    "Best regards,\n" +
+                    "The BookTracker Team");
+            
+            javaMailSender.send(emailMessage);
             
             return new AuthResponse(true, "Password reset link has been sent to your email");
 

@@ -1,13 +1,13 @@
 spring:
   application:
     name: booktracker-backend
-  
+
   datasource:
     url: jdbc:mysql://localhost:3306/booktracker?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-  
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,7 +16,19 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-  
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: booktracker29@gmail.com
+    password: letq vtuq mwxw akbz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   secret: mySecretKey123456789012345678901234567890
   expiration: 86400000 # 24 hours in milliseconds
