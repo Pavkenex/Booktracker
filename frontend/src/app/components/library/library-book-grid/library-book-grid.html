@@ -3,7 +3,7 @@
     <div class="book-grid">
       <article
         class="book-card"
-        *ngFor="let userBook of books; trackBy: trackByBookId"
+        *ngFor="let userBook of books; let i = index; trackBy: trackByBookId"
       >
         <a
           class="cover"
@@ -13,10 +13,11 @@
           <img
             [ngSrc]="userBook.book.thumbnail || placeholder"
             class="cover-image"
-            loading="lazy"
             width="120"
             height="180"
             alt="Book cover"
+            [attr.loading]="i === 0 ? null : 'lazy'"
+            [priority]="i === 0"
           />
         </a>
 
