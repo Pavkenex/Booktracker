@@ -49,7 +49,7 @@ export class SliderComponent<T> implements OnInit, OnChanges {
   @ContentChild(SliderItemDirective) itemTemplate?: SliderItemDirective<T>;
 
   private currentSlide = 0;
-  private itemsPerSlide = 1;
+  protected itemsPerSlide = 1;
   private slideGroups: T[][] = [];
 
   readonly trackByItem = (index: number, item: T) =>
@@ -121,14 +121,6 @@ export class SliderComponent<T> implements OnInit, OnChanges {
 
   get slideWidthPercent(): number {
     return this.slideGroups.length > 0 ? 100 / this.slideGroups.length : 100;
-  }
-
-  get itemWidthPercent(): number {
-    return this.itemsPerSlide > 0 ? 100 / this.itemsPerSlide : 100;
-  }
-
-  get itemFlex(): string {
-    return `0 0 ${this.itemWidthPercent}%`;
   }
 
   get canGoPrevious(): boolean {

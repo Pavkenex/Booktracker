@@ -24,9 +24,10 @@
           class="slider-slide"
           *ngFor="let slide of slides; let slideIndex = index"
           [style.width.%]="slideWidthPercent"
-          [style.gap]="slideGap"
           [style.justifyContent]="justifyContent"
           [style.alignItems]="alignItems"
+          [style.--items-per-slide]="itemsPerSlide"
+          [style.--slide-gap]="slideGap"
         >
           <ng-container *ngIf="itemTemplate; else missingTemplate">
             <ng-container
@@ -34,8 +35,6 @@
             >
               <div
                 class="slider-item"
-                [style.flex]="itemFlex"
-                [style.maxWidth.%]="itemWidthPercent"
               >
                 <ng-container
                   *ngTemplateOutlet="itemTemplate.template; context: createContext(item, slideIndex, itemIndex)"
