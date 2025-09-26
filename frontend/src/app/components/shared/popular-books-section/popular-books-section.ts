@@ -28,6 +28,7 @@ export class PopularBooksSectionComponent implements OnInit {
   // Slider properties
   currentSlide = 0;
   booksPerSlide: number = APP_CONSTANTS.POPULAR_BOOKS.BOOKS_PER_SLIDE.LARGE;
+  slideGroups: Book[][] = [];
 
   // Constants
   readonly defaultPlaceholder = APP_CONSTANTS.DEFAULT_BOOK_PLACEHOLDER;
@@ -39,11 +40,15 @@ export class PopularBooksSectionComponent implements OnInit {
 
   // Responsive breakpoints
   private updateBooksPerSlide(): void {
-    this.booksPerSlide = SliderUtil.calculateItemsPerSlide(
+    const calculated = SliderUtil.calculateItemsPerSlide(
       window.innerWidth,
       APP_CONSTANTS.POPULAR_BOOKS.BREAKPOINTS,
       APP_CONSTANTS.POPULAR_BOOKS.BOOKS_PER_SLIDE
     );
+    if (calculated !== this.booksPerSlide) {
+      this.booksPerSlide = calculated;
+      this.rebuildSlideGroups();
+    }
   }
 
   ngOnInit(): void {
@@ -65,19 +70,53 @@ export class PopularBooksSectionComponent implements OnInit {
         next: (books) => {
           this.popularBooks = books;
           this.isLoading = false;
+          this.rebuildSlideGroups();
           this.cdr.markForCheck();
         },
         error: (error) => {
           console.error("Error loading popular books:", error);
           this.hasError = true;
           this.isLoading = false;
+          this.slideGroups = [];
+          this.currentSlide = 0;
           this.cdr.markForCheck();
         },
       });
   }
 
+  private rebuildSlideGroups(): void {
+    if (!this.popularBooks.length || this.booksPerSlide <= 0) {
+      this.slideGroups = [];
+      this.currentSlide = 0;
+      return;
+    }
+
+    const groups: Book[][] = [];
+    const totalSlides = SliderUtil.calculateTotalSlides(
+      this.popularBooks.length,
+      this.booksPerSlide
+    );
+
+    for (let i = 0; i < totalSlides; i++) {
+      groups.push(
+        SliderUtil.getSlideItems(this.popularBooks, i, this.booksPerSlide)
+      );
+    }
+
+    this.slideGroups = groups;
+    this.currentSlide = SliderUtil.adjustSlideIndex(
+      this.currentSlide,
+      this.popularBooks.length,
+      this.booksPerSlide
+    );
+  }
+
   trackByBookId(index: number, book: Book): number {
     return book.id;
+  }
+
+  trackBySlide(index: number): number {
+    return index;
   }
 
   // Slider computed properties
@@ -96,36 +135,27 @@ export class PopularBooksSectionComponent implements OnInit {
     return SliderUtil.createSlideIndicators(this.totalSlides);
   }
 
-  get slideWidth(): number {
-    // Each slide moves by 100% of the visible area
-    return 100;
-  }
-
-  // Cached current slide books to avoid unnecessary recalculations
-  private _currentSlideBooks: Book[] = [];
-  private _lastSlideIndex = -1;
-  private _lastBooksPerSlide = -1;
-
-  get currentSlideBooks(): Book[] {
-    // Only recalculate if slide or items per slide changed
-    if (
-      this.currentSlide !== this._lastSlideIndex ||
-      this.booksPerSlide !== this._lastBooksPerSlide
-    ) {
-      this._currentSlideBooks = SliderUtil.getSlideItems(
-        this.popularBooks,
-        this.currentSlide,
-        this.booksPerSlide
-      );
-      this._lastSlideIndex = this.currentSlide;
-      this._lastBooksPerSlide = this.booksPerSlide;
+  get trackTransform(): string {
+    if (this.slideGroups.length <= 1) {
+      return 'translateX(0)';
     }
-    return this._currentSlideBooks;
+
+    const step = 100 / this.slideGroups.length;
+    const offset = this.currentSlide * step;
+    return `translateX(-${offset}%)`;
   }
 
-  // Method to calculate the rank for a book in the current slide
-  getRankForBook(slideIndex: number): number {
-    return this.currentSlide * this.booksPerSlide + slideIndex + 1;
+  get trackWidthPercent(): number {
+    return Math.max(this.slideGroups.length, 1) * 100;
+  }
+
+  get slideWidthPercent(): number {
+    return this.slideGroups.length > 0 ? 100 / this.slideGroups.length : 100;
+  }
+
+  // Method to calculate the rank for a book within a slide
+  getRankForBook(slideIndex: number, bookIndex: number): number {
+    return slideIndex * this.booksPerSlide + bookIndex + 1;
   }
 
   // Slider navigation methods
@@ -152,16 +182,6 @@ export class PopularBooksSectionComponent implements OnInit {
 
   @HostListener("window:resize", ["$event"])
   onResize(): void {
-    const oldBooksPerSlide = this.booksPerSlide;
     this.updateBooksPerSlide();
-
-    // Adjust current slide if needed to prevent showing empty space
-    if (this.booksPerSlide !== oldBooksPerSlide) {
-      this.currentSlide = SliderUtil.adjustSlideIndex(
-        this.currentSlide,
-        this.popularBooks.length,
-        this.booksPerSlide
-      );
-    }
   }
 }
