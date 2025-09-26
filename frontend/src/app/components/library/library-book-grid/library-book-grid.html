@@ -1,0 +1,97 @@
+<div class="library-book-grid" *ngIf="!loading; else loadingState">
+  <ng-container *ngIf="books.length; else emptyState">
+    <div class="book-grid">
+      <article
+        class="book-card"
+        *ngFor="let userBook of books; trackBy: trackByBookId"
+      >
+        <a
+          class="cover"
+          [routerLink]="['/books', userBook.book.id]"
+          tabindex="0"
+        >
+          <img
+            [ngSrc]="userBook.book.thumbnail || placeholder"
+            class="cover-image"
+            loading="lazy"
+            width="120"
+            height="180"
+            alt="Book cover"
+          />
+        </a>
+
+        <section class="book-info">
+          <header class="book-header">
+            <h3 class="title">{{ userBook.book.title }}</h3>
+            <p class="author">{{ userBook.book.author }}</p>
+          </header>
+
+          <p class="description" *ngIf="userBook.book.description">
+            {{ userBook.book.description }}
+          </p>
+
+          <div class="tags">
+            <span class="tag">{{ userBook.status | titlecase }}</span>
+            <span class="tag" *ngIf="userBook.isFavourite">Favorite</span>
+          </div>
+
+          <app-book-status-selector
+            [userBook]="userBook"
+            (statusChanged)="statusChanged.emit($event)"
+          ></app-book-status-selector>
+
+          <div class="rating" *ngIf="userBook.rating">
+            <span class="label">My Rating:</span>
+            <ng-container *ngFor="let star of [1,2,3,4,5]">
+              <i
+                class="fas fa-star"
+                [class.filled]="star <= userBook.rating!"
+              ></i>
+            </ng-container>
+          </div>
+
+          <div class="review" *ngIf="userBook.review">
+            <span class="label">My Review:</span>
+            <p [title]="userBook.review">
+              {{ userBook.review.length > 120 ? (userBook.review | slice:0:120) + '…' : userBook.review }}
+            </p>
+          </div>
+
+          <div class="actions">
+            <button
+              type="button"
+              class="primary"
+              [routerLink]="['/books', userBook.book.id]"
+            >
+              View
+            </button>
+            <button type="button" (click)="toggleFavorite.emit(userBook)">
+              {{ userBook.isFavourite ? 'Unfavorite' : 'Favorite' }}
+            </button>
+            <button type="button" (click)="review.emit(userBook)">
+              Review
+            </button>
+            <button type="button" class="danger" (click)="remove.emit(userBook)">
+              Remove
+            </button>
+          </div>
+        </section>
+      </article>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingState>
+  <div class="loading">Loading your books…</div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <h3>{{ getEmptyStateMessage() }}</h3>
+    <p>
+      Discover books in the catalog and add them to your library to see them
+      here.
+    </p>
+    <a [routerLink]="['/books']" class="browse-link">Browse Books</a>
+  </div>
+</ng-template>
