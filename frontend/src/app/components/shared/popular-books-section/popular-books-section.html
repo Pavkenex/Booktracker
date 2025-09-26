@@ -46,111 +46,48 @@
   <!-- Popular Books Slider -->
   @if (!isLoading && !hasError && popularBooks.length > 0) {
   <div class="popular-books-slider">
-    <div class="slider-container">
-      <button
-        class="slider-btn slider-btn-prev"
-        (click)="previousSlide()"
-        (keydown.enter)="previousSlide()"
-        (keydown.space)="$event.preventDefault(); previousSlide()"
-        [disabled]="currentSlide === 0"
-        [attr.aria-label]="
-          'Previous books, currently showing slide ' +
-          (currentSlide + 1) +
-          ' of ' +
-          totalSlides
-        "
-        type="button"
-      >
-        <i class="fas fa-chevron-left" aria-hidden="true"></i>
-      </button>
-      <div class="slider-wrapper">
-        <div
-          class="slider-track"
-          [style.width.%]="trackWidthPercent"
-          [style.transform]="trackTransform"
-        >
-          @for (
-            group of slideGroups;
-            track trackBySlide($index);
-            let slideIndex = $index
-          ) {
-          <div
-            class="slider-slide"
-            [style.width.%]="slideWidthPercent"
-          >
-            @for (
-              book of group;
-              track trackByBookId($index, book);
-              let bookIndex = $index
-            ) {
-            <div class="popular-book-card" [routerLink]="['/books', book.id]">
-              <div class="book-thumbnail">
-                <img
-                  [src]="book.thumbnail || defaultPlaceholder"
-                  [alt]="book.title"
-                  class="book-image"
-                  appFallbackImage
-                />
-                <div class="rank-badge">
-                  #{{ getRankForBook(slideIndex, bookIndex) }}
-                </div>
-              </div>
-              <div class="book-info">
-                <h6 class="book-title" [title]="book.title">
-                  {{ book.title }}
-                </h6>
-                <p class="book-author" [title]="book.author">
-                  by {{ book.author }}
-                </p>
-                <!-- Genres if available -->
-                @if (book.genres && book.genres.length > 0) {
-                <div class="book-genres">
-                  @for (genre of book.genres.slice(0, 2); track genre) {
-                  <span class="genre-badge"> {{ genre.name }} </span>
-                  } @if (book.genres.length > 2) {
-                  <span class="more-genres">
-                    +{{ book.genres.length - 2 }}
-                  </span>
-                  }
-                </div>
-                }
-              </div>
+    <app-slider
+      [items]="popularBooks"
+      [trackBy]="trackByBookId"
+      [itemsPerSlideConfig]="popularBooksConfig.BOOKS_PER_SLIDE"
+      [breakpoints]="popularBooksConfig.BREAKPOINTS"
+      [trackMinHeight]="350"
+      slideGap="clamp(0.5rem, 2vw, 1.5rem)"
+    >
+      <ng-template appSliderItem let-book let-globalIndex="globalIndex">
+        <div class="popular-book-card" [routerLink]="['/books', book.id]">
+          <div class="book-thumbnail">
+            <img
+              [src]="book.thumbnail || defaultPlaceholder"
+              [alt]="book.title"
+              class="book-image"
+              appFallbackImage
+            />
+            <div class="rank-badge">#{{ getRank(globalIndex) }}</div>
+          </div>
+          <div class="book-info">
+            <h6 class="book-title" [title]="book.title">
+              {{ book.title }}
+            </h6>
+            <p class="book-author" [title]="book.author">
+              by {{ book.author }}
+            </p>
+            <!-- Genres if available -->
+            @if (book.genres && book.genres.length > 0) {
+            <div class="book-genres">
+              @for (genre of book.genres.slice(0, 2); track genre) {
+              <span class="genre-badge"> {{ genre.name }} </span>
+              } @if (book.genres.length > 2) {
+              <span class="more-genres">
+                +{{ book.genres.length - 2 }}
+              </span>
+              }
             </div>
             }
           </div>
-          }
         </div>
-      </div>
-      <button
-        class="slider-btn slider-btn-next"
-        (click)="nextSlide()"
-        (keydown.enter)="nextSlide()"
-        (keydown.space)="$event.preventDefault(); nextSlide()"
-        [disabled]="currentSlide >= maxSlide"
-        [attr.aria-label]="
-          'Next books, currently showing slide ' +
-          (currentSlide + 1) +
-          ' of ' +
-          totalSlides
-        "
-        type="button"
-      >
-        <i class="fas fa-chevron-right" aria-hidden="true"></i>
-      </button>
-    </div>
-    <!-- Slider Indicators -->
-    @if (totalSlides > 1) {
-    <div class="slider-indicators">
-      @for (slide of slidesArray; track slide; let i = $index) {
-      <button
-        class="indicator"
-        [class.active]="i === currentSlide"
-        (click)="goToSlide(i)"
-        [attr.aria-label]="'Go to slide ' + (i + 1)"
-      ></button>
-      }
-    </div>
-    }
+      </ng-template>
+    </app-slider>
   </div>
   }
 </div>

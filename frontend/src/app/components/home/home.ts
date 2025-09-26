@@ -1,20 +1,15 @@
-import { Component, OnInit, DestroyRef, inject } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable } from "rxjs";
-
 import { AuthStore, User } from '../../services/auth-store';
 import { SocialApi } from '../../services/social-api';
 import { Recommendation } from "../../models/social.model";
+import { Observable } from "rxjs";
 import { PopularBooksSectionComponent } from '../shared/popular-books-section/popular-books-section';
-import { HomeHeroComponent } from './home-hero/home-hero';
-import { HomeRecommendationsComponent } from './home-recommendations/home-recommendations';
-import { HomeFeatureGridComponent } from './home-feature-grid/home-feature-grid';
 
 @Component({
     selector: "app-home",
-  imports: [CommonModule, RouterModule, PopularBooksSectionComponent, HomeHeroComponent, HomeRecommendationsComponent, HomeFeatureGridComponent],
+    imports: [CommonModule, RouterModule, PopularBooksSectionComponent],
     templateUrl: './home.html',
     styleUrls: ['./home.css']
 })
@@ -23,8 +18,6 @@ export class HomeComponent implements OnInit {
   currentUser$: Observable<User | null>;
   recentRecommendations: Recommendation[] = [];
   isLoadingRecommendations: boolean = false;
-
-  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private authStore: AuthStore,
@@ -35,13 +28,11 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isAuthenticated$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((isAuth) => {
-        if (isAuth) {
-          this.loadRecentRecommendations();
-        }
-      });
+    this.isAuthenticated$.subscribe((isAuth) => {
+      if (isAuth) {
+        this.loadRecentRecommendations();
+      }
+    });
   }
 
   loadRecentRecommendations(): void {

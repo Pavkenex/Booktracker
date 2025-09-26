@@ -1,44 +1,35 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RouterModule } from '@angular/router';
+
 import { FallbackImageDirective } from '../../../../directives/fallback-image';
 import { Book } from '../../../../models/book.model';
+import { SliderComponent } from '../../../shared/slider/slider.component';
+import { SliderItemDirective } from '../../../shared/slider/slider-item.directive';
+import { APP_CONSTANTS } from '../../../../constants/app.constants';
 
 @Component({
-    selector: 'app-similar-books',
-    imports: [RouterModule, FallbackImageDirective],
-    templateUrl: './similar-books.html',
-    styleUrls: ['./similar-books.css']
+  selector: 'app-similar-books',
+  imports: [RouterModule, FallbackImageDirective, SliderComponent, SliderItemDirective],
+  templateUrl: './similar-books.html',
+  styleUrls: ['./similar-books.css']
 })
 export class SimilarBooksComponent {
   @Input() similarBooks: Book[] = [];
   @Output() navigateToBook = new EventEmitter<number>();
 
-  @ViewChild('similarSlider') similarSlider?: ElementRef<HTMLElement>;
+  protected readonly sliderBreakpoints = APP_CONSTANTS.POPULAR_BOOKS.BREAKPOINTS;
+  protected readonly sliderItemsConfig = {
+    MOBILE: 2,
+    TABLET: 3,
+    DESKTOP: 4,
+    LARGE: 5,
+  } as const;
 
   trackByBookId(index: number, book: Book): number {
     return book.id;
   }
 
-  onScrollPrevious(): void {
-    this.scrollSimilar('prev');
-  }
-
-  onScrollNext(): void {
-    this.scrollSimilar('next');
-  }
-
   onNavigateToBook(bookId: number): void {
     this.navigateToBook.emit(bookId);
-  }
-
-  private scrollSimilar(direction: 'prev' | 'next'): void {
-    const el = this.similarSlider?.nativeElement;
-    if (!el) return;
-    const amount = el.clientWidth * 0.8;
-    el.scrollBy({ 
-      left: direction === 'next' ? amount : -amount, 
-      behavior: 'smooth' 
-    });
   }
 }

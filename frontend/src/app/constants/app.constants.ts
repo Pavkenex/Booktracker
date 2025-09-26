@@ -13,7 +13,7 @@ export const APP_CONSTANTS = {
   POPULAR_BOOKS: {
     DEFAULT_LIMIT: 20,
     BOOKS_PER_SLIDE: {
-      MOBILE: 2,
+      MOBILE: 1,
       TABLET: 2,
       DESKTOP: 3,
       LARGE: 4,

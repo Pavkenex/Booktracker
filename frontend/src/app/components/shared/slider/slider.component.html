@@ -1,0 +1,84 @@
+<ng-container *ngIf="hasItems; else emptyState">
+  <div class="slider-container">
+    <button
+      *ngIf="showControls"
+      type="button"
+      class="slider-btn slider-btn-prev"
+      [disabled]="!canGoPrevious"
+      (click)="previousSlide()"
+      aria-label="Previous slide"
+    >
+      <i [class]="prevIcon"></i>
+    </button>
+
+    <div
+      class="slider-wrapper"
+      [style.minHeight.px]="trackMinHeight || null"
+    >
+      <div
+        class="slider-track"
+        [style.width.%]="trackWidthPercent"
+        [style.transform]="trackTransform"
+      >
+        <div
+          class="slider-slide"
+          *ngFor="let slide of slides; let slideIndex = index"
+          [style.width.%]="slideWidthPercent"
+          [style.gap]="slideGap"
+          [style.justifyContent]="justifyContent"
+          [style.alignItems]="alignItems"
+        >
+          <ng-container *ngIf="itemTemplate; else missingTemplate">
+            <ng-container
+              *ngFor="let item of slide; let itemIndex = index; trackBy: trackByItem"
+            >
+              <div
+                class="slider-item"
+                [style.flex]="itemFlex"
+                [style.maxWidth.%]="itemWidthPercent"
+              >
+                <ng-container
+                  *ngTemplateOutlet="itemTemplate.template; context: createContext(item, slideIndex, itemIndex)"
+                ></ng-container>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <button
+      *ngIf="showControls"
+      type="button"
+      class="slider-btn slider-btn-next"
+      [disabled]="!canGoNext"
+      (click)="nextSlide()"
+      aria-label="Next slide"
+    >
+      <i [class]="nextIcon"></i>
+    </button>
+  </div>
+
+  <div class="slider-indicators" *ngIf="showIndicators && slides.length > 1">
+    <button
+      type="button"
+      class="indicator"
+      *ngFor="let indicator of slidesArray; let index = index"
+      [class.active]="index === currentIndex"
+      (click)="goToSlide(index)"
+      [attr.aria-label]="'Go to slide ' + (index + 1)"
+    ></button>
+  </div>
+</ng-container>
+
+<ng-template #emptyState>
+  <div class="slider-empty">
+    <span>No items available.</span>
+  </div>
+</ng-template>
+
+<ng-template #missingTemplate>
+  <div class="slider-empty">
+    <span>Provide an item template to render slider content.</span>
+  </div>
+</ng-template>

@@ -4,21 +4,20 @@ import { RouterModule } from '@angular/router';
 import { LibraryApi } from '../../../services/library-api';
 import { LibraryEvents } from '../../../services/library-events';
 import { UserBook } from '../../../models/library.model';
+import { BookStatusSelectorComponent } from '../book-status-selector/book-status-selector';
 import { ReviewFormComponent } from '../review-form/review-form';
 import { LibraryStatsComponent } from '../library-stats/library-stats';
-import { LibraryTab, LibraryTabBarComponent, LibraryTabCounts } from '../library-tab-bar/library-tab-bar';
-import { LibraryBookGridComponent } from '../library-book-grid/library-book-grid';
 
 @Component({
     selector: 'app-personal-library',
-  imports: [CommonModule, RouterModule, ReviewFormComponent, LibraryStatsComponent, LibraryTabBarComponent, LibraryBookGridComponent],
+    imports: [CommonModule, RouterModule, BookStatusSelectorComponent, ReviewFormComponent, LibraryStatsComponent],
     templateUrl: './personal-library.html',
     styleUrls: ['./personal-library.css']
 })
 export class PersonalLibraryComponent implements OnInit {
   allBooks: UserBook[] = [];
   loading = true;
-  activeTab: LibraryTab = 'all';
+  activeTab: 'all' | 'to_read' | 'currently_reading' | 'read' | 'favorites' = 'all';
   selectedBookForReview: UserBook | null = null;
 
   constructor(
@@ -75,17 +74,7 @@ export class PersonalLibraryComponent implements OnInit {
     return this.allBooks.filter(book => book.isFavourite);
   }
 
-  get tabCounts(): LibraryTabCounts {
-    return {
-      all: this.allBooks.length,
-      to_read: this.booksToRead.length,
-      currently_reading: this.booksCurrentlyReading.length,
-      read: this.booksRead.length,
-      favorites: this.favoriteBooks.length
-    };
-  }
-
-  setActiveTab(tab: LibraryTab): void {
+  setActiveTab(tab: 'all' | 'to_read' | 'currently_reading' | 'read' | 'favorites'): void {
     this.activeTab = tab;
   }
 
