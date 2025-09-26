@@ -1,3 +1,42 @@
+.home-content {
+  margin: 0 auto;
+  width: 100%;
+  padding-inline: 0.5rem;
+}
+
+@media (min-width: 576px) {
+  .home-content {
+    padding-inline: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-content {
+    max-width: 960px;
+    padding-inline: 1.25rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .home-content {
+    max-width: 1100px;
+    padding-inline: 1.75rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .home-content {
+    max-width: 1180px;
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .home-content {
+    max-width: 1400px;
+  }
+}
+
 .jumbotron {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;

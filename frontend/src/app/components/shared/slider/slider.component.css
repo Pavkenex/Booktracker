@@ -19,22 +19,17 @@
 }
 
 .slider-slide {
-  --items-per-slide: 1;
-  --slide-gap: 1.5rem;
-  display: flex;
+  display: grid;
   align-items: stretch;
-  box-sizing: border-box;
-  padding-inline: calc(var(--slide-gap) / 2);
+  grid-auto-rows: 1fr;
 }
 
 .slider-item {
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-sizing: border-box;
-  flex: 0 0 calc(100% / var(--items-per-slide));
-  max-width: calc(100% / var(--items-per-slide));
-  padding-inline: calc(var(--slide-gap) / 2);
+  width: 100%;
+  min-width: 0;
 }
 
 .slider-btn {

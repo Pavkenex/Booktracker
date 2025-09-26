@@ -26,8 +26,8 @@
           [style.width.%]="slideWidthPercent"
           [style.justifyContent]="justifyContent"
           [style.alignItems]="alignItems"
-          [style.--items-per-slide]="itemsPerSlide"
-          [style.--slide-gap]="slideGap"
+          [style.gridTemplateColumns]="getGridTemplate(slide.length)"
+          [style.gap]="slideGap"
         >
           <ng-container *ngIf="itemTemplate; else missingTemplate">
             <ng-container

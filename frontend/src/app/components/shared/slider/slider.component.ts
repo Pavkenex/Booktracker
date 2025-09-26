@@ -131,6 +131,11 @@ export class SliderComponent<T> implements OnInit, OnChanges {
     return this.hasItems && this.currentSlide < this.maxSlide;
   }
 
+  getGridTemplate(itemsInSlide: number): string {
+    const columns = Math.max(1, Math.min(itemsInSlide, this.itemsPerSlide));
+    return `repeat(${columns}, minmax(0, 1fr))`;
+  }
+
   previousSlide(): void {
     if (!this.canGoPrevious) {
       return;
