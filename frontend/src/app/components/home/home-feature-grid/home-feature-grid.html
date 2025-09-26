@@ -1,0 +1,13 @@
+<div class="row g-4 home-features">
+  <div class="col-md-4" *ngFor="let feature of features">
+    <div class="card h-100 feature-card">
+      <div class="card-body">
+        <div class="icon-wrapper">
+          <i [class]="feature.icon"></i>
+        </div>
+        <h5 class="card-title">{{ feature.title }}</h5>
+        <p class="card-text">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>

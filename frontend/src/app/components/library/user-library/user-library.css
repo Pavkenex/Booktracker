@@ -1,20 +1,13 @@
-.card {
-  transition: transform 0.3s ease;
-  height: 100%;
+:host {
+  display: block;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.page-title {
+  font-weight: 700;
 }
 
-.book-cover {
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.badge {
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.35em 0.65em;
+.library-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }

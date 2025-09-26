@@ -1,0 +1,13 @@
+.jumbotron {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.25);
+}
+
+.btn-lg {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-lg:hover {
+  transform: translateY(-1px);
+}
