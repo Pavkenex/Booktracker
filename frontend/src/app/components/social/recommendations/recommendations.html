@@ -79,58 +79,17 @@
       @if (receivedRecommendations.length > 0) {
         <div class="recommendations-list">
           @for (recommendation of receivedRecommendations; track recommendation) {
-            <div class="card recommendation-card mb-3">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-2">
-                    <img
-                      [src]="recommendation.book.thumbnail || '/assets/images/book-placeholder.jpg'"
-                      [alt]="recommendation.book.title"
-                      class="book-thumbnail">
-                    </div>
-                    <div class="col-md-8">
-                      <div class="recommendation-content">
-                        <h6 class="book-title">{{ recommendation.book.title }}</h6>
-                        <p class="book-author text-muted">by {{ recommendation.book.author }}</p>
-                        <p class="recommendation-from">
-                          <strong>{{ recommendation.sender.username }}</strong> recommends this book
-                        </p>
-                        @if (recommendation.message) {
-                          <div class="recommendation-message">
-                            <i class="fas fa-quote-left text-muted me-2"></i>
-                            <em>{{ recommendation.message }}</em>
-                          </div>
-                        }
-                        <small class="text-muted">
-                          <i class="fas fa-clock me-1"></i>
-                          {{ getTimeAgo(recommendation.createdAt) }}
-                        </small>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                      <div class="recommendation-actions">
-                        <!-- If user does not own the book -->
-                        <button
-                          class="btn btn-sm btn-outline-success mb-2 w-100"
-                          [disabled]="hasBook(recommendation.book)"
-                          (click)="!hasBook(recommendation.book) && addBookToLibrary(recommendation.book)">
-                          <i class="fas fa-plus me-1"></i>
-                          {{ hasBook(recommendation.book) ? 'Already in Library' : 'Add to Library' }}
-                        </button>
-                        <button
-                          class="btn btn-sm btn-outline-danger w-100"
-                          (click)="deleteRecommendation(recommendation.id, 'received')">
-                          <i class="fas fa-trash me-1"></i>
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
-        }
+            <app-recommendation-card
+              variant="detailed"
+              [recommendation]="recommendation"
+              [userBook]="getUserBook(recommendation.book)"
+              [showDeleteAction]="true"
+              (addToLibrary)="addRecommendationBookToLibrary($event)"
+              (delete)="deleteRecommendation($event, 'received')"
+            ></app-recommendation-card>
+          }
+        </div>
+      }
       </div>
     }
 
@@ -151,50 +110,17 @@
         @if (sentRecommendations.length > 0) {
           <div class="recommendations-list">
             @for (recommendation of sentRecommendations; track recommendation) {
-              <div class="card recommendation-card mb-3">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-2">
-                      <img
-                        [src]="recommendation.book.thumbnail || '/assets/images/book-placeholder.jpg'"
-                        [alt]="recommendation.book.title"
-                        class="book-thumbnail">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="recommendation-content">
-                          <h6 class="book-title">{{ recommendation.book.title }}</h6>
-                          <p class="book-author text-muted">by {{ recommendation.book.author }}</p>
-                          <p class="recommendation-to">
-                            Recommended to <strong>{{ recommendation.receiver.username }}</strong>
-                          </p>
-                          @if (recommendation.message) {
-                            <div class="recommendation-message">
-                              <i class="fas fa-quote-left text-muted me-2"></i>
-                              <em>{{ recommendation.message }}</em>
-                            </div>
-                          }
-                          <small class="text-muted">
-                            <i class="fas fa-clock me-1"></i>
-                            {{ getTimeAgo(recommendation.createdAt) }}
-                          </small>
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="recommendation-actions">
-                          <button
-                            class="btn btn-sm btn-outline-danger w-100"
-                            (click)="deleteRecommendation(recommendation.id, 'sent')">
-                            <i class="fas fa-trash me-1"></i>
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          }
+              <app-recommendation-card
+                variant="detailed"
+                context="sent"
+                [recommendation]="recommendation"
+                [showLibraryActions]="false"
+                [showDeleteAction]="true"
+                (delete)="deleteRecommendation($event, 'sent')"
+              ></app-recommendation-card>
+            }
+          </div>
+        }
         </div>
       }
 

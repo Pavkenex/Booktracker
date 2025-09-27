@@ -1,0 +1,121 @@
+<article class="recommendation-card" [ngClass]="variant" [class.recommendation-read]="isRead">
+  <div class="card-inner">
+    <a class="cover-link" [routerLink]="['/books', recommendation.book.id]" aria-label="View book details">
+      <img
+        class="book-cover"
+        [src]="recommendation.book.thumbnail || placeholderImage"
+        [alt]="recommendation.book.title"
+        appFallbackImage
+      />
+    </a>
+
+    <div class="card-content">
+      <div class="card-header">
+        <a class="book-title" [routerLink]="['/books', recommendation.book.id]">
+          {{ recommendation.book.title }}
+        </a>
+        <div class="header-actions">
+          <span class="read-indicator" *ngIf="isRead">
+            <i class="fas fa-check-circle"></i>
+          </span>
+          <button
+            class="mark-read-btn"
+            type="button"
+            *ngIf="variant === 'compact' && canMarkAsRead"
+            (click)="onMarkAsRead()"
+            title="Mark recommendation as read"
+          >
+            <i class="fas fa-check"></i>
+          </button>
+        </div>
+      </div>
+
+      <p class="book-author">by {{ recommendation.book.author }}</p>
+
+      <div class="meta-row">
+        <span class="meta-chip from">
+          <i class="fas fa-user-friends me-1"></i>
+          {{ participantLabel }}
+        </span>
+        <span class="meta-chip time">
+          <i class="fas fa-clock me-1"></i>
+          {{ getTimeAgo(recommendation.createdAt) }}
+        </span>
+        <span class="meta-chip status" *ngIf="hasInLibrary && libraryStatusLabel">
+          <i class="fas fa-book me-1"></i>
+          {{ libraryStatusLabel }}
+        </span>
+      </div>
+
+      <p class="recommendation-message" *ngIf="recommendation.message">
+        “{{ recommendation.message }}”
+      </p>
+
+      <div class="action-row" *ngIf="variant === 'compact'">
+        <button class="btn btn-sm btn-primary" type="button" *ngIf="canAddToLibrary" (click)="onAddToLibrary()">
+          <i class="fas fa-plus me-1"></i>
+          Add to Library
+        </button>
+        <a
+          class="btn btn-sm btn-outline-secondary"
+          [routerLink]="['/books', recommendation.book.id]"
+        >
+          View Book
+        </a>
+        <button
+          class="btn btn-sm btn-outline-danger"
+          type="button"
+          *ngIf="canDelete"
+          (click)="onDelete()"
+        >
+          <i class="fas fa-times me-1"></i>
+          {{ deleteButtonLabel }}
+        </button>
+      </div>
+
+      <div class="action-row detailed" *ngIf="variant === 'detailed'">
+        <div class="left-group">
+          <button
+            class="btn btn-sm btn-outline-primary"
+            type="button"
+            *ngIf="canAddToLibrary"
+            (click)="onAddToLibrary()"
+          >
+            <i class="fas fa-plus me-1"></i>
+            Add to Library
+          </button>
+          <span class="library-pill" *ngIf="hasInLibrary && libraryStatusLabel">
+            <i class="fas fa-check me-1"></i>
+            {{ libraryStatusLabel }}
+          </span>
+        </div>
+        <div class="right-group">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            type="button"
+            (click)="onMarkAsRead()"
+            *ngIf="canMarkAsRead"
+          >
+            <i class="fas fa-check-double me-1"></i>
+            Mark as Read
+          </button>
+          <button
+            class="btn btn-sm btn-outline-danger"
+            type="button"
+            (click)="onDelete()"
+            *ngIf="canDelete"
+          >
+            <i class="fas fa-trash me-1"></i>
+            {{ deleteButtonLabel }}
+          </button>
+          <a
+            class="btn btn-sm btn-primary"
+            [routerLink]="['/books', recommendation.book.id]"
+          >
+            View Book
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

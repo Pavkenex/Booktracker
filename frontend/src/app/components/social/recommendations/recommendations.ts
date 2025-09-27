@@ -8,10 +8,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Recommendation, Friendship, SendRecommendationRequest } from '../../../models/social.model';
 import { Book } from '../../../models/book.model';
 import { UserBook } from '../../../models/library.model';
+import { RecommendationCardComponent } from '../../shared/recommendations/recommendation-card';
 
 @Component({
     selector: 'app-recommendations',
-    imports: [FormsModule],
+  imports: [FormsModule, RecommendationCardComponent],
     templateUrl: './recommendations.html',
     styleUrls: ['./recommendations.css']
 })
@@ -130,35 +131,17 @@ export class RecommendationsComponent implements OnInit {
   }
 
   // Ownership helpers
-  hasBook(book: Book): boolean { return this.userBooksMap.has(book.id); }
   getUserBook(book: Book): UserBook | undefined { return this.userBooksMap.get(book.id); }
-  hasStatus(book: Book, status: UserBook['status']): boolean {
-    const ub = this.getUserBook(book); return !!ub && ub.status === status;
-  }
 
-  markAsReadDirect(book: Book): void {
-    const ub = this.getUserBook(book);
-    if (!ub || ub.status === 'read') return;
-    this.libraryApi.updateBookStatus(ub.id, { status: 'read' }).subscribe({
-      next: updated => { this.userBooksMap.set(book.id, { ...ub, ...updated }); },
-      error: err => console.error('Failed to mark as read', err)
-    });
-  }
-
-  startReading(book: Book): void {
-    const ub = this.getUserBook(book);
-    if (!ub || ub.status === 'currently_reading') return;
-    this.libraryApi.updateBookStatus(ub.id, { status: 'currently_reading' }).subscribe({
-      next: updated => { this.userBooksMap.set(book.id, { ...ub, ...updated }); },
-      error: err => console.error('Failed to set currently reading', err)
-    });
-  }
-
-  addToLibraryQuick(book: Book): void {
-    if (this.hasBook(book)) return;
-    this.libraryApi.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
-      next: ub => { this.userBooksMap.set(book.id, { ...ub }); },
-      error: err => console.error('Failed quick add', err)
+  addRecommendationBookToLibrary(bookId: number): void {
+    if (this.userBooksMap.has(bookId)) return;
+    this.libraryApi.addBookToLibrary({ bookId, status: 'to_read' }).subscribe({
+      next: (userBook) => {
+        this.userBooksMap.set(bookId, userBook);
+      },
+      error: (error) => {
+        console.error('Failed to add recommended book to library', error);
+      }
     });
   }
 
@@ -266,20 +249,6 @@ export class RecommendationsComponent implements OnInit {
         console.error('Error sending recommendation:', error);
         this.error = 'Failed to send recommendation. Please try again.';
         this.isSending = false;
-      }
-    });
-  }
-
-  addBookToLibrary(book: Book): void {
-    if (this.hasBook(book)) return; // safety
-    this.libraryApi.addBookToLibrary({ bookId: book.id, status: 'to_read' }).subscribe({
-      next: (userBook) => {
-        // Update ownership map so button disables
-        this.userBooksMap.set(book.id, userBook);
-      },
-      error: (error) => {
-        console.error('Error adding book to library:', error);
-        this.error = 'Failed to add book to library. It may already be in your library.';
       }
     });
   }

@@ -96,8 +96,12 @@
 }
 
 .recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   max-height: 600px;
   overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 @media (max-width: 768px) {
