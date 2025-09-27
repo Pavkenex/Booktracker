@@ -11,17 +11,6 @@ export interface AdminStats {
   totalGenres: number;
 }
 
-export interface ReportData {
-  booksByCategory: { category: string; count: number }[];
-  dailyActivity: {
-    date: string;
-    users: number;
-    books: number;
-    reviews: number;
-  }[];
-  userEngagement: { metric: string; value: number }[];
-}
-
 export interface PopularityStatistics {
   bookId: number;
   title: string;

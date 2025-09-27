@@ -20,7 +20,7 @@ export interface SliderItemsConfig {
 /**
  * Result type for operations that can fail
  */
-export type SliderResult<T> =
+type SliderResult<T> =
   | {
       success: true;
       data: T;
