@@ -1,0 +1,22 @@
+nav.navbar {
+	overflow: visible;
+}
+
+.navbar .dropdown-menu {
+	left: auto;
+	right: 0;
+	transform: none;
+	margin-right: 0;
+	max-width: calc(100vw - 1.5rem);
+}
+
+.navbar .dropdown-menu.show {
+	display: block;
+}
+
+@media (max-width: 576px) {
+	.navbar .dropdown-menu {
+		min-width: 220px;
+		width: calc(100vw - 2rem);
+	}
+}

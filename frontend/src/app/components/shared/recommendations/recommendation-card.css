@@ -231,29 +231,83 @@
 
   .card-inner {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: stretch;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  .cover-link {
+    margin: 0 auto 0.75rem;
   }
 
   .card-content {
-    align-items: center;
+    align-items: stretch;
   }
 
   .card-header {
-    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .header-actions {
+    margin-left: 0;
+    justify-content: flex-start;
   }
 
   .meta-row {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .action-row,
   .action-row.detailed {
     flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    margin-top: 0.85rem;
+  }
+
+  .action-row .btn,
+  .action-row a.btn,
+  .action-row.detailed button,
+  .action-row.detailed a {
+    width: 100%;
   }
 
   .action-row.detailed .left-group,
   .action-row.detailed .right-group {
-    justify-content: center;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .recommendation-card {
+    padding: 0.75rem;
+    border-radius: 14px;
+  }
+
+  .book-cover {
+    width: 76px;
+    height: 114px;
+  }
+
+  .recommendation-card.compact .book-cover {
+    width: 70px;
+    height: 105px;
+  }
+
+  .meta-row {
+    gap: 0.35rem;
+  }
+
+  .meta-chip {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .recommendation-message {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.9rem;
   }
 }

@@ -55,6 +55,9 @@
   border: 1px solid rgba(59, 130, 246, 0.15);
   border-radius: 20px;
   padding: clamp(1.25rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.5vw, 1.75rem);
 }
 
 .recommendations-header {
@@ -98,13 +101,17 @@
   display: grid;
   gap: 1.25rem;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  margin-top: 1.5rem;
 }
 
 .recommendations-cta .btn-link {
   color: #2563eb;
   font-weight: 600;
   text-decoration: none;
+}
+
+.recommendations-cta {
+  align-self: stretch;
+  margin-top: clamp(1.25rem, 2vw, 1.75rem);
 }
 
 .recommendations-cta .btn-link:hover {
@@ -118,5 +125,22 @@
 
   .recommendations-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .recommendations-cta .btn-link {
+    padding-inline: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .recommendations-cta .btn-link {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.12);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15);
   }
 }
