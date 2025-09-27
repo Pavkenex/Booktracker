@@ -91,7 +91,8 @@ public class AuthService {
                     user.getId(),
                     user.getUsername(),
                     user.getEmail(),
-                    user.getIsAdmin()
+                    user.getIsAdmin(),
+                    user.getAvatarUrl()
             );
 
             return new AuthResponse(true, "Login successful", token, userInfo);

@@ -9,6 +9,7 @@ export interface User {
   username: string;
   email: string;
   isAdmin: boolean;
+  avatarUrl?: string;
 }
 
 export interface LoginRequest {
@@ -93,6 +94,26 @@ export class AuthStore {
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/login']);
+  }
+
+  updateStoredUser(userUpdate: Partial<User>): void {
+    const current = this.getCurrentUser();
+    if (!current) {
+      return;
+    }
+
+    const updatedUser: User = {
+      ...current,
+      ...userUpdate,
+    };
+
+    this.setUser(updatedUser);
+    this.currentUserSubject.next(updatedUser);
+  }
+
+  setCurrentUser(user: User): void {
+    this.setUser(user);
+    this.currentUserSubject.next(user);
   }
 
   requestPasswordReset(request: PasswordResetRequest): Observable<AuthResponse> {

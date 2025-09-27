@@ -11,9 +11,11 @@ import com.booktracker.util.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -98,6 +100,25 @@ public class UserController {
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new UserProfileResponse(false, "Unauthorized access"));
+        }
+    }
+
+    /**
+     * Upload or update user avatar
+     */
+    @PostMapping(value = "/profile/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserProfileResponse> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        try {
+            Long userId = securityUtils.getCurrentUserId();
+            UserProfileResponse response = userService.updateUserAvatar(userId, avatar);
+
+            HttpStatus status = response.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status).body(response);
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new UserProfileResponse(false, "Unauthorized access"));

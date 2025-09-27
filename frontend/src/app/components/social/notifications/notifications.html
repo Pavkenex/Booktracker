@@ -4,10 +4,10 @@
     (click)="toggleDropdown()"
     [class.active]="showDropdown">
     <i class="fas fa-bell"></i>
-    @if (notificationCount.total > 0) {
+    @if (unseenTotal > 0) {
       <span
         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-        {{ notificationCount.total > 99 ? '99+' : notificationCount.total }}
+        {{ unseenTotal > 99 ? '99+' : unseenTotal }}
       </span>
     }
   </button>

@@ -3,10 +3,10 @@ package com.booktracker.service;
 import com.booktracker.dto.*;
 import com.booktracker.entity.User;
 import com.booktracker.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +18,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AvatarStorageService avatarStorageService;
 
     public UserService(UserRepository userRepository,
-                      PasswordEncoder passwordEncoder) {
+                      PasswordEncoder passwordEncoder,
+                      AvatarStorageService avatarStorageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.avatarStorageService = avatarStorageService;
     }
 
     /**
@@ -35,18 +38,10 @@ public class UserService {
             if (userOptional.isEmpty()) {
                 return new UserProfileResponse(false, "User not found");
             }
-            
+
             User user = userOptional.get();
-            UserProfileResponse.UserInfo userInfo = new UserProfileResponse.UserInfo(
-                    user.getId(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getCreatedAt(),
-                    user.getIsAdmin()
-            );
-            
-            return new UserProfileResponse(true, "User profile retrieved successfully", userInfo);
-            
+            return buildProfileResponse(user, "User profile retrieved successfully");
+
         } catch (Exception e) {
             return new UserProfileResponse(false, "Failed to retrieve user profile: " + e.getMessage());
         }
@@ -62,18 +57,10 @@ public class UserService {
             if (userOptional.isEmpty()) {
                 return new UserProfileResponse(false, "User not found");
             }
-            
+
             User user = userOptional.get();
-            UserProfileResponse.UserInfo userInfo = new UserProfileResponse.UserInfo(
-                    user.getId(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getCreatedAt(),
-                    user.getIsAdmin()
-            );
-            
-            return new UserProfileResponse(true, "User profile retrieved successfully", userInfo);
-            
+            return buildProfileResponse(user, "User profile retrieved successfully");
+
         } catch (Exception e) {
             return new UserProfileResponse(false, "Failed to retrieve user profile: " + e.getMessage());
         }
@@ -103,23 +90,15 @@ public class UserService {
                 userRepository.existsByEmail(request.getEmail())) {
                 return new UserProfileResponse(false, "Email is already registered");
             }
-            
+
             // Update user information
             user.setUsername(request.getUsername());
             user.setEmail(request.getEmail());
-            
+
             User updatedUser = userRepository.save(user);
-            
-            UserProfileResponse.UserInfo userInfo = new UserProfileResponse.UserInfo(
-                    updatedUser.getId(),
-                    updatedUser.getUsername(),
-                    updatedUser.getEmail(),
-                    updatedUser.getCreatedAt(),
-                    updatedUser.getIsAdmin()
-            );
-            
-            return new UserProfileResponse(true, "Profile updated successfully", userInfo);
-            
+
+            return buildProfileResponse(updatedUser, "Profile updated successfully");
+
         } catch (Exception e) {
             return new UserProfileResponse(false, "Failed to update profile: " + e.getMessage());
         }
@@ -152,6 +131,54 @@ public class UserService {
         } catch (Exception e) {
             return new AuthResponse(false, "Failed to change password: " + e.getMessage());
         }
+    }
+
+    /**
+     * Update the avatar for the current user
+     */
+    public UserProfileResponse updateUserAvatar(Long userId, MultipartFile avatarFile) {
+        try {
+            if (avatarFile == null || avatarFile.isEmpty()) {
+                return new UserProfileResponse(false, "Avatar file is required");
+            }
+
+            Optional<User> userOptional = userRepository.findById(userId);
+
+            if (userOptional.isEmpty()) {
+                return new UserProfileResponse(false, "User not found");
+            }
+
+            User user = userOptional.get();
+
+            if (user.getAvatarUrl() != null) {
+                avatarStorageService.deleteAvatar(user.getAvatarUrl());
+            }
+
+            String storedPath = avatarStorageService.storeAvatar(userId, avatarFile);
+            user.setAvatarUrl(storedPath);
+
+            User updatedUser = userRepository.save(user);
+
+            return buildProfileResponse(updatedUser, "Avatar updated successfully");
+
+        } catch (IllegalArgumentException e) {
+            return new UserProfileResponse(false, e.getMessage());
+        } catch (Exception e) {
+            return new UserProfileResponse(false, "Failed to update avatar: " + e.getMessage());
+        }
+    }
+
+    private UserProfileResponse buildProfileResponse(User user, String message) {
+        UserProfileResponse.UserInfo userInfo = new UserProfileResponse.UserInfo(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getIsAdmin(),
+                user.getAvatarUrl()
+        );
+
+        return new UserProfileResponse(true, message, userInfo);
     }
 
     /**

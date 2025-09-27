@@ -26,6 +26,11 @@ spring:
     jwt:
       secret: mySecretKey123456789012345678901234567890
       expiration: 86400000 # 24 hours in milliseconds
+  
+  servlet:
+    multipart:
+      max-file-size: 6MB
+      max-request-size: 6MB
 
 server:
   port: 8080
@@ -43,3 +48,7 @@ logging:
   level:
     com.booktracker: DEBUG
     org.springframework.security: DEBUG
+
+app:
+  storage:
+    avatar-dir: uploads/avatars

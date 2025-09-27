@@ -149,6 +149,14 @@ export const routes: Routes = [
     canActivate: [AdminGuard],
   },
   {
+    path: "profile",
+    loadComponent: () =>
+      import("./components/user/profile/profile").then(
+        (m) => m.ProfileComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: "**",
     redirectTo: "/home",
   },

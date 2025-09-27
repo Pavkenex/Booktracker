@@ -70,14 +70,16 @@ public class AuthResponse {
         private String username;
         private String email;
         private Boolean isAdmin;
+        private String avatarUrl;
         
         public UserInfo() {}
         
-        public UserInfo(Long id, String username, String email, Boolean isAdmin) {
+        public UserInfo(Long id, String username, String email, Boolean isAdmin, String avatarUrl) {
             this.id = id;
             this.username = username;
             this.email = email;
             this.isAdmin = isAdmin;
+            this.avatarUrl = avatarUrl;
         }
         
         // Getters and Setters
@@ -111,6 +113,14 @@ public class AuthResponse {
         
         public void setIsAdmin(Boolean isAdmin) {
             this.isAdmin = isAdmin;
+        }
+        
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+        
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
         }
     }
 }

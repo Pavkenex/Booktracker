@@ -18,6 +18,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     recommendations: 0,
     total: 0
   };
+  acknowledgedTotal: number = 0;
+  unseenTotal: number = 0;
   
   showDropdown: boolean = false;
   isRefreshing: boolean = false;
@@ -30,6 +32,15 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       this.socialApi.notificationCount$.subscribe(count => {
         this.notificationCount = count;
         this.isRefreshing = false;
+
+        if (this.showDropdown) {
+          this.acknowledgedTotal = count.total;
+        } else if (this.acknowledgedTotal > count.total) {
+          this.acknowledgedTotal = count.total;
+        }
+
+        const delta = count.total - this.acknowledgedTotal;
+        this.unseenTotal = delta > 0 ? delta : 0;
       })
     );
     
@@ -42,7 +53,13 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   toggleDropdown(): void {
-    this.showDropdown = !this.showDropdown;
+    const willShow = !this.showDropdown;
+    this.showDropdown = willShow;
+
+    if (willShow) {
+      this.acknowledgedTotal = this.notificationCount.total;
+      this.unseenTotal = 0;
+    }
   }
 
   closeDropdown(): void {

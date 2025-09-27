@@ -58,6 +58,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/api/test/**").permitAll() // Temporary for development
                 .requestMatchers("/api/books/**").permitAll() // Temporary for development
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

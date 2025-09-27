@@ -41,6 +41,9 @@ public class User {
     @Column(name = "is_admin", nullable = false)
     private Boolean isAdmin = false;
     
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+    
     // Relationships
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserBook> userBooks = new HashSet<>();
@@ -115,6 +118,14 @@ public class User {
         this.isAdmin = isAdmin;
     }
     
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+    
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+    
     public Set<UserBook> getUserBooks() {
         return userBooks;
     }
@@ -176,6 +187,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", createdAt=" + createdAt +
                 ", isAdmin=" + isAdmin +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 '}';
     }
 }

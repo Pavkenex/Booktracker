@@ -14,15 +14,17 @@ public class UserProfileResponse {
         private String email;
         private LocalDateTime createdAt;
         private Boolean isAdmin;
+        private String avatarUrl;
         
         public UserInfo() {}
         
-        public UserInfo(Long id, String username, String email, LocalDateTime createdAt, Boolean isAdmin) {
+        public UserInfo(Long id, String username, String email, LocalDateTime createdAt, Boolean isAdmin, String avatarUrl) {
             this.id = id;
             this.username = username;
             this.email = email;
             this.createdAt = createdAt;
             this.isAdmin = isAdmin;
+            this.avatarUrl = avatarUrl;
         }
         
         // Getters and Setters
@@ -64,6 +66,14 @@ public class UserProfileResponse {
         
         public void setIsAdmin(Boolean isAdmin) {
             this.isAdmin = isAdmin;
+        }
+        
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+        
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
         }
     }
     
@@ -124,6 +134,13 @@ public class UserProfileResponse {
         
         public Builder user(UserInfo user) {
             this.user = user;
+            return this;
+        }
+        
+        public Builder avatarUrl(String avatarUrl) {
+            if (this.user != null) {
+                this.user.setAvatarUrl(avatarUrl);
+            }
             return this;
         }
         
