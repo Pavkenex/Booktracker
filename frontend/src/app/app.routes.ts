@@ -41,8 +41,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import("./components/auth/reset-password/reset-password").then(
         (m) => m.ResetPasswordComponent
-      ),
-    canActivate: [GuestGuard],
+      )
   },
   {
     path: "books",

@@ -88,12 +88,14 @@ export class AuthStore {
     return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData);
   }
 
-  logout(): void {
+  logout(redirect: boolean = true): void {
     this.removeToken();
     this.removeUser();
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
+    if (redirect) {
+      this.router.navigate(['/login']);
+    }
   }
 
   updateStoredUser(userUpdate: Partial<User>): void {

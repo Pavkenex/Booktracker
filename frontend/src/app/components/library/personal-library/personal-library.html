@@ -205,11 +205,19 @@
                 <!-- Review Preview -->
                 @if (userBook.review) {
                 <div class="mb-3 review-preview">
-                  <small class="text-muted">My Review:</small>
-                  <p class="small mt-1" [title]="userBook.review">
-                    {{ userBook.review.length > 80 ? (userBook.review |
-                    slice:0:80) + '...' : userBook.review }}
-                  </p>
+                  <span class="review-label">My Review:</span>
+                  <span class="review-teaser" [title]="userBook.review">
+                    {{ getReviewTeaser(userBook.review) }}
+                  </span>
+                  @if (shouldShowReadMore(userBook.review)) {
+                  <button
+                    type="button"
+                    class="btn btn-link btn-sm p-0 review-read-more"
+                    (click)="openReviewForm(userBook)"
+                  >
+                    Read more
+                  </button>
+                  }
                 </div>
                 }
                 <!-- Action Buttons -->

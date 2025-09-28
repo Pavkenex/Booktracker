@@ -79,6 +79,7 @@ export class ResetPasswordComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           if (response.success) {
+            this.authStore.logout(false);
             this.passwordReset = true;
           } else {
             this.errorMessage = response.message || 'Failed to reset password. Please try again.';

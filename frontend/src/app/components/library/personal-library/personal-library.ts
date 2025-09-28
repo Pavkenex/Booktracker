@@ -19,6 +19,7 @@ export class PersonalLibraryComponent implements OnInit {
   loading = true;
   activeTab: 'all' | 'to_read' | 'currently_reading' | 'read' | 'favorites' = 'all';
   selectedBookForReview: UserBook | null = null;
+  readonly reviewPreviewLimit = 140;
 
   constructor(
     private libraryApi: LibraryApi,
@@ -119,6 +120,20 @@ export class PersonalLibraryComponent implements OnInit {
       this.libraryEvents.notifyLibraryUpdated();
     }
     this.closeReviewForm();
+  }
+
+  shouldShowReadMore(review?: string | null): boolean {
+    return !!review && review.length > this.reviewPreviewLimit;
+  }
+
+  getReviewTeaser(review?: string | null): string {
+    if (!review) {
+      return '';
+    }
+
+    return review.length > this.reviewPreviewLimit
+      ? review.slice(0, this.reviewPreviewLimit).trimEnd() + '...'
+      : review;
   }
 
   removeBook(userBook: UserBook): void {
