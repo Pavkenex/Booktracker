@@ -183,6 +183,30 @@
   padding-right: 0.25rem;
 }
 
+.recommendations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.recommendations-header .btn {
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .recommendations-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .recommendations-header .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 768px) {
   .recommendations-container {
     padding: 15px;
