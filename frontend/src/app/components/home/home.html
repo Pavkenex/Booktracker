@@ -22,12 +22,12 @@
       <div class="d-flex gap-2">
         @if (!(isAuthenticated$ | async)) {
         <a routerLink="/register" class="btn btn-primary btn-lg">Get Started</a>
-        <a routerLink="/books" class="btn btn-outline-secondary btn-lg"
+        <a routerLink="/books" class="btn btn-browse-books btn-lg"
           >Browse Books</a
         >
         } @else {
         <a routerLink="/library" class="btn btn-primary btn-lg">My Library</a>
-        <a routerLink="/books" class="btn btn-outline-secondary btn-lg"
+        <a routerLink="/books" class="btn btn-browse-books btn-lg"
           >Browse Books</a
         >
         }

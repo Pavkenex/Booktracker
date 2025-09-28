@@ -118,6 +118,22 @@
   text-decoration: underline;
 }
 
+.btn-browse-books {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.btn-browse-books:hover,
+.btn-browse-books:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+  color: #f1f5f9;
+}
+
 @media (max-width: 768px) {
   .home-recommendations {
     border-radius: 16px;
