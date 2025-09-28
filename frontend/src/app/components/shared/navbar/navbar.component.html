@@ -107,6 +107,7 @@
 				</li>
 				}
 				@else {
+				@let user = currentUser$ | async;
 				<li class="nav-item dropdown" [class.show]="isDropdownOpen">
 					<a
 						class="nav-link dropdown-toggle d-flex align-items-center"
@@ -116,9 +117,17 @@
 						[attr.aria-expanded]="isDropdownOpen"
 						(click)="toggleDropdown($event)"
 					>
-						<i class="fas fa-user-circle me-2"></i>
+						<span class="navbar-avatar-wrapper me-2">
+							<img
+								class="navbar-avatar"
+								[src]="getAvatarSrc(user)"
+								[attr.alt]="(user?.username ?? 'User') + ' avatar'"
+								appFallbackImage
+								[fallbackSrc]="avatarPlaceholder"
+							/>
+						</span>
 						<span class="d-none d-md-inline"
-							>{{ (currentUser$ | async)?.username }}</span
+							>{{ user?.username ?? 'Account' }}</span
 						>
 						<span class="d-inline d-md-none">Account</span>
 					</a>

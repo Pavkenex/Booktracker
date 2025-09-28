@@ -5,11 +5,14 @@ import { AsyncPipe } from '@angular/common';
 import { AuthStore, User } from '../../../services/auth-store';
 import { Observable } from 'rxjs';
 import { NotificationsComponent } from '../../social/notifications/notifications';
+import { FallbackImageDirective } from '../../../directives/fallback-image';
+import { APP_CONSTANTS } from '../../../constants/app.constants';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, AsyncPipe, NotificationsComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, AsyncPipe, NotificationsComponent, FallbackImageDirective],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -18,13 +21,30 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
   currentUser$: Observable<User | null> = this.authStore.currentUser$;
   isDropdownOpen = false;
   isNavbarOpen = false;
+  readonly avatarPlaceholder = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
 
+  private readonly assetsUrl = environment.assetsUrl;
   private documentClickListener?: (event: Event) => void;
 
   constructor(
     private authStore: AuthStore,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  getAvatarSrc(user: User | null | undefined): string {
+    const avatarUrl = user?.avatarUrl;
+
+    if (!avatarUrl) {
+      return this.avatarPlaceholder;
+    }
+
+    if (avatarUrl.startsWith('http')) {
+      return avatarUrl;
+    }
+
+    const prefix = avatarUrl.startsWith('/') ? '' : '/';
+    return `${this.assetsUrl}${prefix}${avatarUrl}`;
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {

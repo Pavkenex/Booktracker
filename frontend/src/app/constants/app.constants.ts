@@ -8,6 +8,11 @@ export const APP_CONSTANTS = {
   DEFAULT_BOOK_PLACEHOLDER: "/assets/images/book-placeholder.svg",
 
   /**
+   * Default placeholder image for user avatars
+   */
+  DEFAULT_AVATAR_PLACEHOLDER: "/assets/images/avatar-placeholder.svg",
+
+  /**
    * Popular books configuration
    */
   POPULAR_BOOKS: {
