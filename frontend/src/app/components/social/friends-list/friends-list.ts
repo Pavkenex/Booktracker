@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SocialApi } from '../../../services/social-api';
 import { Friendship, FriendSearchResult } from '../../../models/social.model';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FallbackImageDirective } from '../../../directives/fallback-image';
+import { ClickOutsideDirective } from '../../../directives/click-outside';
+import { APP_CONSTANTS } from '../../../constants/app.constants';
 
 @Component({
     selector: 'app-friends-list',
-    imports: [FormsModule],
+    imports: [FormsModule, FallbackImageDirective, ClickOutsideDirective],
     templateUrl: './friends-list.html',
     styleUrls: ['./friends-list.css']
 })
@@ -21,14 +23,16 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   isSearching: boolean = false;
   error: string = '';
   showSearch: boolean = false;
-  
+  openMenuFriendId: number | null = null;
+
+  readonly defaultAvatar = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
   private searchSubject = new Subject<string>();
 
   constructor(
     private socialApi: SocialApi,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    // Set up debounced search
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -52,7 +56,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   loadFriends(): void {
     this.isLoading = true;
     this.error = '';
-    
+
     this.socialApi.getFriends().subscribe({
       next: (friends) => {
         this.friends = friends;
@@ -75,7 +79,6 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   }
 
   searchUsers(): void {
-    // This method is now just for the manual search button
     if (!this.searchQuery.trim()) {
       this.searchResults = [];
       return;
@@ -100,12 +103,10 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   sendFriendRequest(userId: number): void {
     this.socialApi.sendFriendRequest({ friendId: userId }).subscribe({
       next: () => {
-        // Update the search results to reflect the sent request
         const user = this.searchResults.find(u => u.id === userId);
         if (user) {
           user.hasPendingRequest = true;
         }
-        // Refresh notifications for the receiver
         this.socialApi.refreshNotifications();
       },
       error: (error) => {
@@ -134,7 +135,33 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   }
 
   viewUserLibrary(friendship: Friendship): void {
-    // Navigate to the user's library page
     this.router.navigate(['/library/user', friendship.friendId, friendship.friend?.username || 'User']);
+  }
+
+  recommendBook(friendship: Friendship): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { action: 'send', friendId: friendship.friendId },
+      queryParamsHandling: 'merge'
+    });
+    this.closeMenu();
+  }
+
+  getFriendAvatar(friendship: Friendship): string {
+    return friendship.friend?.avatarUrl || this.defaultAvatar;
+  }
+
+  toggleMenu(friendship: Friendship): void {
+    this.openMenuFriendId = this.openMenuFriendId === friendship.friendId ? null : friendship.friendId;
+  }
+
+  closeMenu(): void {
+    this.openMenuFriendId = null;
+  }
+
+  onMenuOutside(friendId: number): void {
+    if (this.openMenuFriendId === friendId) {
+      this.closeMenu();
+    }
   }
 }

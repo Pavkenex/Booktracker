@@ -1,99 +1,147 @@
 .social-dashboard {
-  padding: 20px 0;
+  background: linear-gradient(180deg, #f4f6fb 0%, #ffffff 35%);
   min-height: 100vh;
-  background-color: #f8f9fa;
+  padding: clamp(1.5rem, 3vw, 3rem) 0;
 }
 
-.social-stats .badge {
-  font-size: 0.8rem;
-  padding: 0.5rem 0.75rem;
+.social-wrapper {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
 }
 
-.nav-tabs {
-  border-bottom: 2px solid #dee2e6;
-  background-color: white;
-  border-radius: 0.5rem 0.5rem 0 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.social-sidebar {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.nav-tabs .nav-link {
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.sidebar-subtitle {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.sidebar-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.sidebar-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   border: none;
-  color: #6c757d;
-  background: none;
-  font-weight: 500;
-  padding: 1rem 1.5rem;
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.04);
+  color: #1f2937;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.nav-tabs .nav-link:hover {
-  color: #495057;
-  background-color: #f8f9fa;
-  border-color: transparent;
+.sidebar-tab:hover {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
 }
 
-.nav-tabs .nav-link.active {
-  color: #007bff;
-  background-color: white;
-  border-color: #007bff #007bff transparent;
-  border-width: 0 0 2px 0;
-  border-style: solid;
+.sidebar-tab.active {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
 }
 
-.tab-content {
-  background-color: white;
-  border-radius: 0 0 0.5rem 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  min-height: 500px;
+.sidebar-tab .badge {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.55rem;
+  background: rgba(15, 23, 42, 0.18);
 }
 
-.tab-pane {
-  padding: 0;
+.sidebar-tab.active .badge {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* Badge positioning for notification counts */
-.nav-link .badge {
-  font-size: 0.6rem;
-  padding: 0.25rem 0.4rem;
+.sidebar-content {
+  flex: 1;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .social-dashboard {
-    padding: 10px 0;
+.social-content {
+  min-width: 0;
+}
+
+.content-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: clamp(1.5rem, 2.8vw, 2.5rem);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
+}
+
+@media (max-width: 1080px) {
+  .social-wrapper {
+    grid-template-columns: minmax(0, 1fr);
   }
-  
-  .nav-tabs .nav-link {
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
+
+  .social-sidebar {
+    order: 2;
   }
-  
-  .nav-tabs .nav-link i {
-    display: none;
-  }
-  
-  .social-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  
-  .social-stats .badge {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.5rem;
+
+  .social-content {
+    order: 1;
   }
 }
 
 @media (max-width: 576px) {
-  .nav-tabs {
-    flex-direction: column;
+  .social-dashboard {
+    padding: 1rem 0;
   }
-  
-  .nav-tabs .nav-link {
-    text-align: center;
-    border-radius: 0;
+
+  .social-sidebar {
+    padding: 1rem;
+    border-radius: 16px;
   }
-  
-  .nav-tabs .nav-link.active {
-    border-width: 2px 0 0 0;
+
+  .content-card {
+    padding: 1.25rem;
+    border-radius: 18px;
   }
 }

@@ -1,15 +1,15 @@
-<div class="friends-list-container">
-  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4">
-    <h3 class="mb-2 mb-sm-0">
-      <i class="fas fa-users me-2"></i>My Friends
-    </h3>
+<div class="friends-sidebar">
+  <div class="friends-header">
+    <div>
+      <h3 class="friends-title">Friends</h3>
+      <p class="friends-caption">Manage connections and discover new readers.</p>
+    </div>
     <button
-      class="btn btn-primary mobile-full-width"
+      class="btn btn-primary btn-sm"
       (click)="toggleSearch()"
       [class.active]="showSearch">
       <i class="fas fa-user-plus me-2"></i>
-      <span class="d-none d-sm-inline">{{ showSearch ? 'Hide Search' : 'Add Friends' }}</span>
-      <span class="d-inline d-sm-none">{{ showSearch ? 'Hide' : 'Add' }}</span>
+      {{ showSearch ? 'Hide Search' : 'Find Friends' }}
     </button>
   </div>
 
@@ -23,179 +23,148 @@
 
   <!-- Friend Search Section -->
   @if (showSearch) {
-    <div class="search-section mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Search for Friends</h5>
+    <div class="friend-search card">
+      <div class="card-body">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search by username or email"
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+            [disabled]="isSearching" />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="searchUsers()"
+            [disabled]="isSearching || !searchQuery.trim()">
+            @if (!isSearching) {
+              <i class="fas fa-search"></i>
+            }
+            @if (isSearching) {
+              <span class="spinner-border spinner-border-sm"></span>
+            }
+          </button>
         </div>
-        <div class="card-body">
-          <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Search by username or email..."
-              [(ngModel)]="searchQuery"
-              (input)="onSearchInput()"
-              [disabled]="isSearching">
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                (click)="searchUsers()"
-                [disabled]="isSearching || !searchQuery.trim()">
-                @if (!isSearching) {
-                  <i class="fas fa-search"></i>
-                }
-                @if (isSearching) {
-                  <span class="spinner-border spinner-border-sm"></span>
-                }
-                @if (!isSearching) {
-                  <span class="d-none d-sm-inline ms-2">Search</span>
-                }
-              </button>
-            </div>
-            <!-- Search Results -->
-            @if (searchResults.length > 0) {
-              <div class="search-results">
-                <h6>Search Results:</h6>
-                <div class="list-group">
-                  @for (user of searchResults; track user) {
-                    <div
-                      class="list-group-item">
-                      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
-                        <div class="mb-2 mb-sm-0">
-                          <strong>{{ user.username }}</strong>
-                          <small class="text-muted d-block">{{ user.email }}</small>
-                        </div>
-                        <div class="d-flex gap-2">
-                          @if (user.isFriend) {
-                            <span class="badge bg-success">
-                              <i class="fas fa-check me-1"></i>
-                              <span class="d-none d-sm-inline">Already </span>Friends
-                            </span>
-                          }
-                          @if (user.hasPendingRequest && !user.isFriend) {
-                            <span class="badge bg-warning">
-                              <i class="fas fa-clock me-1"></i>
-                              <span class="d-none d-sm-inline">Request </span>Sent
-                            </span>
-                          }
-                          @if (!user.isFriend && !user.hasPendingRequest) {
-                            <button
-                              class="btn btn-sm btn-primary"
-                              (click)="sendFriendRequest(user.id)">
-                              <i class="fas fa-user-plus me-1"></i>
-                              <span class="d-none d-sm-inline">Add Friend</span>
-                              <span class="d-inline d-sm-none">Add</span>
-                            </button>
-                          }
-                        </div>
-                      </div>
+        <!-- Search Results -->
+        @if (searchResults.length > 0) {
+          <div class="search-results">
+            <h6 class="mb-2">People</h6>
+            <ul class="search-list">
+              @for (user of searchResults; track user) {
+                <li class="search-item">
+                  <div class="search-info">
+                    <div class="avatar placeholder">
+                      <i class="fas fa-user"></i>
                     </div>
-                  }
-                </div>
-              </div>
-            }
-            @if (searchQuery.length >= 2 && searchResults.length === 0 && !isSearching) {
-              <div class="text-muted">
-                No users found matching "{{ searchQuery }}"
-              </div>
-            }
+                    <div>
+                      <strong>{{ user.username }}</strong>
+                      <small class="d-block text-muted">{{ user.email }}</small>
+                    </div>
+                  </div>
+                  <div class="search-actions">
+                    @if (user.isFriend) {
+                      <span class="badge bg-success">
+                        <i class="fas fa-check me-1"></i>
+                        Friends
+                      </span>
+                    }
+                    @if (user.hasPendingRequest && !user.isFriend) {
+                      <span class="badge bg-warning">
+                        <i class="fas fa-clock me-1"></i>
+                        Pending
+                      </span>
+                    }
+                    @if (!user.isFriend && !user.hasPendingRequest) {
+                      <button class="btn btn-sm btn-outline-primary" (click)="sendFriendRequest(user.id)">
+                        <i class="fas fa-user-plus me-1"></i>
+                        Add
+                      </button>
+                    }
+                  </div>
+                </li>
+              }
+            </ul>
           </div>
+        }
+        @if (searchQuery.length >= 2 && searchResults.length === 0 && !isSearching) {
+          <div class="text-muted">No users found for "{{ searchQuery }}"</div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="friends-scroll">
+    @if (isLoading) {
+      <div class="loading-state">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
+        <p class="mt-2">Loading friends…</p>
       </div>
     }
 
-    <!-- Friends List -->
-    <div class="friends-grid">
-      @if (isLoading) {
-        <div class="text-center py-4">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <p class="mt-2">Loading friends...</p>
-        </div>
-      }
+    @if (!isLoading && friends.length === 0) {
+      <div class="empty-state">
+        <i class="fas fa-users-slash fa-3x mb-3"></i>
+        <h6>No friends yet</h6>
+        <p>Search for readers to start building your community.</p>
+        @if (!showSearch) {
+          <button class="btn btn-outline-primary btn-sm" (click)="toggleSearch()">
+            <i class="fas fa-user-plus me-2"></i>
+            Find Friends
+          </button>
+        }
+      </div>
+    }
 
-      @if (!isLoading && friends.length === 0) {
-        <div class="text-center py-5">
-          <i class="fas fa-users fa-3x text-muted mb-3"></i>
-          <h5 class="text-muted">No friends yet</h5>
-          <p class="text-muted">Start by searching for friends to connect with!</p>
-          @if (!showSearch) {
-            <button class="btn btn-primary" (click)="toggleSearch()">
-              <i class="fas fa-user-plus me-2"></i>
-              Find Friends
-            </button>
-          }
-        </div>
-      }
-
-      @if (!isLoading && friends.length > 0) {
-        <div class="row g-3">
-          @for (friendship of friends; track friendship) {
-            <div class="col-12 col-md-6 col-lg-4">
-              <div class="card friend-card h-100">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="friend-info flex-grow-1">
-                      <h6 class="card-title mb-1">{{ friendship.friend?.username }}</h6>
-                      <small class="text-muted">{{ friendship.friend?.email }}</small>
-                    </div>
-                    <div class="dropdown">
-                      <button
-                        class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        <i class="fas fa-ellipsis-v"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                          <a class="dropdown-item" href="#" (click)="$event.preventDefault()">
-                            <i class="fas fa-comment me-2"></i>
-                            Send Message
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#" (click)="$event.preventDefault()">
-                            <i class="fas fa-book me-2"></i>
-                            Recommend Book
-                          </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                          <a
-                            class="dropdown-item text-danger"
-                            href="#"
-                            (click)="$event.preventDefault(); removeFriend(friendship.friendId)">
-                            <i class="fas fa-user-times me-2"></i>
-                            Remove Friend
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="friend-actions">
-                    <!-- Mobile: Full width button -->
-                    <div class="d-grid d-sm-none">
-                      <button class="btn btn-sm btn-outline-primary" (click)="viewUserLibrary(friendship)">
-                        <i class="fas fa-book me-2"></i>
-                        View Library
-                      </button>
-                    </div>
-                    <!-- Desktop: Regular button -->
-                    <div class="d-none d-sm-block">
-                      <button class="btn btn-sm btn-outline-primary" (click)="viewUserLibrary(friendship)">
-                        <i class="fas fa-book me-1"></i>
-                        View Library
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    @if (!isLoading && friends.length > 0) {
+      <ul class="friend-list">
+        @for (friendship of friends; track friendship) {
+          <li class="friend-item">
+            <div class="friend-avatar">
+              <img
+                [src]="getFriendAvatar(friendship)"
+                alt="{{ friendship.friend?.username || 'Friend avatar' }}"
+                appFallbackImage
+                [fallbackSrc]="defaultAvatar" />
             </div>
-          }
-        </div>
-      }
-    </div>
+            <div class="friend-meta">
+              <span class="friend-name">{{ friendship.friend?.username }}</span>
+              <span class="friend-email">{{ friendship.friend?.email }}</span>
+            </div>
+            <div class="friend-menu" clickOutside (clickOutside)="onMenuOutside(friendship.friendId)">
+              <button
+                type="button"
+                class="btn btn-icon"
+                [class.active]="openMenuFriendId === friendship.friendId"
+                (click)="toggleMenu(friendship)">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              @if (openMenuFriendId === friendship.friendId) {
+              <div class="friend-menu-panel">
+                <button type="button" class="menu-item" (click)="viewUserLibrary(friendship); closeMenu()">
+                  <i class="fas fa-book-open me-2"></i>
+                  View Library
+                </button>
+                <button type="button" class="menu-item" (click)="recommendBook(friendship)">
+                  <i class="fas fa-share-square me-2"></i>
+                  Recommend a Book
+                </button>
+                <hr />
+                <button
+                  type="button"
+                  class="menu-item danger"
+                  (click)="removeFriend(friendship.friendId); closeMenu()">
+                  <i class="fas fa-user-minus me-2"></i>
+                  Remove Friend
+                </button>
+              </div>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
   </div>
+</div>

@@ -1,87 +1,53 @@
 <div class="social-dashboard">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2>Social Features</h2>
-          <div class="social-stats">
-            @if (notificationCount.friendRequests > 0) {
-              <span class="badge bg-primary me-2">
-                {{ notificationCount.friendRequests }} Friend Request{{ notificationCount.friendRequests > 1 ? 's' : '' }}
-              </span>
-            }
-            @if (notificationCount.recommendations > 0) {
-              <span class="badge bg-success">
-                {{ notificationCount.recommendations }} Recommendation{{ notificationCount.recommendations > 1 ? 's' : '' }}
-              </span>
-            }
-          </div>
+  <div class="social-wrapper container-xxl">
+    <aside class="social-sidebar">
+      <header class="sidebar-header">
+        <div>
+          <h2 class="sidebar-title">Social Hub</h2>
+          <p class="sidebar-subtitle">Catch up with friends and share your latest reads.</p>
         </div>
-
-        <!-- Navigation Tabs -->
-        <ul class="nav nav-tabs nav-fill mb-4">
-          <li class="nav-item">
-            <button
-              class="nav-link"
-              [class.active]="activeTab === 'friends'"
-              (click)="setActiveTab('friends')">
-              <i class="fas fa-users me-2"></i>
-              My Friends
-            </button>
-          </li>
-          <li class="nav-item">
-            <button
-              class="nav-link position-relative"
-              [class.active]="activeTab === 'requests'"
-              (click)="setActiveTab('requests')">
-              <i class="fas fa-user-plus me-2"></i>
-              Friend Requests
-              @if (notificationCount.friendRequests > 0) {
-                <span
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {{ notificationCount.friendRequests }}
-                </span>
-              }
-            </button>
-          </li>
-          <li class="nav-item">
-            <button
-              class="nav-link position-relative"
-              [class.active]="activeTab === 'recommendations'"
-              (click)="setActiveTab('recommendations')">
-              <i class="fas fa-book me-2"></i>
-              Recommendations
-              @if (notificationCount.recommendations > 0) {
-                <span
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                  {{ notificationCount.recommendations }}
-                </span>
-              }
-            </button>
-          </li>
-        </ul>
-
-        <!-- Tab Content -->
-        <div class="tab-content">
-          @if (activeTab === 'friends') {
-            <div class="tab-pane fade show active">
-              <app-friends-list></app-friends-list>
-            </div>
-          }
-
-          @if (activeTab === 'requests') {
-            <div class="tab-pane fade show active">
-              <app-friend-requests></app-friend-requests>
-            </div>
-          }
-
-          @if (activeTab === 'recommendations') {
-            <div class="tab-pane fade show active">
-              <app-recommendations></app-recommendations>
-            </div>
-          }
+        <div class="sidebar-metrics">
+          <span class="metric-pill" *ngIf="notificationCount.friendRequests > 0">
+            <i class="fas fa-user-plus me-1"></i>
+            {{ notificationCount.friendRequests }} new
+          </span>
         </div>
+      </header>
+
+      <nav class="sidebar-tabs" role="tablist">
+        <button
+          type="button"
+          class="sidebar-tab"
+          [class.active]="sidebarTab === 'friends'"
+          (click)="setSidebarTab('friends')">
+          <span><i class="fas fa-users me-2"></i>Friends</span>
+        </button>
+        <button
+          type="button"
+          class="sidebar-tab"
+          [class.active]="sidebarTab === 'requests'"
+          (click)="setSidebarTab('requests')">
+          <span><i class="fas fa-user-plus me-2"></i>Friend Requests</span>
+          <span class="badge" [class.bg-danger]="notificationCount.friendRequests > 0">
+            {{ notificationCount.friendRequests }}
+          </span>
+        </button>
+      </nav>
+
+      <section class="sidebar-content" role="tabpanel">
+        @if (sidebarTab === 'friends') {
+          <app-friends-list></app-friends-list>
+        }
+        @if (sidebarTab === 'requests') {
+          <app-friend-requests></app-friend-requests>
+        }
+      </section>
+    </aside>
+
+    <main class="social-content">
+      <div class="content-card">
+        <app-recommendations></app-recommendations>
       </div>
-    </div>
+    </main>
   </div>
 </div>

@@ -5,6 +5,7 @@ export interface User {
   username: string;
   email: string;
   isAdmin: boolean;
+  avatarUrl?: string;
 }
 
 export interface Friendship {

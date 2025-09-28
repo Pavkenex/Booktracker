@@ -37,6 +37,7 @@ export class RecommendationsComponent implements OnInit {
   // Query param handling
   private pendingBookId: number | null = null;
   private pendingAction: 'send' | null = null;
+  private pendingFriendId: number | null = null;
 
   constructor(
     private socialApi: SocialApi,
@@ -50,6 +51,7 @@ export class RecommendationsComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const action = params['action'];
       const bookIdParam = params['bookId'];
+      const friendIdParam = params['friendId'];
       if (action === 'send') {
         this.pendingAction = 'send';
         this.activeTab = 'send';
@@ -58,9 +60,17 @@ export class RecommendationsComponent implements OnInit {
       if (!isNaN(parsedId) && parsedId > 0) {
         this.pendingBookId = parsedId;
       }
+      const parsedFriendId = Number(friendIdParam);
+      if (!isNaN(parsedFriendId) && parsedFriendId > 0) {
+        this.pendingFriendId = parsedFriendId;
+        this.activeTab = 'send';
+      }
       // If books already loaded we can try selecting immediately
       if (this.books.length > 0 && this.pendingBookId) {
         this.applyPendingBookSelection();
+      }
+      if (this.friends.length > 0 && this.pendingFriendId) {
+        this.applyPendingFriendSelection();
       }
     });
 
@@ -104,6 +114,9 @@ export class RecommendationsComponent implements OnInit {
     this.socialApi.getFriends().subscribe({
       next: (friends) => {
         this.friends = friends;
+        if (this.pendingFriendId) {
+          this.applyPendingFriendSelection();
+        }
       },
       error: (error) => {
         console.error('Error loading friends:', error);
@@ -171,6 +184,15 @@ export class RecommendationsComponent implements OnInit {
           console.warn('Could not preselect book for recommendation', err);
         }
       });
+    }
+  }
+
+  private applyPendingFriendSelection(): void {
+    if (!this.pendingFriendId) return;
+    const friend = this.friends.find(f => f.friendId === this.pendingFriendId);
+    if (friend) {
+      this.selectedFriendId = friend.friendId;
+      this.pendingFriendId = null;
     }
   }
 

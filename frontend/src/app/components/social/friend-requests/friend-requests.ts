@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-
+import { FallbackImageDirective } from '../../../directives/fallback-image';
 import { SocialApi } from '../../../services/social-api';
 import { FriendRequest } from '../../../models/social.model';
+import { APP_CONSTANTS } from '../../../constants/app.constants';
 
 @Component({
     selector: 'app-friend-requests',
-    imports: [],
+    imports: [FallbackImageDirective],
     templateUrl: './friend-requests.html',
     styleUrls: ['./friend-requests.css']
 })
@@ -14,6 +15,7 @@ export class FriendRequestsComponent implements OnInit {
   isLoading: boolean = false;
   error: string = '';
   processingRequests: Set<number> = new Set();
+  readonly defaultAvatar = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
 
   constructor(private socialApi: SocialApi) {}
 
@@ -98,5 +100,9 @@ export class FriendRequestsComponent implements OnInit {
     } else {
       return date.toLocaleDateString();
     }
+  }
+
+  getSenderAvatar(request: FriendRequest): string {
+    return request.sender.avatarUrl || this.defaultAvatar;
   }
 }
