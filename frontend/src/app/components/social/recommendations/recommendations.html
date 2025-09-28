@@ -7,15 +7,11 @@
     </button>
   </div>
 
-  <!-- Error Alert -->
-  @if (error) {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      {{ error }}
-      <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
-    </div>
-  }
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="error">
+    {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+  </div>
 
-  <!-- Navigation Tabs -->
   <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
       <button
@@ -24,11 +20,9 @@
         (click)="setActiveTab('received')">
         <i class="fas fa-inbox me-2"></i>
         Received
-        @if (receivedRecommendations.length > 0) {
-          <span class="badge bg-primary ms-2">
-            {{ receivedRecommendations.length }}
-          </span>
-        }
+        <span class="badge bg-primary ms-2" *ngIf="receivedRecommendations.length > 0">
+          {{ receivedRecommendations.length }}
+        </span>
       </button>
     </li>
     <li class="nav-item">
@@ -38,11 +32,9 @@
         (click)="setActiveTab('sent')">
         <i class="fas fa-paper-plane me-2"></i>
         Sent
-        @if (sentRecommendations.length > 0) {
-          <span class="badge bg-secondary ms-2">
-            {{ sentRecommendations.length }}
-          </span>
-        }
+        <span class="badge bg-secondary ms-2" *ngIf="sentRecommendations.length > 0">
+          {{ sentRecommendations.length }}
+        </span>
       </button>
     </li>
     <li class="nav-item">
@@ -56,172 +48,162 @@
     </li>
   </ul>
 
-  <!-- Loading State -->
-  @if (isLoading) {
-    <div class="text-center py-4">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-2">Loading recommendations...</p>
+  <div class="text-center py-4" *ngIf="isLoading">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-  }
+    <p class="mt-2">Loading recommendations...</p>
+  </div>
 
-  <!-- Received Recommendations Tab -->
-  @if (activeTab === 'received' && !isLoading) {
-    <div>
-      @if (receivedRecommendations.length === 0) {
-        <div class="text-center py-5">
-          <i class="fas fa-book-reader fa-3x text-muted mb-3"></i>
-          <h5 class="text-muted">No recommendations received</h5>
-          <p class="text-muted">When friends recommend books to you, they will appear here.</p>
-        </div>
-      }
-      @if (receivedRecommendations.length > 0) {
-        <div class="recommendations-list">
-          @for (recommendation of receivedRecommendations; track recommendation) {
-            <app-recommendation-card
-              variant="detailed"
-              [recommendation]="recommendation"
-              [userBook]="getUserBook(recommendation.book)"
-              [showDeleteAction]="true"
-              (addToLibrary)="addRecommendationBookToLibrary($event)"
-              (delete)="deleteRecommendation($event, 'received')"
-            ></app-recommendation-card>
-          }
-        </div>
-      }
+  <ng-container *ngIf="!isLoading">
+    <section *ngIf="activeTab === 'received'">
+      <div class="text-center py-5" *ngIf="receivedRecommendations.length === 0">
+        <i class="fas fa-book-reader fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">No recommendations received</h5>
+        <p class="text-muted">When friends recommend books to you, they will appear here.</p>
       </div>
-    }
+      <div class="recommendations-list" *ngIf="receivedRecommendations.length > 0">
+        <app-recommendation-card
+          *ngFor="let recommendation of receivedRecommendations"
+          variant="detailed"
+          [recommendation]="recommendation"
+          [userBook]="getUserBook(recommendation.book)"
+          [showDeleteAction]="true"
+          (addToLibrary)="addRecommendationBookToLibrary($event)"
+          (delete)="deleteRecommendation($event, 'received')"
+        ></app-recommendation-card>
+      </div>
+    </section>
 
-    <!-- Sent Recommendations Tab -->
-    @if (activeTab === 'sent' && !isLoading) {
-      <div>
-        @if (sentRecommendations.length === 0) {
-          <div class="text-center py-5">
-            <i class="fas fa-share fa-3x text-muted mb-3"></i>
-            <h5 class="text-muted">No recommendations sent</h5>
-            <p class="text-muted">Start sharing your favorite books with friends!</p>
-            <button class="btn btn-primary" (click)="setActiveTab('send')">
-              <i class="fas fa-plus me-2"></i>
-              Send Recommendation
-            </button>
-          </div>
-        }
-        @if (sentRecommendations.length > 0) {
-          <div class="recommendations-list">
-            @for (recommendation of sentRecommendations; track recommendation) {
-              <app-recommendation-card
-                variant="detailed"
-                context="sent"
-                [recommendation]="recommendation"
-                [showLibraryActions]="false"
-                [showDeleteAction]="true"
-                (delete)="deleteRecommendation($event, 'sent')"
-              ></app-recommendation-card>
-            }
-          </div>
-        }
+    <section *ngIf="activeTab === 'sent'">
+      <div class="text-center py-5" *ngIf="sentRecommendations.length === 0">
+        <i class="fas fa-share fa-3x text-muted mb-3"></i>
+        <h5 class="text-muted">No recommendations sent</h5>
+        <p class="text-muted">Start sharing your favorite books with friends!</p>
+        <button class="btn btn-primary" (click)="setActiveTab('send')">
+          <i class="fas fa-plus me-2"></i>
+          Send Recommendation
+        </button>
+      </div>
+      <div class="recommendations-list" *ngIf="sentRecommendations.length > 0">
+        <app-recommendation-card
+          *ngFor="let recommendation of sentRecommendations"
+          variant="detailed"
+          context="sent"
+          [recommendation]="recommendation"
+          [showLibraryActions]="false"
+          [showDeleteAction]="true"
+          (delete)="deleteRecommendation($event, 'sent')"
+        ></app-recommendation-card>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'send'">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Send Book Recommendation</h5>
         </div>
-      }
-
-      <!-- Send New Recommendation Tab -->
-      @if (activeTab === 'send' && !isLoading) {
-        <div>
-          <div class="card">
-            <div class="card-header">
-              <h5 class="mb-0">Send Book Recommendation</h5>
+        <div class="card-body">
+          <form (ngSubmit)="sendRecommendation()" #recommendationForm="ngForm">
+            <div class="mb-3">
+              <label for="friendSelect" class="form-label">Select Friend</label>
+              <select
+                id="friendSelect"
+                class="form-select"
+                [(ngModel)]="selectedFriendId"
+                name="friendId"
+                required>
+                <option value="">Choose a friend...</option>
+                <option *ngFor="let friend of friends" [value]="friend.friendId">
+                  {{ friend.friend?.username }}
+                </option>
+              </select>
             </div>
-            <div class="card-body">
-              <form (ngSubmit)="sendRecommendation()" #recommendationForm="ngForm">
-                <!-- Friend Selection -->
-                <div class="mb-3">
-                  <label for="friendSelect" class="form-label">Select Friend</label>
-                  <select
-                    id="friendSelect"
-                    class="form-select"
-                    [(ngModel)]="selectedFriendId"
-                    name="friendId"
-                    required>
-                    <option value="">Choose a friend...</option>
-                    @for (friend of friends; track friend) {
-                      <option [value]="friend.friendId">
-                        {{ friend.friend?.username }}
-                      </option>
-                    }
-                  </select>
-                </div>
-                <!-- Book Selection -->
-                <div class="mb-3">
-                  <label for="bookSearch" class="form-label">Select Book from Your Library</label>
-                  <div class="position-relative">
+
+            <div class="mb-3">
+              <label for="bookDropdown" class="form-label">Select Book from Your Library</label>
+              <div
+                id="bookDropdown"
+                class="searchable-dropdown"
+                clickOutside
+                (clickOutside)="closeBookDropdown()">
+                <button
+                  type="button"
+                  class="dropdown-trigger"
+                  (click)="toggleBookDropdown()"
+                  [attr.aria-expanded]="isBookDropdownOpen">
+                  <span>{{ selectedBookLabel }}</span>
+                  <i class="fas fa-chevron-down" [class.rotate]="isBookDropdownOpen"></i>
+                </button>
+                <input type="hidden" name="bookId" [(ngModel)]="selectedBookId" required>
+
+                <div class="dropdown-panel" *ngIf="isBookDropdownOpen">
+                  <div class="dropdown-search">
                     <input
                       type="text"
-                      id="bookSearch"
                       class="form-control"
-                      placeholder="Search your books..."
+                      placeholder="Search by title or author..."
                       [(ngModel)]="bookSearchQuery"
                       (input)="filterBooks()"
                       name="bookSearch"
-                      required>
-                      <!-- Book Search Results -->
-                      @if (filteredBooks.length > 0 && bookSearchQuery) {
-                        <div class="book-search-results">
-                          @for (book of filteredBooks; track book) {
-                            <div
-                              class="book-search-item"
-                              (click)="selectBook(book)">
-                              <div class="d-flex align-items-center">
-                                <img
-                                  [src]="book.thumbnail || '/assets/images/book-placeholder.jpg'"
-                                  [alt]="book.title"
-                                  class="book-search-thumbnail me-3">
-                                  <div>
-                                    <div class="fw-bold">{{ book.title }}</div>
-                                    <small class="text-muted">by {{ book.author }}</small>
-                                  </div>
-                                </div>
-                              </div>
-                            }
-                          </div>
-                        }
-                      </div>
-                    </div>
-                    <!-- Message -->
-                    <div class="mb-3">
-                      <label for="message" class="form-label">Message (Optional)</label>
-                      <textarea
-                        id="message"
-                        class="form-control"
-                        rows="3"
-                        placeholder="Why do you recommend this book?"
-                        [(ngModel)]="recommendationMessage"
-                        name="message"
-                      maxlength="500"></textarea>
-                      <div class="form-text">{{ recommendationMessage.length }}/500 characters</div>
-                    </div>
-                    <!-- Submit Button -->
-                    <div class="d-flex justify-content-end">
+                      autocomplete="off">
+                  </div>
+                  <div class="dropdown-options">
+                    <div class="dropdown-empty" *ngIf="filteredBooks.length === 0">No matches found.</div>
+                    <div class="dropdown-list" *ngIf="filteredBooks.length > 0">
                       <button
-                        type="submit"
-                        class="btn btn-primary"
-                        [disabled]="!selectedFriendId || !selectedBookId || isSending">
-                        @if (!isSending) {
-                          <span>
-                            <i class="fas fa-paper-plane me-2"></i>
-                            Send Recommendation
-                          </span>
-                        }
-                        @if (isSending) {
-                          <span>
-                            <span class="spinner-border spinner-border-sm me-2"></span>
-                            Sending...
-                          </span>
-                        }
+                        type="button"
+                        class="dropdown-option"
+                        *ngFor="let book of filteredBooks; trackBy: trackBookById"
+                        (click)="selectBook(book)">
+                        <div class="option-content">
+                          <img
+                            [src]="book.thumbnail || '/assets/images/book-placeholder.jpg'"
+                            [alt]="book.title"
+                            class="option-thumbnail">
+                          <div class="option-meta">
+                            <div class="option-title">{{ book.title }}</div>
+                            <small class="option-author">{{ book.author }}</small>
+                          </div>
+                        </div>
                       </button>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>
-          }
+
+            <div class="mb-3">
+              <label for="message" class="form-label">Message (Optional)</label>
+              <textarea
+                id="message"
+                class="form-control"
+                rows="3"
+                placeholder="Why do you recommend this book?"
+                [(ngModel)]="recommendationMessage"
+                name="message"
+                maxlength="500"></textarea>
+              <div class="form-text">{{ recommendationMessage.length }}/500 characters</div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!selectedFriendId || !selectedBookId || isSending">
+                <ng-container *ngIf="!isSending; else sendingState">
+                  <i class="fas fa-paper-plane me-2"></i>
+                  Send Recommendation
+                </ng-container>
+                <ng-template #sendingState>
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Sending...
+                </ng-template>
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
+    </section>
+  </ng-container>
+</div>

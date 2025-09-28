@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FriendsListComponent } from '../friends-list/friends-list';
@@ -26,6 +26,8 @@ export class SocialDashboardComponent implements OnInit, OnDestroy {
     recommendations: 0,
     total: 0
   };
+  isSidebarOpen = true;
+  isMobileView = false;
 
   constructor(private socialApi: SocialApi) {}
 
@@ -36,16 +38,47 @@ export class SocialDashboardComponent implements OnInit, OnDestroy {
 
     this.socialApi.startFrequentPolling();
     this.socialApi.forceRefreshNotifications();
+    this.syncSidebarWithViewport();
   }
 
   ngOnDestroy(): void {
     this.socialApi.resumeNormalPolling();
   }
 
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.syncSidebarWithViewport();
+  }
+
   setSidebarTab(tab: 'friends' | 'requests'): void {
     this.sidebarTab = tab;
     if (tab === 'requests') {
       this.socialApi.forceRefreshNotifications();
+    }
+  }
+
+  toggleSidebar(): void {
+    if (this.isMobileView) {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    }
+  }
+
+  closeSidebar(): void {
+    if (this.isMobileView) {
+      this.isSidebarOpen = false;
+    }
+  }
+
+  private syncSidebarWithViewport(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const wasMobile = this.isMobileView;
+    this.isMobileView = window.innerWidth < 768;
+    if (!this.isMobileView) {
+      this.isSidebarOpen = true;
+    } else if (!wasMobile) {
+      this.isSidebarOpen = false;
     }
   }
 }

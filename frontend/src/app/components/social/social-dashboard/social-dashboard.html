@@ -1,16 +1,43 @@
 <div class="social-dashboard">
+  @if (isMobileView) {
+  <div class="mobile-toolbar container-xxl">
+    <button
+      type="button"
+      class="sidebar-toggle"
+      (click)="toggleSidebar()"
+      [attr.aria-expanded]="isSidebarOpen"
+      aria-controls="social-sidebar">
+      <i class="fas" [ngClass]="isSidebarOpen ? 'fa-times' : 'fa-bars'"></i>
+      <span>{{ isSidebarOpen ? 'Hide Menu' : 'Show Menu' }}</span>
+    </button>
+  </div>
+  }
   <div class="social-wrapper container-xxl">
-    <aside class="social-sidebar">
+    <aside
+      id="social-sidebar"
+      class="social-sidebar"
+      [class.sidebar-collapsed]="isMobileView && !isSidebarOpen"
+      [class.sidebar-visible]="isMobileView && isSidebarOpen">
       <header class="sidebar-header">
-        <div>
+        <div class="sidebar-title-block">
           <h2 class="sidebar-title">Social Hub</h2>
           <p class="sidebar-subtitle">Catch up with friends and share your latest reads.</p>
         </div>
+        <button
+          type="button"
+          class="sidebar-close"
+          *ngIf="isMobileView"
+          (click)="closeSidebar()"
+          aria-label="Close sidebar">
+          <i class="fas fa-times"></i>
+        </button>
         <div class="sidebar-metrics">
-          <span class="metric-pill" *ngIf="notificationCount.friendRequests > 0">
+          @if (notificationCount.friendRequests > 0) {
+          <span class="metric-pill">
             <i class="fas fa-user-plus me-1"></i>
             {{ notificationCount.friendRequests }} new
           </span>
+          }
         </div>
       </header>
 
@@ -36,7 +63,7 @@
 
       <section class="sidebar-content" role="tabpanel">
         @if (sidebarTab === 'friends') {
-          <app-friends-list></app-friends-list>
+          <app-friends-list (closeSidebarRequested)="closeSidebar()"></app-friends-list>
         }
         @if (sidebarTab === 'requests') {
           <app-friend-requests></app-friend-requests>
@@ -50,4 +77,7 @@
       </div>
     </main>
   </div>
+  @if (isMobileView && isSidebarOpen) {
+  <div class="sidebar-backdrop" (click)="closeSidebar()"></div>
+  }
 </div>

@@ -59,40 +59,119 @@
   font-size: 0.875rem;
 }
 
-.book-search-results {
+.searchable-dropdown {
+  position: relative;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  background: #ffffff;
+  padding: 0.625rem 0.85rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.dropdown-trigger:hover,
+.dropdown-trigger:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+.dropdown-trigger i {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-trigger i.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 0.4rem);
   left: 0;
   right: 0;
-  background: white;
-  border: 1px solid #ced4da;
-  border-top: none;
-  border-radius: 0 0 0.375rem 0.375rem;
-  max-height: 200px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.15);
+  z-index: 1050;
+  overflow: hidden;
+}
+
+.dropdown-search {
+  padding: 0.65rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dropdown-search .form-control {
+  border-radius: 0.5rem;
+}
+
+.dropdown-options {
+  max-height: 240px;
   overflow-y: auto;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.book-search-item {
-  padding: 10px;
-  cursor: pointer;
-  border-bottom: 1px solid #f8f9fa;
+.dropdown-empty {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
 }
 
-.book-search-item:hover {
-  background-color: #f8f9fa;
+.dropdown-list {
+  display: flex;
+  flex-direction: column;
 }
 
-.book-search-item:last-child {
-  border-bottom: none;
+.dropdown-option {
+  display: block;
+  padding: 0.65rem 0.9rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s ease;
 }
 
-.book-search-thumbnail {
-  width: 40px;
+.dropdown-option:hover,
+.dropdown-option:focus {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.option-content {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.option-thumbnail {
+  width: 42px;
   height: 60px;
   object-fit: cover;
-  border-radius: 2px;
+  border-radius: 6px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.option-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.option-author {
+  color: #6b7280;
 }
 
 .recommendations-list {
@@ -134,5 +213,9 @@
   .nav-tabs .nav-link {
     font-size: 0.9rem;
     padding: 0.5rem 0.75rem;
+  }
+  
+  .dropdown-panel {
+    max-height: 70vh;
   }
 }

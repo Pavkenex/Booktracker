@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
 import { SocialApi } from '../../../services/social-api';
@@ -9,10 +10,11 @@ import { Recommendation, Friendship, SendRecommendationRequest } from '../../../
 import { Book } from '../../../models/book.model';
 import { UserBook } from '../../../models/library.model';
 import { RecommendationCardComponent } from '../../shared/recommendations/recommendation-card';
+import { ClickOutsideDirective } from '../../../directives/click-outside';
 
 @Component({
     selector: 'app-recommendations',
-  imports: [FormsModule, RecommendationCardComponent],
+  imports: [CommonModule, FormsModule, RecommendationCardComponent, ClickOutsideDirective],
     templateUrl: './recommendations.html',
     styleUrls: ['./recommendations.css']
 })
@@ -34,6 +36,7 @@ export class RecommendationsComponent implements OnInit {
   bookSearchQuery: string = '';
   filteredBooks: Book[] = [];
   isSending: boolean = false;
+  isBookDropdownOpen = false;
   // Query param handling
   private pendingBookId: number | null = null;
   private pendingAction: 'send' | null = null;
@@ -232,8 +235,34 @@ export class RecommendationsComponent implements OnInit {
 
   selectBook(book: Book): void {
     this.selectedBookId = book.id;
-    this.bookSearchQuery = book.title;
-    this.filteredBooks = [];
+    this.bookSearchQuery = '';
+    this.filteredBooks = [...this.books];
+    this.isBookDropdownOpen = false;
+  }
+
+  toggleBookDropdown(): void {
+    this.isBookDropdownOpen = !this.isBookDropdownOpen;
+    if (this.isBookDropdownOpen) {
+      this.filterBooks();
+    }
+  }
+
+  closeBookDropdown(): void {
+    if (this.isBookDropdownOpen) {
+      this.isBookDropdownOpen = false;
+    }
+  }
+
+  trackBookById(_: number, book: Book): number {
+    return book.id;
+  }
+
+  get selectedBookLabel(): string {
+    if (!this.selectedBookId) {
+      return 'Choose a book...';
+    }
+    const book = this.books.find(b => b.id === this.selectedBookId);
+    return book ? `${book.title} by ${book.author}` : 'Choose a book...';
   }
 
   sendRecommendation(): void {
@@ -259,6 +288,7 @@ export class RecommendationsComponent implements OnInit {
         this.recommendationMessage = '';
         this.bookSearchQuery = '';
         this.filteredBooks = [...this.books];
+        this.closeBookDropdown();
         
         // Reload sent recommendations
         this.loadSentRecommendations();
