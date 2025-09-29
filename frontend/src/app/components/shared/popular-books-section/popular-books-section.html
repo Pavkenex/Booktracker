@@ -76,7 +76,7 @@
           [itemsPerSlideConfig]="popularBooksConfig.BOOKS_PER_SLIDE"
           [breakpoints]="popularBooksConfig.BREAKPOINTS"
           [trackMinHeight]="380"
-          slideGap="clamp(0.75rem, 2.25vw, 1.6rem)"
+          slideGap="clamp(0.4rem, 1vw, 0.75rem)"
         >
           <ng-template appSliderItem let-book let-globalIndex="globalIndex">
             @let rank = getRank(globalIndex);
