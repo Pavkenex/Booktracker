@@ -472,26 +472,11 @@
   .popular-books-slider .indicator.active {
     transform: scale(1.4);
   }
+}
 
-  .popular-books-state {
-    padding-block: 1.35rem;
-  }
-
-  .book-thumbnail {
-    height: 190px;
-  }
-
-  .book-body,
-  .book-footer {
-    padding-inline: 0.7rem;
-  }
-
-  .book-title {
-    font-size: 0.96rem;
-  }
-
-  .book-author {
-    font-size: 0.8rem;
+@media (max-width: 480px) {
+  .popular-books-slider .slider-indicators {
+    display: none;
   }
 }
 
