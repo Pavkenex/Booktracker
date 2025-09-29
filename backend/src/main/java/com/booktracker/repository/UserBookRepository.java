@@ -169,10 +169,16 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
     Page<UserBook> findRecentReviewsForBook(@Param("bookId") Long bookId, Pageable pageable);
     
     /**
+     * Get average rating across all user books
+     */
+    @Query("SELECT AVG(CAST(ub.rating AS double)) FROM UserBook ub WHERE ub.rating IS NOT NULL")
+    Double getGlobalAverageRating();
+    
+    /**
      * Count reviews written across all user books
      */
     long countByReviewIsNotNull();
-
+    
     /**
      * Count user books by reading status across all users
      */

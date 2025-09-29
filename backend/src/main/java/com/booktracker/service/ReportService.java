@@ -94,44 +94,19 @@ public class ReportService {
         return reportData;
     }
     
+    // Builds the user-engagement dashboard metrics from aggregate counts
     public List<UserEngagementReportData> getUserEngagementData() {
-        List<Object[]> results = userRepository.getUserEngagementData();
-        
-        // Process raw user data into individual user records
-        List<UserEngagementReportData> detailedData = results.stream()
-            .map(result -> {
-                UserEngagementReportData data = new UserEngagementReportData();
-                data.setUsername((String) result[0]);
-                data.setEmail((String) result[1]);
-                data.setTotalBooks((Long) result[2]);
-                data.setBooksRead((Long) result[3]);
-                data.setBooksToRead((Long) result[4]);
-                data.setFriendsCount((Long) result[5]);
-                data.setRecommendationsSent((Long) result[6]);
-                data.setAverageRating((Double) result[7]);
-                data.setReviewsWritten((Long) result[8]);
-                return data;
-            })
-            .collect(Collectors.toList());
-        
-        // Create aggregated metrics for frontend display
-        List<UserEngagementReportData> metrics = new ArrayList<>();
-        
-        // Calculate aggregated metrics
         long totalUsers = userRepository.countTotalUsers();
-        long totalBooksInLibraries = detailedData.stream().mapToLong(UserEngagementReportData::getTotalBooks).sum();
+        long totalBooksInLibraries = userBookRepository.count();
         long totalBooksRead = userBookRepository.countByStatus(UserBook.ReadingStatus.read);
         long totalToRead = userBookRepository.countByStatus(UserBook.ReadingStatus.to_read);
         long totalReviews = userBookRepository.countByReviewIsNotNull();
+        Double globalAverageRating = userBookRepository.getGlobalAverageRating();
+        double averageRatingValue = globalAverageRating != null ? globalAverageRating : 0;
         
-        // Average ratings (ignoring nulls)
-        double avgRatingSum = detailedData.stream()
-            .filter(d -> d.getAverageRating() != null)
-            .mapToDouble(UserEngagementReportData::getAverageRating)
-            .average()
-            .orElse(0);
+        // Compose the summary cards shown in the admin UI
+        List<UserEngagementReportData> metrics = new ArrayList<>();
         
-        // Create metrics
         UserEngagementReportData totalUsersMetric = new UserEngagementReportData();
         totalUsersMetric.setMetric("Total Users");
         totalUsersMetric.setValue(totalUsers);
@@ -154,7 +129,7 @@ public class ReportService {
         
         UserEngagementReportData avgRatingMetric = new UserEngagementReportData();
         avgRatingMetric.setMetric("Average Book Rating");
-        avgRatingMetric.setValue(avgRatingSum);
+        avgRatingMetric.setValue(averageRatingValue);
         metrics.add(avgRatingMetric);
         
         UserEngagementReportData totalReviewsMetric = new UserEngagementReportData();
@@ -215,8 +190,9 @@ public class ReportService {
         return generateReport("daily_activity_report", data, format, parameters);
     }
     
+    // Jasper export needs per-user rows, so rebuild the detailed dataset for that use case
     public byte[] exportUserEngagementReport(String format) throws JRException {
-        List<UserEngagementReportData> data = getUserEngagementData();
+        List<UserEngagementReportData> data = buildUserEngagementDetails();
         return generateReport("user_engagement_report", data, format);
     }
     
@@ -316,5 +292,24 @@ public class ReportService {
             return escaped;
         }
         return escaped;
+    }
+    
+    // Hydrates individual user records for reporting templates that need row-level data
+    private List<UserEngagementReportData> buildUserEngagementDetails() {
+        return userRepository.getUserEngagementData().stream()
+            .map(result -> {
+                UserEngagementReportData data = new UserEngagementReportData();
+                data.setUsername((String) result[0]);
+                data.setEmail((String) result[1]);
+                data.setTotalBooks((Long) result[2]);
+                data.setBooksRead((Long) result[3]);
+                data.setBooksToRead((Long) result[4]);
+                data.setFriendsCount((Long) result[5]);
+                data.setRecommendationsSent((Long) result[6]);
+                data.setAverageRating((Double) result[7]);
+                data.setReviewsWritten((Long) result[8]);
+                return data;
+            })
+            .collect(Collectors.toList());
     }
 }
