@@ -41,14 +41,9 @@
 <!-- Recent Recommendations Section (only for authenticated users) -->
 @if (isAuthenticated$ | async) {
   <section class="home-recommendations mt-5">
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 gap-md-4">
-      <div>
-        <h3 class="section-title">Friend Recommendations</h3>
-        <p class="section-subtitle">Fresh picks shared by people you follow</p>
-      </div>
-      <a routerLink="/social/recommendations" class="btn btn-outline-primary btn-sm">
-        View all
-      </a>
+    <div>
+      <h3 class="section-title">Friend Recommendations</h3>
+      <p class="section-subtitle">Fresh picks shared by people you follow</p>
     </div>
 
     @if (isLoadingRecommendations || isLoadingLibrary) {
