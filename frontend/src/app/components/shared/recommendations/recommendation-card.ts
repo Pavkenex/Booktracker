@@ -6,7 +6,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image";
 import { Recommendation } from "../../../models/social.model";
 import { UserBook } from "../../../models/library.model";
 
-export type RecommendationVariant = "compact" | "detailed";
+type RecommendationVariant = "compact" | "detailed";
 
 @Component({
   selector: "app-recommendation-card",
