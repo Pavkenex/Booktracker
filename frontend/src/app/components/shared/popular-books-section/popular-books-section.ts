@@ -5,6 +5,7 @@ import {
   OnInit,
 } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { NgClass } from "@angular/common";
 
 import { BookApi } from "../../../services/book-api";
 import { Book } from "../../../models/book.model";
@@ -15,7 +16,7 @@ import { FallbackImageDirective } from "../../../directives/fallback-image";
 
 @Component({
   selector: "app-popular-books-section",
-  imports: [RouterModule, FallbackImageDirective, SliderComponent, SliderItemDirective],
+  imports: [RouterModule, NgClass, FallbackImageDirective, SliderComponent, SliderItemDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./popular-books-section.html",
   styleUrls: ["./popular-books-section.css"],
@@ -65,5 +66,18 @@ export class PopularBooksSectionComponent implements OnInit {
 
   getRank(globalIndex: number): number {
     return globalIndex + 1;
+  }
+
+  getRankBadgeClass(rank: number): string {
+    if (rank === 1) {
+      return "rank-badge--gold";
+    }
+    if (rank === 2) {
+      return "rank-badge--silver";
+    }
+    if (rank === 3) {
+      return "rank-badge--bronze";
+    }
+    return "rank-badge--default";
   }
 }

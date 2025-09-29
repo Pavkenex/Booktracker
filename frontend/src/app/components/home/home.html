@@ -1,35 +1,30 @@
 <div class="home-content">
   <div class="row">
     <div class="col-12">
-    <div class="jumbotron bg-light p-5 rounded">
-      <h1 class="display-4">
+    <div class="home-hero rounded-4 p-4 p-md-5">
+      <h2 class="home-hero-title">
         @if (!(isAuthenticated$ | async)) {
         <span>Welcome to BookTracker</span>
         } @if (isAuthenticated$ | async) {
         <span>Welcome back, {{ (currentUser$ | async)?.username }}!</span>
         }
-      </h1>
-      <p class="lead">
-        Track your reading progress, discover new books, and connect with fellow
-        readers.
+      </h2>
+      <p class="home-hero-subtitle">
+        Track your reading progress, discover new books, and connect with fellow readers.
       </p>
-      <hr class="my-4" />
+      <hr class="home-hero-divider" />
       @if (!(isAuthenticated$ | async)) {
-      <p>Get started by creating an account or browsing our book catalog.</p>
+      <p class="home-hero-body">Get started by creating an account or browsing our book catalog.</p>
       } @if (isAuthenticated$ | async) {
-      <p>Continue managing your personal library or discover new books.</p>
+      <p class="home-hero-body">Continue managing your personal library or discover new books.</p>
       }
-      <div class="d-flex gap-2">
+      <div class="home-hero-actions">
         @if (!(isAuthenticated$ | async)) {
         <a routerLink="/register" class="btn btn-primary btn-lg">Get Started</a>
-        <a routerLink="/books" class="btn btn-browse-books btn-lg"
-          >Browse Books</a
-        >
+        <a routerLink="/books" class="btn btn-browse-books btn-lg">Browse Books</a>
         } @else {
         <a routerLink="/library" class="btn btn-primary btn-lg">My Library</a>
-        <a routerLink="/books" class="btn btn-browse-books btn-lg"
-          >Browse Books</a
-        >
+        <a routerLink="/books" class="btn btn-browse-books btn-lg">Browse Books</a>
         }
       </div>
     </div>
