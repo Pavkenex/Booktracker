@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { AdminApi } from '../../../services/admin-api';
 
@@ -18,7 +19,7 @@ interface ReportData {
 
 @Component({
     selector: 'app-reports-panel',
-    imports: [CommonModule],
+    imports: [CommonModule, RouterLink],
     templateUrl: './reports-panel.html',
     styleUrls: ['./reports-panel.css']
 })

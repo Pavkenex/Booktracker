@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminApi } from '../../../services/admin-api';
 import { Genre } from '../../../models/book.model';
 
 @Component({
     selector: 'app-genre-management',
-    imports: [FormsModule, ReactiveFormsModule],
+    imports: [FormsModule, ReactiveFormsModule, RouterLink],
     templateUrl: './genre-management.html',
     styleUrls: ['./genre-management.css']
 })

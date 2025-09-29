@@ -1,7 +1,12 @@
 <div class="container-fluid py-4" id="reports-container">
   <div class="row">
     <div class="col-12">
-      <h1 class="h3 mb-4">Reports & Analytics</h1>
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <a routerLink="/admin" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+        <h1 class="h3 mb-0">Reports & Analytics</h1>
+      </div>
     </div>
   </div>
 
@@ -29,7 +34,7 @@
               } {{ activeReport === 'books-by-category' ? 'Hide Report' : 'View
               Report' }}
             </button>
-            @if (reportData.booksByCategory) {
+            @if (reportData.booksByCategory && activeReport === 'books-by-category') {
             <div class="btn-group">
               <button
                 class="btn btn-sm btn-success"
@@ -74,7 +79,7 @@
               } {{ activeReport === 'daily-activity' ? 'Hide Report' : 'View
               Report' }}
             </button>
-            @if (reportData.dailyActivity) {
+            @if (reportData.dailyActivity && activeReport === 'daily-activity') {
             <div class="btn-group">
               <button
                 class="btn btn-sm btn-success"
@@ -119,7 +124,7 @@
               } {{ activeReport === 'user-engagement' ? 'Hide Report' : 'View
               Report' }}
             </button>
-            @if (reportData.userEngagement) {
+            @if (reportData.userEngagement && activeReport === 'user-engagement') {
             <div class="btn-group">
               <button
                 class="btn btn-sm btn-success"

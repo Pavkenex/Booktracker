@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { RouterLink } from '@angular/router';
 import {
   AdminApi,
   PopularityStatistics,
@@ -8,7 +9,7 @@ import {
 
 @Component({
     selector: "app-popularity-statistics",
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterLink],
     templateUrl: "./popularity-statistics.html",
     styleUrls: ["./popularity-statistics.css"]
 })

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminApi } from '../../../services/admin-api';
 import { BookApi } from '../../../services/book-api';
@@ -7,7 +7,7 @@ import { Book, Genre, PagedResponse } from '../../../models/book.model';
 
 @Component({
     selector: 'app-book-management',
-    imports: [FormsModule, ReactiveFormsModule],
+    imports: [FormsModule, ReactiveFormsModule, RouterLink],
     templateUrl: './book-management.html',
     styleUrls: ['./book-management.css']
 })
