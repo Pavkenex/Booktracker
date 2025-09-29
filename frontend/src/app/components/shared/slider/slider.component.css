@@ -9,6 +9,12 @@
   flex: 1;
   overflow: hidden;
   border-radius: 12px;
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+}
+
+.slider-wrapper:active {
+  cursor: grabbing;
 }
 
 .slider-track {

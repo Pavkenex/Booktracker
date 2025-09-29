@@ -52,6 +52,11 @@ export class SliderComponent<T> implements OnInit, OnChanges {
   protected itemsPerSlide = 1;
   private slideGroups: T[][] = [];
 
+  // Touch/swipe support
+  private touchStartX = 0;
+  private touchEndX = 0;
+  private readonly minSwipeDistance = 50; // minimum distance for a swipe in pixels
+
   readonly trackByItem = (index: number, item: T) =>
     this.trackSlideItem(index, item);
 
@@ -161,6 +166,28 @@ export class SliderComponent<T> implements OnInit, OnChanges {
 
     this.currentSlide = slideIndex;
     this.cdr.markForCheck();
+  }
+
+  onTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.changedTouches[0].screenX;
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    this.touchEndX = event.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+
+  private handleSwipe(): void {
+    const swipeDistance = this.touchStartX - this.touchEndX;
+    
+    // Swipe left (next slide)
+    if (swipeDistance > this.minSwipeDistance) {
+      this.nextSlide();
+    }
+    // Swipe right (previous slide)
+    else if (swipeDistance < -this.minSwipeDistance) {
+      this.previousSlide();
+    }
   }
 
   createContext(
