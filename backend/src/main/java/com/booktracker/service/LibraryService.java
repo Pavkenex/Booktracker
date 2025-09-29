@@ -53,7 +53,6 @@ public class LibraryService {
         Book book = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new RuntimeException("Book not found"));
         
-        // Check if book already exists in user's library
         Optional<UserBook> existingUserBook = userBookRepository.findByUserAndBook(user, book);
         if (existingUserBook.isPresent()) {
             throw new RuntimeException("Book already exists in your library");
@@ -65,14 +64,12 @@ public class LibraryService {
         userBook.setReadDate(request.getReadDate());
         userBook.setIsFavourite(request.getIsFavourite() != null ? request.getIsFavourite() : false);
         
-        // Set read date automatically if status is 'read' and no date provided
         if (request.getStatus() == UserBook.ReadingStatus.read && request.getReadDate() == null) {
             userBook.setReadDate(LocalDate.now());
         }
         
         UserBook savedUserBook = userBookRepository.save(userBook);
         
-        // Get average rating for this book
         Double bookRating = userBookRepository.getAverageRatingForBook(book.getId());
         
         return new UserBookResponse(savedUserBook, bookRating);
@@ -85,7 +82,6 @@ public class LibraryService {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
         
-        // Verify the book belongs to the user
         validateUserBookOwnership(userBook, userId);
         
         userBook.setStatus(request.getStatus());
@@ -94,14 +90,12 @@ public class LibraryService {
         userBook.setReadDate(request.getReadDate());
         userBook.setIsFavourite(request.getIsFavourite() != null ? request.getIsFavourite() : userBook.getIsFavourite());
         
-        // Set read date automatically if status changed to 'read' and no date provided
         if (request.getStatus() == UserBook.ReadingStatus.read && request.getReadDate() == null && userBook.getReadDate() == null) {
             userBook.setReadDate(LocalDate.now());
         }
         
         UserBook savedUserBook = userBookRepository.save(userBook);
         
-        // Get average rating for this book
         Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
         
         return new UserBookResponse(savedUserBook, bookRating);
@@ -114,7 +108,6 @@ public class LibraryService {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
         
-        // Verify the book belongs to the user
         if (!userBook.getUser().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized access to library item");
         }
@@ -241,7 +234,6 @@ public class LibraryService {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
         
-        // Verify the book belongs to the user
         if (!userBook.getUser().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized access to library item");
         }
@@ -249,7 +241,6 @@ public class LibraryService {
         userBook.setIsFavourite(!userBook.getIsFavourite());
         UserBook savedUserBook = userBookRepository.save(userBook);
         
-        // Get average rating for this book
         Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
         
         return new UserBookResponse(savedUserBook, bookRating);
@@ -269,7 +260,6 @@ public class LibraryService {
         long booksToRead = userBookRepository.countByUserAndStatus(user, UserBook.ReadingStatus.to_read);
         long favoriteBooks = userBookRepository.countByUserAndIsFavouriteTrue(user);
         
-        // Get rating distribution
         List<Object[]> ratingData = userBookRepository.getUserRatingDistribution(user);
         Map<Integer, Long> ratingDistribution = new HashMap<>();
         double totalRatingSum = 0;
@@ -297,12 +287,10 @@ public class LibraryService {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
         
-        // Verify the book belongs to the user
         if (!userBook.getUser().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized access to library item");
         }
         
-        // Get average rating for this book
         Double bookRating = userBookRepository.getAverageRatingForBook(userBook.getBook().getId());
         
         return new UserBookResponse(userBook, bookRating);
@@ -363,7 +351,6 @@ public class LibraryService {
         
         Optional<UserBook> userBook = userBookRepository.findByUserAndBook(user, book);
         if (userBook.isPresent()) {
-            // Get average rating for this book
             Double bookRating = userBookRepository.getAverageRatingForBook(bookId);
             return new UserBookResponse(userBook.get(), bookRating);
         }

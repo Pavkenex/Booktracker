@@ -31,7 +31,6 @@ public class RecommendationResponse {
         this.createdAt = recommendation.getCreatedAt();
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

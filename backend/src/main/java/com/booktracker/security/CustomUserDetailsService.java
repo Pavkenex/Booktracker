@@ -45,11 +45,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             List<GrantedAuthority> authorities = new ArrayList<>();
-            
-            // Add basic user role
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-            
-            // Add admin role if user is admin
             if (user.getIsAdmin()) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
@@ -87,7 +83,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             return true;
         }
 
-        // Additional methods to access user information
         public Long getId() {
             return user.getId();
         }

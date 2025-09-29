@@ -22,29 +22,29 @@ public class FriendshipResponse {
         this.friendId = friendship.getFriend().getId();
         this.user = new UserDto(friendship.getUser());
         this.friend = new UserDto(friendship.getFriend());
-        this.sender = new UserDto(friendship.getUser()); // sender is the user who initiated
-        this.receiver = new UserDto(friendship.getFriend()); // receiver is the friend
+        this.sender = new UserDto(friendship.getUser());
+        this.receiver = new UserDto(friendship.getFriend());
         this.status = friendship.getStatus().name();
         this.createdAt = friendship.getCreatedAt();
     }
     
-    // Constructor that takes the current user's perspective into account
+    /**
+     * Builds a response that aligns the user/friend fields with the caller's perspective.
+     */
     public FriendshipResponse(Friendship friendship, Long currentUserId) {
         this.id = friendship.getId();
-        this.sender = new UserDto(friendship.getUser()); // sender is always the user who initiated
-        this.receiver = new UserDto(friendship.getFriend()); // receiver is always the friend who received
+        this.sender = new UserDto(friendship.getUser());
+        this.receiver = new UserDto(friendship.getFriend());
         this.status = friendship.getStatus().name();
         this.createdAt = friendship.getCreatedAt();
         
         // Set user and friend based on current user's perspective
         if (friendship.getUser().getId().equals(currentUserId)) {
-            // Current user is the one who sent the request
             this.user = new UserDto(friendship.getUser());
             this.friend = new UserDto(friendship.getFriend());
             this.userId = friendship.getUser().getId();
             this.friendId = friendship.getFriend().getId();
         } else {
-            // Current user is the one who received the request
             this.user = new UserDto(friendship.getFriend());
             this.friend = new UserDto(friendship.getUser());
             this.userId = friendship.getFriend().getId();
@@ -52,7 +52,6 @@ public class FriendshipResponse {
         }
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

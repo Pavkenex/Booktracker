@@ -22,7 +22,6 @@ public class RecommendationRequest {
         this.message = message;
     }
     
-    // Getters and Setters
     public Long getReceiverId() {
         return receiverId;
     }

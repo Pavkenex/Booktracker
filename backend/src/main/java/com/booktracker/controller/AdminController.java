@@ -28,15 +28,11 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
     
-    // Dashboard Statistics Endpoint
-    
     @GetMapping("/stats")
     public ResponseEntity<AdminStatsResponseDto> getAdminStats() {
         AdminStatsResponseDto stats = adminService.getAdminStats();
         return ResponseEntity.ok(stats);
     }
-    
-    // Book Management Endpoints
     
     @PostMapping("/books")
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequestDto request) {
@@ -79,8 +75,6 @@ public class AdminController {
         return ResponseEntity.ok(book);
     }
     
-    // Genre Management Endpoints
-    
     @PostMapping("/genres")
     public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody GenreRequestDto request) {
         GenreResponse genre = adminService.createGenre(request);
@@ -110,8 +104,6 @@ public class AdminController {
         GenreResponse genre = adminService.getGenreById(id);
         return ResponseEntity.ok(genre);
     }
-    
-    // Report Endpoints
     
     @GetMapping("/reports/books-by-category")
     public ResponseEntity<List<BooksByCategoryReportData>> getBooksByCategoryReport() {
@@ -144,8 +136,6 @@ public class AdminController {
         List<UserEngagementReportData> data = adminService.getUserEngagementData();
         return ResponseEntity.ok(data);
     }
-    
-    // Report Export Endpoints
     
     @GetMapping("/reports/books-by-category/export")
     public ResponseEntity<byte[]> exportBooksByCategoryReport(@RequestParam String format) {
@@ -240,8 +230,6 @@ public class AdminController {
         }
     }
     
-    // Popularity Statistics Endpoints
-    
     @GetMapping("/popularity/statistics")
     public ResponseEntity<List<PopularityStatisticsData>> getPopularityStatistics() {
         List<PopularityStatisticsData> data = adminService.getPopularityStatisticsData();
@@ -251,7 +239,6 @@ public class AdminController {
     @GetMapping("/popularity/export")
     public ResponseEntity<byte[]> exportPopularityStatistics(@RequestParam String format) {
         try {
-            // Validate format
             if (!"csv".equalsIgnoreCase(format) && !"pdf".equalsIgnoreCase(format)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid format. Supported formats: csv, pdf".getBytes());

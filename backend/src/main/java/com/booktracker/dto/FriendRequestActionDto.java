@@ -8,7 +8,6 @@ public class FriendRequestActionDto {
     private boolean accept;
     private Long friendId;
     
-    // Constructors
     public FriendRequestActionDto() {}
     
     public FriendRequestActionDto(boolean accept) {
@@ -24,7 +23,6 @@ public class FriendRequestActionDto {
         this.accept = accept;
     }
     
-    // Getters and Setters
     public boolean isAccept() {
         return accept;
     }
@@ -33,18 +31,21 @@ public class FriendRequestActionDto {
         this.accept = accept;
     }
     
-    // Helper method to convert from old action format
+    /**
+     * Converts legacy action strings into the current DTO representation.
+     */
     public static FriendRequestActionDto fromAction(String action) {
         if (action == null) return new FriendRequestActionDto(false);
         return new FriendRequestActionDto("accept".equalsIgnoreCase(action));
     }
     
-    // Helper method to get the action as a string
+    /**
+     * Returns the legacy action keyword expected by existing clients.
+     */
     public String getAction() {
         return accept ? "accept" : "decline";
     }
     
-    // Getters and setters for friendId
     public Long getFriendId() {
         return friendId;
     }

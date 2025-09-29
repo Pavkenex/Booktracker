@@ -6,7 +6,6 @@ public class GenreResponse {
     private Long id;
     private String name;
 
-    // Constructors
     public GenreResponse() {}
 
     public GenreResponse(Genre genre) {
@@ -19,7 +18,6 @@ public class GenreResponse {
         this.name = name;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

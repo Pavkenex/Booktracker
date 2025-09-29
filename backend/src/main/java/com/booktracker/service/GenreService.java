@@ -74,7 +74,6 @@ public class GenreService {
      * Create a new genre
      */
     public GenreResponse createGenre(GenreRequestDto genreRequest) {
-        // Check if genre already exists
         if (genreRepository.existsByNameIgnoreCase(genreRequest.getName())) {
             throw new IllegalArgumentException("Genre with name '" + genreRequest.getName() + "' already exists");
         }
@@ -92,7 +91,6 @@ public class GenreService {
     public Optional<GenreResponse> updateGenre(Long id, GenreRequestDto genreRequest) {
         return genreRepository.findById(id)
                 .map(genre -> {
-                    // Check if new name conflicts with existing genre (excluding current one)
                     Optional<Genre> existingGenre = genreRepository.findByNameIgnoreCase(genreRequest.getName());
                     if (existingGenre.isPresent() && !existingGenre.get().getId().equals(id)) {
                         throw new IllegalArgumentException("Genre with name '" + genreRequest.getName() + "' already exists");
@@ -110,7 +108,6 @@ public class GenreService {
     public boolean deleteGenre(Long id) {
         Optional<Genre> genre = genreRepository.findById(id);
         if (genre.isPresent()) {
-            // Check if genre has books associated with it
             if (!genre.get().getBooks().isEmpty()) {
                 throw new IllegalStateException("Cannot delete genre that has books associated with it. Please reassign books to other genres first.");
             }
@@ -148,8 +145,6 @@ public class GenreService {
         return genreRepository.existsByNameIgnoreCase(name);
     }
 
-    // Admin Genre Management Methods
-
     /**
      * Create a new genre (admin version)
      */
@@ -172,7 +167,6 @@ public class GenreService {
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
         
-        // Check if name already exists (excluding current genre)
         Optional<Genre> existingGenre = genreRepository.findByNameIgnoreCase(request.getName());
         if (existingGenre.isPresent() && !existingGenre.get().getId().equals(genreId)) {
             throw new IllegalArgumentException("Genre with name '" + request.getName() + "' already exists");
@@ -190,7 +184,6 @@ public class GenreService {
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
         
-        // Check if genre has books
         if (!genre.getBooks().isEmpty()) {
             throw new IllegalArgumentException("Cannot delete genre that has books assigned to it. Please reassign books to other genres first.");
         }

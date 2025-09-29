@@ -32,7 +32,6 @@ public class BookRequestDto {
 
     private Set<Long> genreIds;
 
-    // Constructors
     public BookRequestDto() {}
 
     public BookRequestDto(String title, String author) {
@@ -40,7 +39,6 @@ public class BookRequestDto {
         this.author = author;
     }
 
-    // Getters and Setters
     public String getTitle() {
         return title;
     }

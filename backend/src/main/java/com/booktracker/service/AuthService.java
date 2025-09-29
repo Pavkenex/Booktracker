@@ -42,24 +42,20 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         try {
-            // Check if username already exists
             if (userRepository.existsByUsername(request.getUsername())) {
                 return new AuthResponse(false, "Username is already taken");
             }
 
-            // Check if email already exists
             if (userRepository.existsByEmail(request.getEmail())) {
                 return new AuthResponse(false, "Email is already registered");
             }
 
-            // Create new user
             User user = new User();
             user.setUsername(request.getUsername());
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setIsAdmin(false);
 
-            // Save user
             User savedUser = userRepository.save(user);
 
             return new AuthResponse(true, "User registered successfully");
@@ -71,7 +67,6 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         try {
-            // Authenticate user
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getUsernameOrEmail(),
@@ -79,14 +74,11 @@ public class AuthService {
                     )
             );
 
-            // Get user details
             User user = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail())
                     .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
 
-            // Generate JWT token
             String token = jwtUtil.generateToken(user.getUsername(), user.getId());
 
-            // Create user info for response
             AuthResponse.UserInfo userInfo = new AuthResponse.UserInfo(
                     user.getId(),
                     user.getUsername(),
@@ -115,13 +107,10 @@ public class AuthService {
 
             User user = userOptional.get();
             
-            // Generate password reset token
             String resetToken = jwtUtil.generatePasswordResetToken(user.getEmail());
             
-            // Construct the full password reset URL for the frontend application
             String resetUrl = "http://localhost:4200/reset-password?token=" + resetToken;
             
-            // Create and send email
             SimpleMailMessage emailMessage = new SimpleMailMessage();
             emailMessage.setTo(user.getEmail());
             emailMessage.setSubject("Password Reset Request");
@@ -145,19 +134,15 @@ public class AuthService {
 
     public AuthResponse resetPassword(PasswordResetDto request) {
         try {
-            // Validate reset token
             if (!jwtUtil.validatePasswordResetToken(request.getToken())) {
                 return new AuthResponse(false, "Invalid or expired reset token");
             }
 
-            // Extract email from token
             String email = jwtUtil.extractUsername(request.getToken());
             
-            // Find user by email
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Update password
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(user);
 

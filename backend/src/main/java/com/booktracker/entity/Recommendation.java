@@ -35,7 +35,6 @@ public class Recommendation {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
-    // Constructors
     public Recommendation() {}
     
     public Recommendation(User sender, User receiver, Book book) {
@@ -51,7 +50,6 @@ public class Recommendation {
         this.message = message;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

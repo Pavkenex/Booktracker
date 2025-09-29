@@ -15,7 +15,6 @@ public class PagedResponse<T> {
     private boolean hasNext;
     private boolean hasPrevious;
 
-    // Constructors
     public PagedResponse() {}
 
     public PagedResponse(Page<T> page) {
@@ -42,7 +41,6 @@ public class PagedResponse<T> {
         this.hasPrevious = page.hasPrevious();
     }
 
-    // Getters and Setters
     public List<T> getContent() {
         return content;
     }

@@ -15,7 +15,6 @@ public class UserBookResponse {
     private Boolean isFavourite;
     private String username; // reviewer username
     
-    // Constructors
     public UserBookResponse() {}
     
     public UserBookResponse(UserBook userBook) {
@@ -26,10 +25,12 @@ public class UserBookResponse {
         this.review = userBook.getReview();
         this.readDate = userBook.getReadDate();
         this.isFavourite = userBook.getIsFavourite();
-    this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
+        this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
     }
     
-    // Constructor with pre-calculated book rating to avoid circular loading
+    /**
+     * Populates the response with a pre-calculated book rating to avoid circular loading.
+     */
     public UserBookResponse(UserBook userBook, Double bookRating) {
         this.id = userBook.getId();
         this.book = new BookResponse(userBook.getBook(), bookRating);
@@ -38,10 +39,9 @@ public class UserBookResponse {
         this.review = userBook.getReview();
         this.readDate = userBook.getReadDate();
         this.isFavourite = userBook.getIsFavourite();
-    this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
+        this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

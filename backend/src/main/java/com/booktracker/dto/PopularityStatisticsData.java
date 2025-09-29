@@ -9,7 +9,6 @@ public class PopularityStatisticsData {
     private Double percentage;
     private Integer rank;
     
-    // Constructors
     public PopularityStatisticsData() {}
     
     public PopularityStatisticsData(Long bookId, String title, String author, Long viewCount) {
@@ -28,7 +27,6 @@ public class PopularityStatisticsData {
         this.rank = rank;
     }
     
-    // Getters and Setters
     public Long getBookId() {
         return bookId;
     }

@@ -114,7 +114,7 @@ public class BookController {
             @PathVariable Long id,
             @RequestParam(defaultValue = "10") int limit) {
         if (limit <= 0) limit = 10;
-        if (limit > 50) limit = 50; // simple cap
+    if (limit > 50) limit = 50;
         List<BookResponse> similar = bookService.getSimilarBooks(id, limit);
         return ResponseEntity.ok(similar);
     }
@@ -127,7 +127,6 @@ public class BookController {
             @RequestParam(defaultValue = "10") int limit) {
         
         try {
-            // Validate limit parameter
             if (limit <= 0) {
                 logger.warn("Invalid limit parameter: {}", limit);
                 return ResponseEntity.badRequest().build();
@@ -154,13 +153,11 @@ public class BookController {
     @PostMapping("/{id}/view")
     public ResponseEntity<Void> recordBookView(@PathVariable Long id) {
         try {
-            // Validate book ID
             if (id == null || id <= 0) {
                 logger.warn("Invalid book ID for view recording: {}", id);
                 return ResponseEntity.badRequest().build();
             }
             
-            // Record view asynchronously to avoid blocking the request
             recordBookViewAsync(id);
             
             logger.debug("Initiated async view recording for book ID: {}", id);

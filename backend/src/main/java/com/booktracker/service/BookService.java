@@ -140,9 +140,8 @@ public class BookService {
         book.setPublishedYear(bookRequest.getPublishedYear());
         book.setThumbnail(bookRequest.getThumbnail());
         book.setDescription(bookRequest.getDescription());
-        book.setCreatedAt(java.time.LocalDate.now()); // Set creation date
+        book.setCreatedAt(java.time.LocalDate.now());
 
-        // Set genres if provided
         if (bookRequest.getGenreIds() != null && !bookRequest.getGenreIds().isEmpty()) {
             Set<Genre> genres = new HashSet<>();
             for (Long genreId : bookRequest.getGenreIds()) {
@@ -167,7 +166,6 @@ public class BookService {
                     book.setThumbnail(bookRequest.getThumbnail());
                     book.setDescription(bookRequest.getDescription());
 
-                    // Update genres if provided
                     if (bookRequest.getGenreIds() != null) {
                         Set<Genre> genres = new HashSet<>();
                         for (Long genreId : bookRequest.getGenreIds()) {
@@ -187,7 +185,6 @@ public class BookService {
      */
     @Transactional(readOnly = true)
     public List<BookResponse> getMostPopularBooks(int limit) {
-        // Delegate to PopularityService to get books with view counts
         return popularityService.getMostPopularBooks(limit);
     }
 
@@ -230,37 +227,6 @@ public class BookService {
                 .map(BookResponse::new)
                 .collect(Collectors.toList());
         }).orElse(List.of());
-    }
-
-    // Admin Book Management Methods
-
-    /**
-     * This method has been consolidated with the other updateBook method
-     */
-    /*public BookResponse updateBook(Long bookId, AdminBookRequest request) {
-        Book book = bookRepository.findById(bookId)
-            .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
-        
-        book.setTitle(request.getTitle());
-        book.setAuthor(request.getAuthor());
-        book.setPublishedYear(request.getPublishedYear());
-        book.setThumbnail(request.getThumbnail());
-        book.setDescription(request.getDescription());
-        
-        // Update genres
-        book.getGenres().clear();
-        if (request.getGenreIds() != null && !request.getGenreIds().isEmpty()) {
-            Set<Genre> genres = new HashSet<>();
-            for (Long genreId : request.getGenreIds()) {
-                Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
-                genres.add(genre);
-            }
-            book.setGenres(genres);
-        }
-        
-        Book savedBook = bookRepository.save(book);
-        return new BookResponse(savedBook);
     }
 
     /**

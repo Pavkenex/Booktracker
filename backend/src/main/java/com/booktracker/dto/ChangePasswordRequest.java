@@ -12,7 +12,6 @@ public class ChangePasswordRequest {
     @Size(min = 6, message = "New password must be at least 6 characters")
     private String newPassword;
     
-    // Constructors
     public ChangePasswordRequest() {}
     
     public ChangePasswordRequest(String currentPassword, String newPassword) {
@@ -20,7 +19,6 @@ public class ChangePasswordRequest {
         this.newPassword = newPassword;
     }
     
-    // Getters and Setters
     public String getCurrentPassword() {
         return currentPassword;
     }

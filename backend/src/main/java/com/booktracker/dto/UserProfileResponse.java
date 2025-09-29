@@ -27,7 +27,6 @@ public class UserProfileResponse {
             this.avatarUrl = avatarUrl;
         }
         
-        // Getters and Setters
         public Long getId() {
             return id;
         }
@@ -77,7 +76,6 @@ public class UserProfileResponse {
         }
     }
     
-    // Constructors
     public UserProfileResponse() {}
     
     public UserProfileResponse(boolean success, String message) {
@@ -91,7 +89,6 @@ public class UserProfileResponse {
         this.user = user;
     }
     
-    // Getters and Setters
     public boolean isSuccess() {
         return success;
     }
@@ -116,7 +113,6 @@ public class UserProfileResponse {
         this.user = user;
     }
     
-    // Builder pattern for fluent construction
     public static class Builder {
         private boolean success;
         private String message;

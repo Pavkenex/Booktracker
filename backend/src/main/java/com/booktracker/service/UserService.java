@@ -79,19 +79,16 @@ public class UserService {
             
             User user = userOptional.get();
             
-            // Check if new username is already taken by another user
             if (!user.getUsername().equals(request.getUsername()) && 
                 userRepository.existsByUsername(request.getUsername())) {
                 return new UserProfileResponse(false, "Username is already taken");
             }
             
-            // Check if new email is already taken by another user
             if (!user.getEmail().equals(request.getEmail()) && 
                 userRepository.existsByEmail(request.getEmail())) {
                 return new UserProfileResponse(false, "Email is already registered");
             }
 
-            // Update user information
             user.setUsername(request.getUsername());
             user.setEmail(request.getEmail());
 
@@ -117,12 +114,10 @@ public class UserService {
             
             User user = userOptional.get();
             
-            // Verify current password
             if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
                 return new AuthResponse(false, "Current password is incorrect");
             }
             
-            // Update password
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(user);
             

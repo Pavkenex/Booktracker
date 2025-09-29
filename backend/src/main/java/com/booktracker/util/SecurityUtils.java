@@ -37,16 +37,7 @@ public class SecurityUtils {
             }
         }
         
-
-        
         throw new AuthenticationException("Unable to extract user ID from authentication context");
-    }
-    
-    /**
-     * Extract JWT token from authentication context
-     */
-    private String extractTokenFromAuthentication(Authentication authentication) {
-        return (String) authentication.getCredentials();
     }
     
     /**

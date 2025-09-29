@@ -24,7 +24,6 @@ public class FriendRequestDto {
         this.createdAt = friendship.getCreatedAt();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

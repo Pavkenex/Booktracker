@@ -25,7 +25,6 @@ public class UserBookRequest {
     
     private Boolean isFavourite = false;
     
-    // Constructors
     public UserBookRequest() {}
     
     public UserBookRequest(Long bookId, UserBook.ReadingStatus status) {
@@ -33,7 +32,6 @@ public class UserBookRequest {
         this.status = status;
     }
     
-    // Getters and Setters
     public Long getBookId() {
         return bookId;
     }

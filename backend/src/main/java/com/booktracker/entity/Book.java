@@ -37,7 +37,6 @@ public class Book {
     @Column(name = "created_at")
     private java.time.LocalDate createdAt;
     
-    // Relationships
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "book_genres",
@@ -55,7 +54,6 @@ public class Book {
     @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private BookView bookView;
     
-    // Constructors
     public Book() {}
     
     public Book(String title, String author) {
@@ -70,7 +68,6 @@ public class Book {
         this.description = description;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -159,7 +156,6 @@ public class Book {
         this.bookView = bookView;
     }
     
-    // Helper methods for managing genres
     public void addGenre(Genre genre) {
         this.genres.add(genre);
         genre.getBooks().add(this);

@@ -13,7 +13,6 @@ public class NotificationCountResponse {
         this.total = total;
     }
 
-    // Getters and Setters
     public long getFriendRequests() {
         return friendRequests;
     }

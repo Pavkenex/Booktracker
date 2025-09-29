@@ -20,18 +20,15 @@ public class Genre {
     @Column(unique = true, nullable = false, length = 100)
     private String name;
     
-    // Relationships
     @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();
     
-    // Constructors
     public Genre() {}
     
     public Genre(String name) {
         this.name = name;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

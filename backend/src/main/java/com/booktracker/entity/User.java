@@ -44,7 +44,6 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
     
-    // Relationships
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserBook> userBooks = new HashSet<>();
     
@@ -60,7 +59,6 @@ public class User {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Recommendation> receivedRecommendations = new HashSet<>();
     
-    // Constructors
     public User() {}
     
     public User(String username, String email, String password) {
@@ -69,7 +67,6 @@ public class User {
         this.password = password;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

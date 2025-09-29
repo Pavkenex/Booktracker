@@ -19,7 +19,6 @@ public class BookView {
     @Column(name = "view_count", nullable = false)
     private Long viewCount = 0L;
     
-    // Constructors
     public BookView() {}
     
     public BookView(Book book) {
@@ -32,7 +31,6 @@ public class BookView {
         this.viewCount = viewCount;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -57,7 +55,6 @@ public class BookView {
         this.viewCount = viewCount;
     }
     
-    // Helper method to increment view count
     public void incrementViewCount() {
         this.viewCount++;
     }

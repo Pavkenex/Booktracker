@@ -39,22 +39,18 @@ public class PopularityService {
     public void recordBookView(Long bookId) {
         logger.debug("Recording view for book ID: {}", bookId);
         
-        // Verify book exists first
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with ID: " + bookId));
         
         try {
-            // Find existing BookView or create new one
             Optional<BookView> existingBookView = bookViewRepository.findByBookId(bookId);
             
             if (existingBookView.isPresent()) {
-                // Increment existing view count
                 BookView bookView = existingBookView.get();
                 bookView.incrementViewCount();
                 bookViewRepository.save(bookView);
                 logger.debug("Incremented view count for book ID: {} to {}", bookId, bookView.getViewCount());
             } else {
-                // Create new BookView with initial count of 1
                 BookView newBookView = new BookView(book, 1L);
                 bookViewRepository.save(newBookView);
                 logger.debug("Created new BookView for book ID: {} with initial count: 1", bookId);
@@ -78,14 +74,11 @@ public class PopularityService {
             List<BookView> topBookViews;
             
             if (limit <= 10) {
-                // Use optimized query for top 10
                 topBookViews = bookViewRepository.findTop10ByOrderByViewCountDesc();
-                // Limit to requested size if less than 10
                 if (limit < 10 && topBookViews.size() > limit) {
                     topBookViews = topBookViews.subList(0, limit);
                 }
             } else {
-                // For larger limits, get all and limit manually
                 List<BookView> allBookViews = bookViewRepository.findAllByOrderByViewCountDesc();
                 topBookViews = allBookViews.stream()
                         .limit(limit)

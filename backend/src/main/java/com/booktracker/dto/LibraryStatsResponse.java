@@ -12,7 +12,6 @@ public class LibraryStatsResponse {
     private Map<Integer, Long> ratingDistribution;
     private double averageRating;
     
-    // Constructors
     public LibraryStatsResponse() {}
     
     public LibraryStatsResponse(long totalBooks, long booksRead, long booksCurrentlyReading, 
@@ -27,7 +26,6 @@ public class LibraryStatsResponse {
         this.averageRating = averageRating;
     }
     
-    // Getters and Setters
     public long getTotalBooks() {
         return totalBooks;
     }

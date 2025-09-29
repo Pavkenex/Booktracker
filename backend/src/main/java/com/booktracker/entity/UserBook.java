@@ -39,12 +39,10 @@ public class UserBook {
     @Column(name = "isFavourite", nullable = false)
     private Boolean isFavourite = false;
     
-    // Enum for reading status
     public enum ReadingStatus {
         read, currently_reading, to_read
     }
     
-    // Constructors
     public UserBook() {}
     
     public UserBook(User user, Book book, ReadingStatus status) {
@@ -53,7 +51,6 @@ public class UserBook {
         this.status = status;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

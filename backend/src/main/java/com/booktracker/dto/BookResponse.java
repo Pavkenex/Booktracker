@@ -14,10 +14,9 @@ public class BookResponse {
     private String thumbnail;
     private String description;
     private Set<GenreResponse> genres;
-    private Long viewCount; // New field for popularity data
-    private Double rating; // Average rating from user_books table
+    private Long viewCount;
+    private Double rating;
 
-    // Constructors
     public BookResponse() {}
 
     public BookResponse(Book book) {
@@ -36,26 +35,31 @@ public class BookResponse {
         this.rating = 0.0;
     }
 
-    // Constructor for popular books with view count
+    /**
+     * Creates a response enriched with popularity metrics.
+     */
     public BookResponse(Book book, Long viewCount) {
-        this(book); // Call existing constructor
+        this(book);
         this.viewCount = viewCount;
     }
     
-    // Constructor for popular books with view count and rating
+    /**
+     * Creates a response that includes view count and a pre-computed rating.
+     */
     public BookResponse(Book book, Long viewCount, Double rating) {
-        this(book); // Call existing constructor
+        this(book);
         this.viewCount = viewCount;
         this.rating = rating;
     }
     
-    // Constructor that accepts pre-calculated rating to avoid circular loading
+    /**
+     * Builds a response using an externally calculated rating to avoid circular loading.
+     */
     public BookResponse(Book book, Double rating) {
-        this(book); // Call existing constructor
+        this(book);
         this.rating = rating != null ? Math.round(rating * 10.0) / 10.0 : 0.0;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

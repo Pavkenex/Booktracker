@@ -15,7 +15,6 @@ public class UserDto {
     private LocalDateTime createdAt;
     private Boolean isAdmin;
 
-    // Constructors
     public UserDto() {}
 
     public UserDto(User user) {
@@ -34,7 +33,6 @@ public class UserDto {
         this.isAdmin = isAdmin;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

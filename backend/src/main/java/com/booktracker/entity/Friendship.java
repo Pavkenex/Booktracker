@@ -29,12 +29,10 @@ public class Friendship {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
-    // Enum for friendship status
     public enum FriendshipStatus {
         pending, accepted, rejected
     }
     
-    // Constructors
     public Friendship() {}
     
     public Friendship(User user, User friend) {
@@ -49,7 +47,6 @@ public class Friendship {
         this.status = status;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

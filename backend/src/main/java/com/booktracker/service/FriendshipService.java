@@ -39,7 +39,6 @@ public class FriendshipService {
         User friend = userRepository.findById(friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
         
-        // Check if friendship already exists (pending or accepted)
         if (friendshipRepository.friendshipExists(user, friend)) {
             throw new IllegalArgumentException("Friendship already exists between users");
         }
@@ -64,7 +63,6 @@ public class FriendshipService {
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
         
-        // Verify that the current user is the receiver of the friend request
         if (!friendship.getFriend().getId().equals(userId)) {
             throw new IllegalArgumentException("You can only accept friend requests sent to you");
         }
@@ -86,7 +84,6 @@ public class FriendshipService {
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
         
-        // Verify that the current user is the receiver of the friend request
         if (!friendship.getFriend().getId().equals(userId)) {
             throw new IllegalArgumentException("You can only decline friend requests sent to you");
         }

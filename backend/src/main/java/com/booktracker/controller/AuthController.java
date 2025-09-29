@@ -38,16 +38,16 @@ public class AuthController {
         }
     }
 
+    /**
+     * Stateless JWT logout simply instructs the client to drop its token.
+     */
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout() {
-        // Since we're using stateless JWT tokens, logout is handled on the client side
-        // by removing the token from storage
         return ResponseEntity.ok(new AuthResponse(true, "Logged out successfully"));
     }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<AuthResponse> forgotPassword(@Valid @RequestBody PasswordResetDto request) {
-        // Ensure it's a request type
         if (!request.isRequestType()) {
             return ResponseEntity.badRequest().body(new AuthResponse(false, "Invalid request type"));
         }
@@ -57,7 +57,6 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<AuthResponse> resetPassword(@Valid @RequestBody PasswordResetDto request) {
-        // Ensure it's a confirm type
         if (!request.isConfirmType()) {
             return ResponseEntity.badRequest().body(new AuthResponse(false, "Invalid request type"));
         }
@@ -76,7 +75,7 @@ public class AuthController {
             String token = authHeader.substring(7);
             
             if (authService.validateToken(token)) {
-                String username = authService.getUsernameFromToken(token);
+                authService.getUsernameFromToken(token);
                 return ResponseEntity.ok(new AuthResponse(true, "Token is valid"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

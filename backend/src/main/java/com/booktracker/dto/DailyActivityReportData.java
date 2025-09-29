@@ -11,7 +11,6 @@ public class DailyActivityReportData {
     private Long friendRequestsSent;
     private Long recommendationsSent;
     
-    // Constructors
     public DailyActivityReportData() {}
     
     public DailyActivityReportData(LocalDate date, Long userRegistrations, Long booksAdded, Long reviewsPosted) {
@@ -21,7 +20,6 @@ public class DailyActivityReportData {
         this.reviewsPosted = reviewsPosted;
     }
     
-    // Getters and Setters
     public LocalDate getDate() {
         return date;
     }

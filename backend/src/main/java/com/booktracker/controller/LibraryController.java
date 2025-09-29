@@ -186,13 +186,6 @@ public class LibraryController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir) {
-        Long currentUserId = securityUtils.getCurrentUserId();
-        
-        // Check if users are friends (for privacy)
-        // if (!libraryService.areUsersFriends(currentUserId, userId)) {
-        //     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        // }
-        
         Page<UserBookResponse> libraryPage = libraryService.getUserLibrary(userId, page, size, sortBy, sortDir);
         PagedResponse<UserBookResponse> response = new PagedResponse<>(libraryPage);
         

@@ -50,12 +50,10 @@ public class RecommendationService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         
-        // Check if users are friends
         if (!friendshipRepository.areFriends(sender, receiver)) {
             throw new IllegalArgumentException("You can only send recommendations to friends");
         }
         
-        // Check if recommendation already exists
         if (recommendationRepository.existsBySenderAndReceiverAndBook(sender, receiver, book)) {
             throw new IllegalArgumentException("You have already recommended this book to this user");
         }
@@ -108,7 +106,6 @@ public class RecommendationService {
         User user2 = userRepository.findById(userId2)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
-        // Check if users are friends
         if (!friendshipRepository.areFriends(user1, user2)) {
             throw new IllegalArgumentException("Users must be friends to view recommendations");
         }

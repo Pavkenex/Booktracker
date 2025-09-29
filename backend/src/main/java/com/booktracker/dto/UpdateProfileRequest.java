@@ -15,7 +15,6 @@ public class UpdateProfileRequest {
     @Size(max = 100, message = "Email must not exceed 100 characters")
     private String email;
     
-    // Constructors
     public UpdateProfileRequest() {}
     
     public UpdateProfileRequest(String username, String email) {
@@ -23,7 +22,6 @@ public class UpdateProfileRequest {
         this.email = email;
     }
     
-    // Getters and Setters
     public String getUsername() {
         return username;
     }

@@ -52,8 +52,6 @@ public class ReportService {
         this.popularityService = popularityService;
     }
     
-    // Report Generation Methods
-    
     public List<BooksByCategoryReportData> getBooksByCategoryData() {
         List<Object[]> results = genreRepository.countBooksByGenre();
         long totalBooks = bookRepository.count();
@@ -94,7 +92,9 @@ public class ReportService {
         return reportData;
     }
     
-    // Builds the user-engagement dashboard metrics from aggregate counts
+    /**
+     * Aggregates engagement metrics that feed the admin dashboard cards.
+     */
     public List<UserEngagementReportData> getUserEngagementData() {
         long totalUsers = userRepository.countTotalUsers();
         long totalBooksInLibraries = userBookRepository.count();
@@ -104,7 +104,6 @@ public class ReportService {
         Double globalAverageRating = userBookRepository.getGlobalAverageRating();
         double averageRatingValue = globalAverageRating != null ? globalAverageRating : 0;
         
-        // Compose the summary cards shown in the admin UI
         List<UserEngagementReportData> metrics = new ArrayList<>();
         
         UserEngagementReportData totalUsersMetric = new UserEngagementReportData();
@@ -147,7 +146,6 @@ public class ReportService {
             return new ArrayList<>();
         }
         
-        // Calculate total views for percentage calculation
         long totalViews = popularityData.stream()
             .mapToLong(book -> book.getViewCount() != null ? book.getViewCount() : 0L)
             .sum();
@@ -175,8 +173,6 @@ public class ReportService {
         return statisticsData;
     }
     
-    // Report Export Methods
-    
     public byte[] exportBooksByCategoryReport(String format) throws JRException {
         List<BooksByCategoryReportData> data = getBooksByCategoryData();
         return generateReport("books_by_category_report", data, format);
@@ -190,7 +186,9 @@ public class ReportService {
         return generateReport("daily_activity_report", data, format, parameters);
     }
     
-    // Jasper export needs per-user rows, so rebuild the detailed dataset for that use case
+    /**
+     * Rebuilds the detailed user engagement dataset for report templates that expect per-user rows.
+     */
     public byte[] exportUserEngagementReport(String format) throws JRException {
         List<UserEngagementReportData> data = buildUserEngagementDetails();
         return generateReport("user_engagement_report", data, format);
@@ -207,7 +205,6 @@ public class ReportService {
     
     private byte[] generateReport(String reportName, List<?> data, String format, Map<String, Object> parameters) throws JRException {
         try {
-            // Load the report template
             InputStream reportStream = getClass().getResourceAsStream("/reports/" + reportName + ".jrxml");
             if (reportStream == null) {
                 throw new JRException("Report template not found: " + reportName + ".jrxml");
@@ -215,13 +212,10 @@ public class ReportService {
             
             JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
             
-            // Create data source
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(data);
             
-            // Fill the report
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
             
-            // Export based on format
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             
             if ("pdf".equalsIgnoreCase(format)) {
@@ -259,10 +253,8 @@ public class ReportService {
         StringBuilder csv = new StringBuilder();
         
         if ("popularity_statistics_report".equals(reportName)) {
-            // CSV header for popularity statistics
             csv.append("Rank,Book Title,Author,View Count,Percentage\n");
             
-            // CSV data rows
             for (Object item : data) {
                 if (item instanceof PopularityStatisticsData) {
                     PopularityStatisticsData stats = (PopularityStatisticsData) item;
@@ -275,7 +267,6 @@ public class ReportService {
                 }
             }
         } else {
-            // Fallback for other report types - basic CSV generation
             csv.append("Data not available in CSV format for this report type\n");
         }
         
@@ -286,7 +277,6 @@ public class ReportService {
         if (value == null) {
             return "";
         }
-        // Escape quotes by doubling them and wrap in quotes if contains comma, quote, or newline
         String escaped = value.replace("\"", "\"\"");
         if (escaped.contains(",") || escaped.contains("\"") || escaped.contains("\n")) {
             return escaped;
@@ -294,7 +284,9 @@ public class ReportService {
         return escaped;
     }
     
-    // Hydrates individual user records for reporting templates that need row-level data
+    /**
+     * Hydrates user-level engagement metrics for Jasper templates that iterate over individual records.
+     */
     private List<UserEngagementReportData> buildUserEngagementDetails() {
         return userRepository.getUserEngagementData().stream()
             .map(result -> {

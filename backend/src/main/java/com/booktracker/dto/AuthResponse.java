@@ -8,7 +8,6 @@ public class AuthResponse {
     private String tokenType = "Bearer";
     private UserInfo user;
     
-    // Constructors
     public AuthResponse() {}
     
     public AuthResponse(boolean success, String message) {
@@ -23,7 +22,6 @@ public class AuthResponse {
         this.user = user;
     }
     
-    // Getters and Setters
     public boolean isSuccess() {
         return success;
     }
@@ -64,7 +62,6 @@ public class AuthResponse {
         this.user = user;
     }
     
-    // Inner class for user information
     public static class UserInfo {
         private Long id;
         private String username;
@@ -82,7 +79,6 @@ public class AuthResponse {
             this.avatarUrl = avatarUrl;
         }
         
-        // Getters and Setters
         public Long getId() {
             return id;
         }

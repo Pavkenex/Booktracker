@@ -25,23 +25,25 @@ public class PasswordResetDto {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String newPassword;
     
-    // Constructors
     public PasswordResetDto() {}
     
-    // Constructor for request type (email only)
+    /**
+     * Creates a DTO for the initial email-only reset request.
+     */
     public PasswordResetDto(String email) {
         this.type = ResetType.REQUEST;
         this.email = email;
     }
     
-    // Constructor for confirm type (token + new password)
+    /**
+     * Creates a DTO for the token confirmation flow with the new password.
+     */
     public PasswordResetDto(String token, String newPassword) {
         this.type = ResetType.CONFIRM;
         this.token = token;
         this.newPassword = newPassword;
     }
     
-    // Getters and Setters
     public ResetType getType() {
         return type;
     }
@@ -74,11 +76,16 @@ public class PasswordResetDto {
         this.newPassword = newPassword;
     }
     
-    // Helper methods
+    /**
+     * Indicates whether this payload represents the initial reset request.
+     */
     public boolean isRequestType() {
         return ResetType.REQUEST.equals(type);
     }
     
+    /**
+     * Indicates whether this payload represents the confirmation step with a token.
+     */
     public boolean isConfirmType() {
         return ResetType.CONFIRM.equals(type);
     }

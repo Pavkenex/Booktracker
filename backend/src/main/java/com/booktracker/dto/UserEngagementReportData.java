@@ -13,7 +13,6 @@ public class UserEngagementReportData {
     private Double averageRating;
     private Long reviewsWritten;
     
-    // Constructors
     public UserEngagementReportData() {}
     
     public UserEngagementReportData(String username, String email, Long totalBooks, Long booksRead) {
@@ -23,7 +22,6 @@ public class UserEngagementReportData {
         this.booksRead = booksRead;
     }
     
-    // Getters and Setters
     public String getUsername() {
         return username;
     }
@@ -100,7 +98,9 @@ public class UserEngagementReportData {
         return reviewsWritten;
     }
     
-    // For frontend metrics format
+    /**
+     * Additional properties used when surfacing summary metrics in the UI.
+     */
     private String metric;
     private Number value;
     

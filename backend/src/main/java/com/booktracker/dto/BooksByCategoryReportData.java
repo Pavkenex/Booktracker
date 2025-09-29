@@ -6,7 +6,6 @@ public class BooksByCategoryReportData {
     private Long bookCount;
     private Double percentage;
     
-    // Constructors
     public BooksByCategoryReportData() {}
     
     public BooksByCategoryReportData(String categoryName, Long bookCount) {
@@ -20,7 +19,6 @@ public class BooksByCategoryReportData {
         this.percentage = percentage;
     }
     
-    // Getters and Setters
     public String getCategoryName() {
         return categoryName;
     }

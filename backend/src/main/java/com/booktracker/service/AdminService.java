@@ -51,8 +51,6 @@ public class AdminService {
         );
     }
     
-    // Book Management - Delegate to BookService
-    
     public BookResponse createBook(BookRequestDto request) {
         return bookService.createBook(request);
     }
@@ -72,8 +70,6 @@ public class AdminService {
     public BookResponse getBookById(Long bookId) {
         return bookService.getBookByIdRequired(bookId);
     }
-    
-    // Genre Management - Delegate to GenreService
     
     public GenreResponse createGenre(GenreRequestDto request) {
         return genreService.createGenreForAdmin(request);
@@ -95,8 +91,6 @@ public class AdminService {
         return genreService.getGenreByIdForAdmin(genreId);
     }
     
-    // Report Generation - Delegate to ReportService
-    
     public List<BooksByCategoryReportData> getBooksByCategoryData() {
         return reportService.getBooksByCategoryData();
     }
@@ -112,8 +106,6 @@ public class AdminService {
     public List<PopularityStatisticsData> getPopularityStatisticsData() {
         return reportService.getPopularityStatisticsData();
     }
-    
-    // Report Export - Delegate to ReportService
     
     public byte[] exportBooksByCategoryReport(String format) throws Exception {
         return reportService.exportBooksByCategoryReport(format);
