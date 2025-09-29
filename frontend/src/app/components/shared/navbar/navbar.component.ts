@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { AuthStore, User } from '../../../services/auth-store';
@@ -8,15 +8,16 @@ import { NotificationsComponent } from '../../social/notifications/notifications
 import { FallbackImageDirective } from '../../../directives/fallback-image';
 import { APP_CONSTANTS } from '../../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
+import { ClickOutsideDirective } from '../../../directives/click-outside';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, AsyncPipe, NotificationsComponent, FallbackImageDirective],
+  imports: [CommonModule, RouterLink, RouterLinkActive, AsyncPipe, NotificationsComponent, FallbackImageDirective, ClickOutsideDirective],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements AfterViewInit, OnDestroy {
+export class NavbarComponent {
   isAuthenticated$: Observable<boolean> = this.authStore.isAuthenticated$;
   currentUser$: Observable<User | null> = this.authStore.currentUser$;
   isDropdownOpen = false;
@@ -24,12 +25,8 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
   readonly avatarPlaceholder = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
 
   private readonly assetsUrl = environment.assetsUrl;
-  private documentClickListener?: (event: Event) => void;
 
-  constructor(
-    private authStore: AuthStore,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(private authStore: AuthStore) {}
 
   getAvatarSrc(user: User | null | undefined): string {
     const avatarUrl = user?.avatarUrl;
@@ -46,30 +43,6 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
     return `${this.assetsUrl}${prefix}${avatarUrl}`;
   }
 
-  ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.documentClickListener = (event: Event) => {
-        const target = event.target as Element;
-
-        if (!target.closest('.dropdown') && this.isDropdownOpen) {
-          this.isDropdownOpen = false;
-        }
-
-        if (!target.closest('.navbar') && this.isNavbarOpen) {
-          this.isNavbarOpen = false;
-        }
-      };
-
-      document.addEventListener('click', this.documentClickListener);
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.documentClickListener && isPlatformBrowser(this.platformId)) {
-      document.removeEventListener('click', this.documentClickListener);
-    }
-  }
-
   toggleDropdown(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -78,6 +51,9 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
 
   toggleNavbar(): void {
     this.isNavbarOpen = !this.isNavbarOpen;
+    if (!this.isNavbarOpen) {
+      this.closeDropdown();
+    }
   }
 
   closeDropdown(): void {
@@ -86,6 +62,19 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
 
   closeNavbar(): void {
     this.isNavbarOpen = false;
+    this.closeDropdown();
+  }
+
+  handleDropdownOutside(): void {
+    this.closeDropdown();
+  }
+
+  handleNavbarOutside(): void {
+    if (this.isNavbarOpen) {
+      this.closeNavbar();
+    } else {
+      this.closeDropdown();
+    }
   }
 
   logout(): void {
