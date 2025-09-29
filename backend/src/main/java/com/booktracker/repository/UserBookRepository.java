@@ -167,4 +167,14 @@ public interface UserBookRepository extends JpaRepository<UserBook, Long> {
      */
     @Query("SELECT ub FROM UserBook ub WHERE ub.book.id = :bookId AND ub.review IS NOT NULL ORDER BY ub.id DESC")
     Page<UserBook> findRecentReviewsForBook(@Param("bookId") Long bookId, Pageable pageable);
+    
+    /**
+     * Count reviews written across all user books
+     */
+    long countByReviewIsNotNull();
+
+    /**
+     * Count user books by reading status across all users
+     */
+    long countByStatus(UserBook.ReadingStatus status);
 }

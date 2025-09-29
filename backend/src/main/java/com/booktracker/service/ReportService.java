@@ -5,6 +5,7 @@ import com.booktracker.dto.BooksByCategoryReportData;
 import com.booktracker.dto.DailyActivityReportData;
 import com.booktracker.dto.PopularityStatisticsData;
 import com.booktracker.dto.UserEngagementReportData;
+import com.booktracker.entity.UserBook;
 import com.booktracker.repository.*;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -119,9 +120,9 @@ public class ReportService {
         // Calculate aggregated metrics
         long totalUsers = userRepository.countTotalUsers();
         long totalBooksInLibraries = detailedData.stream().mapToLong(UserEngagementReportData::getTotalBooks).sum();
-        long totalBooksRead = detailedData.stream().mapToLong(UserEngagementReportData::getBooksRead).sum();
-        long totalToRead = detailedData.stream().mapToLong(UserEngagementReportData::getBooksToRead).sum();
-        long totalReviews = detailedData.stream().mapToLong(UserEngagementReportData::getReviewsWritten).sum();
+        long totalBooksRead = userBookRepository.countByStatus(UserBook.ReadingStatus.read);
+        long totalToRead = userBookRepository.countByStatus(UserBook.ReadingStatus.to_read);
+        long totalReviews = userBookRepository.countByReviewIsNotNull();
         
         // Average ratings (ignoring nulls)
         double avgRatingSum = detailedData.stream()
