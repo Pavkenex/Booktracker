@@ -1,18 +1,21 @@
 <nav
-	class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top"
+	class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top"
 		clickOutside
 		(clickOutside)="handleNavbarOutside()"
 >
 	<div class="container-fluid px-3">
 		<a class="navbar-brand d-flex align-items-center" routerLink="/">
-			<i class="fas fa-book-open me-2"></i>
-			<span class="d-none d-sm-inline">BookTracker</span>
-			<span class="d-inline d-sm-none">BT</span>
+			<span class="brand-icon me-2">
+				<i class="fas fa-book-open"></i>
+			</span>
+			<span class="brand-text d-none d-sm-inline">BookTracker</span>
+			<span class="brand-short d-inline d-sm-none">BT</span>
+			<span class="brand-tagline d-none d-xl-inline ms-3">Read | Share | Grow</span>
 		</a>
 
 		@if (isAuthenticated$ | async) {
 		<div class="d-flex d-lg-none align-items-center ms-auto">
-			<app-notifications class="me-2"></app-notifications>
+			<app-notifications class="nav-notification me-2"></app-notifications>
 		</div>
 		}
 
@@ -28,15 +31,15 @@
 		</button>
 
 		<div
-			class="navbar-collapse"
+			class="navbar-collapse navbar-panel"
 			id="navbarNav"
 			[class.collapse]="!isNavbarOpen"
 			[class.show]="isNavbarOpen"
 		>
-			<ul class="navbar-nav me-auto">
+			<ul class="navbar-nav me-auto nav-links align-items-lg-center">
 				<li class="nav-item">
 					<a
-						class="nav-link d-flex align-items-center"
+						class="nav-link nav-link-pill d-flex align-items-center"
 						routerLink="/home"
 						routerLinkActive="active"
 						(click)="closeNavbar()"
@@ -47,7 +50,7 @@
 				@if (isAuthenticated$ | async) {
 				<li class="nav-item">
 					<a
-						class="nav-link d-flex align-items-center"
+						class="nav-link nav-link-pill d-flex align-items-center"
 						routerLink="/library"
 						routerLinkActive="active"
 						(click)="closeNavbar()"
@@ -59,7 +62,7 @@
 				@if (isAuthenticated$ | async) {
 				<li class="nav-item">
 					<a
-						class="nav-link d-flex align-items-center"
+						class="nav-link nav-link-pill d-flex align-items-center"
 						routerLink="/books"
 						routerLinkActive="active"
 						(click)="closeNavbar()"
@@ -71,7 +74,7 @@
 				@if (isAuthenticated$ | async) {
 				<li class="nav-item">
 					<a
-						class="nav-link d-flex align-items-center"
+						class="nav-link nav-link-pill d-flex align-items-center"
 						routerLink="/social"
 						routerLinkActive="active"
 						(click)="closeNavbar()"
@@ -82,16 +85,16 @@
 				}
 			</ul>
 
-			<ul class="navbar-nav ms-auto">
+			<ul class="navbar-nav ms-auto nav-actions align-items-lg-center">
 				@if (isAuthenticated$ | async) {
 				<li class="nav-item d-none d-lg-block">
-					<app-notifications></app-notifications>
+					<app-notifications class="nav-notification"></app-notifications>
 				</li>
 				}
 				@if (!(isAuthenticated$ | async)) {
 				<li class="nav-item">
 					<a
-						class="nav-link d-flex align-items-center"
+						class="nav-link nav-link-pill d-flex align-items-center"
 						routerLink="/login"
 						routerLinkActive="active"
 						(click)="closeNavbar()"
@@ -101,7 +104,7 @@
 				</li>
 				<li class="nav-item">
 					<a
-						class="nav-link d-flex align-items-center"
+						class="nav-link nav-link-pill nav-link-cta d-flex align-items-center"
 						routerLink="/register"
 						routerLinkActive="active"
 						(click)="closeNavbar()"
@@ -139,8 +142,11 @@
 							>{{ user?.username ?? 'Account' }}</span
 						>
 						<span class="d-inline d-md-none">Account</span>
+						<span class="dropdown-caret ms-2" [class.dropdown-caret-open]="isDropdownOpen">
+							<i class="fas fa-chevron-down"></i>
+						</span>
 					</a>
-					<ul class="dropdown-menu dropdown-menu-end" [class.show]="isDropdownOpen">
+					<ul class="dropdown-menu dropdown-menu-end dropdown-elevated" [class.show]="isDropdownOpen">
 						<li>
 							<a
 								class="dropdown-item d-flex align-items-center"
