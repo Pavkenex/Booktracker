@@ -99,7 +99,12 @@ export class SocialApi {
 
   // Notifications
   getNotificationCount(): Observable<NotificationCount> {
-    return this.apiClient.get<NotificationCount>('/notifications/count');
+    return this.apiClient.get<NotificationCount>('/friends/notifications/count');
+  }
+  
+  markAllRecommendationsAsRead(): Observable<any> {
+    return this.apiClient.post('/friends/notifications/recommendations/mark-all-read', {})
+      .pipe(tap(() => this.loadNotificationCount()));
   }
 
   private loadNotificationCount(): void {

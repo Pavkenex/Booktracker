@@ -75,4 +75,17 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       this.isRefreshing = false;
     }, 2000);
   }
+
+  onRecommendationsClick(): void {
+    // Mark all recommendations as read when clicking
+    this.socialApi.markAllRecommendationsAsRead().subscribe({
+      next: () => {
+        this.closeDropdown();
+      },
+      error: (err) => {
+        console.error('Failed to mark recommendations as read', err);
+        this.closeDropdown();
+      }
+    });
+  }
 }

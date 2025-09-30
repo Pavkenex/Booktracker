@@ -23,22 +23,22 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class RecommendationService {
-    
+
     private final RecommendationRepository recommendationRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final FriendshipRepository friendshipRepository;
-    
+
     public RecommendationService(RecommendationRepository recommendationRepository,
-                               UserRepository userRepository,
-                               BookRepository bookRepository,
-                               FriendshipRepository friendshipRepository) {
+            UserRepository userRepository,
+            BookRepository bookRepository,
+            FriendshipRepository friendshipRepository) {
         this.recommendationRepository = recommendationRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.friendshipRepository = friendshipRepository;
     }
-    
+
     /**
      * Send a book recommendation to a friend
      */
@@ -49,21 +49,21 @@ public class RecommendationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        
+
         if (!friendshipRepository.areFriends(sender, receiver)) {
             throw new IllegalArgumentException("You can only send recommendations to friends");
         }
-        
+
         if (recommendationRepository.existsBySenderAndReceiverAndBook(sender, receiver, book)) {
             throw new IllegalArgumentException("You have already recommended this book to this user");
         }
-        
+
         Recommendation recommendation = new Recommendation(sender, receiver, book, message);
         recommendation = recommendationRepository.save(recommendation);
-        
+
         return new RecommendationResponse(recommendation);
     }
-    
+
     /**
      * Get recommendations sent by user
      */
@@ -71,15 +71,15 @@ public class RecommendationService {
     public List<RecommendationResponse> getSentRecommendations(Long userId, int page, int size) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Recommendation> recommendations = recommendationRepository.findBySender(user, pageable);
-        
+
         return recommendations.getContent().stream()
                 .map(RecommendationResponse::new)
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Get recommendations received by user
      */
@@ -87,15 +87,15 @@ public class RecommendationService {
     public List<RecommendationResponse> getReceivedRecommendations(Long userId, int page, int size) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Recommendation> recommendations = recommendationRepository.findByReceiver(user, pageable);
-        
+
         return recommendations.getContent().stream()
                 .map(RecommendationResponse::new)
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Get recommendations between two users
      */
@@ -105,19 +105,19 @@ public class RecommendationService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         User user2 = userRepository.findById(userId2)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         if (!friendshipRepository.areFriends(user1, user2)) {
             throw new IllegalArgumentException("Users must be friends to view recommendations");
         }
-        
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Recommendation> recommendations = recommendationRepository.findBySenderAndReceiver(user1, user2, pageable);
-        
+
         return recommendations.getContent().stream()
                 .map(RecommendationResponse::new)
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Get recent recommendations for user
      */
@@ -125,15 +125,16 @@ public class RecommendationService {
     public List<RecommendationResponse> getRecentRecommendations(Long userId, int limit) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         Pageable pageable = PageRequest.of(0, limit);
-        List<Recommendation> recommendations = recommendationRepository.findRecentRecommendationsForUser(user, pageable);
-        
+        List<Recommendation> recommendations = recommendationRepository.findRecentRecommendationsForUser(user,
+                pageable);
+
         return recommendations.stream()
                 .map(RecommendationResponse::new)
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Get recommendations for a specific book
      */
@@ -141,21 +142,21 @@ public class RecommendationService {
     public List<RecommendationResponse> getRecommendationsForBook(Long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        
+
         List<Recommendation> recommendations = recommendationRepository.findByBook(book);
-        
+
         return recommendations.stream()
                 .map(RecommendationResponse::new)
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Delete a recommendation
      */
     public void deleteRecommendation(Long userId, Long recommendationId) {
         Recommendation recommendation = recommendationRepository.findById(recommendationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recommendation not found"));
-        
+
         // Allow either sender or receiver to delete (receiver "dismisses" it)
         Long senderId = recommendation.getSender().getId();
         Long receiverId = recommendation.getReceiver().getId();
@@ -165,7 +166,7 @@ public class RecommendationService {
 
         recommendationRepository.delete(recommendation); // hard delete for simplicity
     }
-    
+
     /**
      * Get recommendation statistics for user
      */
@@ -173,13 +174,13 @@ public class RecommendationService {
     public RecommendationStats getRecommendationStats(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         long sentCount = recommendationRepository.countBySender(user);
         long receivedCount = recommendationRepository.countByReceiver(user);
-        
+
         return new RecommendationStats(sentCount, receivedCount);
     }
-    
+
     /**
      * Check if user has recommended a book to another user
      */
@@ -191,10 +192,10 @@ public class RecommendationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        
+
         return recommendationRepository.existsBySenderAndReceiverAndBook(sender, receiver, book);
     }
-    
+
     /**
      * Get most recommended books
      */
@@ -203,7 +204,7 @@ public class RecommendationService {
         Pageable pageable = PageRequest.of(0, limit);
         return recommendationRepository.findMostRecommendedBooks(pageable);
     }
-    
+
     /**
      * Get count of unread recommendations for user
      */
@@ -211,42 +212,60 @@ public class RecommendationService {
     public long getUnreadRecommendationCount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         return recommendationRepository.countByReceiverAndIsReadFalse(user);
     }
-    
+
     /**
      * Mark recommendation as read
      */
     public void markRecommendationAsRead(Long userId, Long recommendationId) {
         Recommendation recommendation = recommendationRepository.findById(recommendationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recommendation not found"));
-        
+
         // Only the receiver can mark their recommendation as read
         if (!recommendation.getReceiver().getId().equals(userId)) {
             throw new IllegalArgumentException("You can only mark your own recommendations as read");
         }
-        
+
         recommendation.setRead(true);
         recommendationRepository.save(recommendation);
     }
-    
+
+    /**
+     * Mark all recommendations as read for a user
+     */
+    public void markAllRecommendationsAsRead(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        List<Recommendation> unreadRecommendations = recommendationRepository.findByReceiverAndIsReadFalse(user);
+
+        for (Recommendation recommendation : unreadRecommendations) {
+            recommendation.setRead(true);
+        }
+
+        if (!unreadRecommendations.isEmpty()) {
+            recommendationRepository.saveAll(unreadRecommendations);
+        }
+    }
+
     /**
      * Inner class for recommendation statistics
      */
     public static class RecommendationStats {
         private final long sentCount;
         private final long receivedCount;
-        
+
         public RecommendationStats(long sentCount, long receivedCount) {
             this.sentCount = sentCount;
             this.receivedCount = receivedCount;
         }
-        
+
         public long getSentCount() {
             return sentCount;
         }
-        
+
         public long getReceivedCount() {
             return receivedCount;
         }
