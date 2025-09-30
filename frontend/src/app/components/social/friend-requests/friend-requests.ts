@@ -3,6 +3,7 @@ import { FallbackImageDirective } from '../../../directives/fallback-image';
 import { SocialApi } from '../../../services/social-api';
 import { FriendRequest } from '../../../models/social.model';
 import { APP_CONSTANTS } from '../../../constants/app.constants';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-friend-requests',
@@ -16,6 +17,7 @@ export class FriendRequestsComponent implements OnInit {
   error: string = '';
   processingRequests: Set<number> = new Set();
   readonly defaultAvatar = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
+  private readonly assetsUrl = environment.assetsUrl;
 
   constructor(private socialApi: SocialApi) {}
 
@@ -103,6 +105,10 @@ export class FriendRequestsComponent implements OnInit {
   }
 
   getSenderAvatar(request: FriendRequest): string {
-    return request.sender.avatarUrl || this.defaultAvatar;
+    const avatarUrl = request.sender.avatarUrl;
+    if (!avatarUrl) return this.defaultAvatar;
+    if (avatarUrl.startsWith('http')) return avatarUrl;
+    const prefix = avatarUrl.startsWith('/') ? '' : '/';
+    return `${this.assetsUrl}${prefix}${avatarUrl}`;
   }
 }

@@ -8,6 +8,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FallbackImageDirective } from '../../../directives/fallback-image';
 import { ClickOutsideDirective } from '../../../directives/click-outside';
 import { APP_CONSTANTS } from '../../../constants/app.constants';
+import { environment } from '../../../../environments/environment';
 
 @Component({
     selector: 'app-friends-list',
@@ -27,6 +28,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   openMenuFriendId: number | null = null;
 
   readonly defaultAvatar = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
+  private readonly assetsUrl = environment.assetsUrl;
   private searchSubject = new Subject<string>();
 
   constructor(
@@ -150,7 +152,11 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   }
 
   getFriendAvatar(friendship: Friendship): string {
-    return friendship.friend?.avatarUrl || this.defaultAvatar;
+    const avatarUrl = friendship.friend?.avatarUrl;
+    if (!avatarUrl) return this.defaultAvatar;
+    if (avatarUrl.startsWith('http')) return avatarUrl;
+    const prefix = avatarUrl.startsWith('/') ? '' : '/';
+    return `${this.assetsUrl}${prefix}${avatarUrl}`;
   }
 
   toggleMenu(friendship: Friendship): void {

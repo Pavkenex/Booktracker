@@ -14,8 +14,10 @@ public class UserDto {
     private String email;
     private LocalDateTime createdAt;
     private Boolean isAdmin;
+    private String avatarUrl;
 
-    public UserDto() {}
+    public UserDto() {
+    }
 
     public UserDto(User user) {
         this.id = user.getId();
@@ -23,6 +25,7 @@ public class UserDto {
         this.email = user.getEmail();
         this.createdAt = user.getCreatedAt();
         this.isAdmin = user.getIsAdmin();
+        this.avatarUrl = user.getAvatarUrl();
     }
 
     public UserDto(Long id, String username, String email, LocalDateTime createdAt, Boolean isAdmin) {
@@ -71,5 +74,13 @@ public class UserDto {
 
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }
