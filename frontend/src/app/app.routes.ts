@@ -92,14 +92,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: "social/friend-requests",
-    loadComponent: () =>
-      import(
-        "./components/social/friend-requests/friend-requests"
-      ).then((m) => m.FriendRequestsComponent),
-    canActivate: [AuthGuard],
-  },
-  {
     path: "social/recommendations",
     loadComponent: () =>
       import(

@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class FriendshipService {
-    
+
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
-    
+
     public FriendshipService(FriendshipRepository friendshipRepository,
-                           UserRepository userRepository) {
+            UserRepository userRepository) {
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
     }
-    
+
     /**
      * Send a friend request
      */
@@ -33,69 +33,69 @@ public class FriendshipService {
         if (userId.equals(friendId)) {
             throw new IllegalArgumentException("Cannot send friend request to yourself");
         }
-        
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         User friend = userRepository.findById(friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
-        
+
         if (friendshipRepository.friendshipExists(user, friend)) {
             throw new IllegalArgumentException("Friendship already exists between users");
         }
-        
+
         // Check if there's a rejected friendship and remove it to allow new request
         friendshipRepository.findFriendshipBetweenUsers(user, friend).ifPresent(existingFriendship -> {
             if (existingFriendship.getStatus() == Friendship.FriendshipStatus.rejected) {
                 friendshipRepository.delete(existingFriendship);
             }
         });
-        
+
         Friendship friendship = new Friendship(user, friend);
         friendship = friendshipRepository.save(friendship);
-        
+
         return new FriendshipResponse(friendship, userId);
     }
-    
+
     /**
      * Accept a friend request
      */
     public FriendshipResponse acceptFriendRequest(Long userId, Long friendshipId) {
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
-        
+
         if (!friendship.getFriend().getId().equals(userId)) {
             throw new IllegalArgumentException("You can only accept friend requests sent to you");
         }
-        
+
         if (friendship.getStatus() != Friendship.FriendshipStatus.pending) {
             throw new IllegalArgumentException("Friend request is not pending");
         }
-        
+
         friendship.setStatus(Friendship.FriendshipStatus.accepted);
         friendship = friendshipRepository.save(friendship);
-        
+
         return new FriendshipResponse(friendship, userId);
     }
-    
+
     /**
      * Decline a friend request
      */
     public void declineFriendRequest(Long userId, Long friendshipId) {
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
-        
+
         if (!friendship.getFriend().getId().equals(userId)) {
             throw new IllegalArgumentException("You can only decline friend requests sent to you");
         }
-        
+
         if (friendship.getStatus() != Friendship.FriendshipStatus.pending) {
             throw new IllegalArgumentException("Friend request is not pending");
         }
-        
+
         friendship.setStatus(Friendship.FriendshipStatus.rejected);
         friendshipRepository.save(friendship);
     }
-    
+
     /**
      * Remove a friend (unfriend)
      */
@@ -104,14 +104,14 @@ public class FriendshipService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         User friend = userRepository.findById(friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
-        
+
         if (!friendshipRepository.areFriends(user, friend)) {
             throw new IllegalArgumentException("Users are not friends");
         }
-        
+
         friendshipRepository.deleteFriendshipBetweenUsers(user, friend);
     }
-    
+
     /**
      * Get user's friends
      */
@@ -119,10 +119,10 @@ public class FriendshipService {
     public List<User> getFriends(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         return friendshipRepository.findFriendsOfUser(user);
     }
-    
+
     /**
      * Get pending friend requests sent by user
      */
@@ -130,13 +130,14 @@ public class FriendshipService {
     public List<FriendshipResponse> getSentFriendRequests(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        List<Friendship> friendships = friendshipRepository.findByUserAndStatus(user, Friendship.FriendshipStatus.pending);
+
+        List<Friendship> friendships = friendshipRepository.findByUserAndStatus(user,
+                Friendship.FriendshipStatus.pending);
         return friendships.stream()
                 .map(friendship -> new FriendshipResponse(friendship, userId))
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Get pending friend requests received by user
      */
@@ -144,13 +145,14 @@ public class FriendshipService {
     public List<FriendshipResponse> getReceivedFriendRequests(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        List<Friendship> friendships = friendshipRepository.findByFriendAndStatus(user, Friendship.FriendshipStatus.pending);
+
+        List<Friendship> friendships = friendshipRepository.findByFriendAndStatus(user,
+                Friendship.FriendshipStatus.pending);
         return friendships.stream()
                 .map(friendship -> new FriendshipResponse(friendship, userId))
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Check if two users are friends
      */
@@ -160,23 +162,10 @@ public class FriendshipService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         User user2 = userRepository.findById(userId2)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         return friendshipRepository.areFriends(user1, user2);
     }
-    
-    /**
-     * Get mutual friends between two users
-     */
-    @Transactional(readOnly = true)
-    public List<User> getMutualFriends(Long userId1, Long userId2) {
-        User user1 = userRepository.findById(userId1)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        User user2 = userRepository.findById(userId2)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
-        return friendshipRepository.findMutualFriends(user1, user2);
-    }
-    
+
     /**
      * Get friend count for user
      */
@@ -184,10 +173,10 @@ public class FriendshipService {
     public long getFriendCount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         return friendshipRepository.countFriendsOfUser(user);
     }
-    
+
     /**
      * Get pending friend request count for user
      */
@@ -195,12 +184,13 @@ public class FriendshipService {
     public long getPendingRequestCount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         long count = friendshipRepository.countByFriendAndStatus(user, Friendship.FriendshipStatus.pending);
-        System.out.println("Pending friend request count for user " + userId + " (" + user.getUsername() + "): " + count);
+        System.out
+                .println("Pending friend request count for user " + userId + " (" + user.getUsername() + "): " + count);
         return count;
     }
-    
+
     /**
      * Get user's friendships (with friend details)
      */
@@ -208,13 +198,13 @@ public class FriendshipService {
     public List<FriendshipResponse> getFriendships(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         List<Friendship> friendships = friendshipRepository.findAcceptedFriendshipsOfUser(user);
         return friendships.stream()
                 .map(friendship -> new FriendshipResponse(friendship, userId))
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Search users by username or email
      */
@@ -226,7 +216,7 @@ public class FriendshipService {
                 .limit(10)
                 .collect(Collectors.toList());
     }
-    
+
     /**
      * Check if there's a pending friend request between users
      */
@@ -236,7 +226,7 @@ public class FriendshipService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         User user2 = userRepository.findById(userId2)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        
+
         return friendshipRepository.hasPendingRequest(user1, user2);
     }
 }

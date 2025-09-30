@@ -212,12 +212,17 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.5rem 0.25rem;
+  overflow: hidden;
+  width: 100%;
 }
 
 .search-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .search-info .avatar {
@@ -229,12 +234,27 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+}
+
+.search-info > div {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.search-info strong,
+.search-info small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 .search-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .friends-scroll {

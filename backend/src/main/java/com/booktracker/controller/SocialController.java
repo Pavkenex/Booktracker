@@ -103,16 +103,6 @@ public class SocialController {
     }
 
     /**
-     * Get received friend requests
-     */
-    @GetMapping("/requests/received")
-    public ResponseEntity<List<FriendshipResponse>> getReceivedFriendRequests() {
-        Long userId = securityUtils.getCurrentUserId();
-        List<FriendshipResponse> receivedRequests = friendshipService.getReceivedFriendRequests(userId);
-        return ResponseEntity.ok(receivedRequests);
-    }
-
-    /**
      * Check if users are friends
      */
     @GetMapping("/check/{friendId}")
@@ -120,19 +110,6 @@ public class SocialController {
         Long userId = securityUtils.getCurrentUserId();
         boolean areFriends = friendshipService.areFriends(userId, friendId);
         return ResponseEntity.ok(areFriends);
-    }
-
-    /**
-     * Get mutual friends
-     */
-    @GetMapping("/mutual/{friendId}")
-    public ResponseEntity<List<UserDto>> getMutualFriends(@PathVariable Long friendId) {
-        Long userId = securityUtils.getCurrentUserId();
-        List<User> mutualFriends = friendshipService.getMutualFriends(userId, friendId);
-        List<UserDto> userResponses = mutualFriends.stream()
-                .map(UserDto::new)
-                .toList();
-        return ResponseEntity.ok(userResponses);
     }
 
     /**

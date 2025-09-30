@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { FriendsListComponent } from '../friends-list/friends-list';
 import { FriendRequestsComponent } from '../friend-requests/friend-requests';
 import { RecommendationsComponent } from '../recommendations/recommendations';
@@ -29,11 +29,24 @@ export class SocialDashboardComponent implements OnInit, OnDestroy {
   isSidebarOpen = true;
   isMobileView = false;
 
-  constructor(private socialApi: SocialApi) {}
+  constructor(
+    private socialApi: SocialApi,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.socialApi.notificationCount$.subscribe(count => {
       this.notificationCount = count;
+    });
+
+    // Check for query params to set the initial tab
+    this.route.queryParams.subscribe(params => {
+      if (params['tab'] === 'requests') {
+        this.sidebarTab = 'requests';
+        if (this.isMobileView) {
+          this.isSidebarOpen = true;
+        }
+      }
     });
 
     this.socialApi.startFrequentPolling();

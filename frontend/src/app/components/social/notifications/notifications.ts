@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SocialApi } from '../../../services/social-api';
 import { NotificationCount } from '../../../models/social.model';
@@ -25,7 +25,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   isRefreshing: boolean = false;
   private subscription: Subscription = new Subscription();
 
-  constructor(private socialApi: SocialApi) {}
+  constructor(
+    private socialApi: SocialApi,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.subscription.add(
@@ -87,5 +90,11 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         this.closeDropdown();
       }
     });
+  }
+
+  onFriendRequestsClick(): void {
+    // Navigate to social hub with the requests tab
+    this.router.navigate(['/social'], { queryParams: { tab: 'requests' } });
+    this.closeDropdown();
   }
 }
