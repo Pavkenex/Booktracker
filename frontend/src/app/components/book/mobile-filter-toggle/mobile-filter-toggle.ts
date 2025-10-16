@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 
 @Component({
@@ -8,9 +8,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     styleUrls: ['./mobile-filter-toggle.css']
 })
 export class MobileFilterToggleComponent {
-  @Input() showMobileFilters = false;
-  @Input() activeFiltersCount = 0;
-  @Output() toggleMobileFilters = new EventEmitter<void>();
+  showMobileFilters = input<boolean>(false);
+  activeFiltersCount = input<number>(0);
+  toggleMobileFilters = output<void>();
 
   toggleFilters(): void {
     this.toggleMobileFilters.emit();

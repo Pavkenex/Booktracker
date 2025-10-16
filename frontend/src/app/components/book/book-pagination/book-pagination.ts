@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { PagedResponse } from '../../../models/book.model';
 
@@ -9,20 +9,22 @@ import { PagedResponse } from '../../../models/book.model';
     styleUrls: ['./book-pagination.css']
 })
 export class BookPaginationComponent {
-  @Input() pagedResponse: PagedResponse<any> | null = null;
-  @Output() pageChange = new EventEmitter<number>();
+  pagedResponse = input<PagedResponse<any> | null>(null);
+  pageChange = output<number>();
 
   goToPage(page: number): void {
-    if (page >= 0 && this.pagedResponse && page < this.pagedResponse.totalPages) {
+    const response = this.pagedResponse();
+    if (page >= 0 && response && page < response.totalPages) {
       this.pageChange.emit(page);
     }
   }
 
   getVisiblePages(): number[] {
-    if (!this.pagedResponse) return [];
+    const response = this.pagedResponse();
+    if (!response) return [];
     
-    const current = this.pagedResponse.page;
-    const total = this.pagedResponse.totalPages;
+    const current = response.page;
+    const total = response.totalPages;
     const delta = 2; // Number of pages to show on each side of current page
     
     let start = Math.max(0, current - delta);

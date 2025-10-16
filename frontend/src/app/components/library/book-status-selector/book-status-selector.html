@@ -2,7 +2,7 @@
   <label class="form-label small text-muted">Reading Status:</label>
   <select
     class="form-select form-select-sm"
-    [value]="userBook.status"
+    [value]="userBook().status"
     (change)="onStatusChange($event)"
     [disabled]="updating"
   >
@@ -21,11 +21,11 @@
   }
 
   <!-- Read date display -->
-  @if (userBook.status === 'read' && userBook.readDate) {
+  @if (userBook().status === 'read' && userBook().readDate) {
   <div class="mt-1">
     <small class="text-muted">
       <i class="fas fa-calendar-check me-1"></i>
-      Read on {{ formatDate(userBook.readDate) }}
+      Read on {{ formatDate(userBook().readDate!) }}
     </small>
   </div>
   }

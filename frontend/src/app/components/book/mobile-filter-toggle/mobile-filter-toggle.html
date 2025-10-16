@@ -2,17 +2,17 @@
   <button
     class="btn btn-outline-primary w-100"
     type="button"
-    [attr.aria-expanded]="showMobileFilters"
+    [attr.aria-expanded]="showMobileFilters()"
     aria-controls="mobileFilters"
     (click)="toggleFilters()"
   >
     <i class="fas fa-filter me-2"></i>
-    Search & Filter @if (activeFiltersCount > 0) {
-    <span class="badge bg-primary ms-2">{{ activeFiltersCount }}</span>
+    Search & Filter @if (activeFiltersCount() > 0) {
+    <span class="badge bg-primary ms-2">{{ activeFiltersCount() }}</span>
     }
     <i
       class="fas fa-chevron-down ms-2 filter-chevron"
-      [class.rotated]="showMobileFilters"
+      [class.rotated]="showMobileFilters()"
     ></i>
   </button>
 </div>

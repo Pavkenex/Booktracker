@@ -186,3 +186,4 @@ testem.log
 .DS_Store
 Thumbs.db
 backend/docs/CLEANUP_REPORT.md
+uploads/avatars/

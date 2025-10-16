@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { LibraryApi } from '../../../services/library-api';
@@ -11,8 +11,8 @@ import { UserBook } from '../../../models/library.model';
     styleUrls: ['./book-status-selector.css']
 })
 export class BookStatusSelectorComponent {
-  @Input() userBook!: UserBook;
-  @Output() statusChanged = new EventEmitter<UserBook>();
+  userBook = input.required<UserBook>();
+  statusChanged = output<UserBook>();
   
   updating = false;
 
@@ -21,22 +21,23 @@ export class BookStatusSelectorComponent {
   onStatusChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const newStatus = target.value as 'read' | 'currently_reading' | 'to_read';
+    const book = this.userBook();
     
-    if (newStatus === this.userBook.status) {
+    if (newStatus === book.status) {
       return;
     }
 
     this.updating = true;
     
     const updateRequest = {
-      bookId: this.userBook.book.id,
+      bookId: book.book.id,
       status: newStatus,
-      rating: this.userBook.rating,
-      review: this.userBook.review,
-      isFavourite: this.userBook.isFavourite
+      rating: book.rating,
+      review: book.review,
+      isFavourite: book.isFavourite
     };
 
-    this.libraryApi.updateBookStatus(this.userBook.id, updateRequest).subscribe({
+    this.libraryApi.updateBookStatus(book.id, updateRequest).subscribe({
       next: (updatedBook) => {
         this.statusChanged.emit(updatedBook);
         this.updating = false;
@@ -44,7 +45,7 @@ export class BookStatusSelectorComponent {
       error: (error) => {
         console.error('Error updating book status:', error);
         // Revert the select value on error
-        target.value = this.userBook.status;
+        target.value = this.userBook().status;
         this.updating = false;
       }
     });

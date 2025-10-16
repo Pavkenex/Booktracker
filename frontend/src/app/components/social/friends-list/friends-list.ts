@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SocialApi } from '../../../services/social-api';
@@ -17,7 +17,7 @@ import { environment } from '../../../../environments/environment';
     styleUrls: ['./friends-list.css']
 })
 export class FriendsListComponent implements OnInit, OnDestroy {
-  @Output() closeSidebarRequested = new EventEmitter<void>();
+  closeSidebarRequested = output<void>();
   friends: Friendship[] = [];
   searchResults: FriendSearchResult[] = [];
   searchQuery: string = '';

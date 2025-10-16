@@ -1,48 +1,45 @@
 import { Component, OnInit } from '@angular/core';
 
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthStore, LoginRequest } from '../../../services/auth-store';
 import { ErrorHandler } from '../../../services/error-handler';
 
 @Component({
     selector: 'app-login',
-    imports: [ReactiveFormsModule, RouterModule],
+    imports: [FormsModule, RouterModule],
     templateUrl: './login.html',
     styleUrls: ['./login.css']
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+  loginData = {
+    username: '',
+    password: ''
+  };
   isLoading = false;
   errorMessage = '';
   returnUrl = '/';
 
   constructor(
-    private formBuilder: FormBuilder,
     private authStore: AuthStore,
     private router: Router,
     private route: ActivatedRoute,
     private ErrorHandler: ErrorHandler
-  ) {
-    this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     // Get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
+  onSubmit(loginForm: any): void {
+    if (loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
 
       const loginRequest: LoginRequest = {
-        usernameOrEmail: this.loginForm.value.username,
-        password: this.loginForm.value.password
+        usernameOrEmail: this.loginData.username,
+        password: this.loginData.password
       };
 
       this.authStore.login(loginRequest).subscribe({
@@ -68,8 +65,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.loginForm.get(fieldName);
+  isFieldInvalid(fieldName: string, form: any): boolean {
+    const field = form.controls[fieldName];
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 }

@@ -9,7 +9,7 @@
           <h4 class="mb-0">Login to BookTracker</h4>
         </div>
         <div class="card-body">
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
             <div class="mb-3">
               <label for="username" class="form-label">
                 <i class="fas fa-user me-2"></i>Username
@@ -18,16 +18,20 @@
                 type="text"
                 id="username"
                 class="form-control form-control-lg"
-                formControlName="username"
-                [class.is-invalid]="isFieldInvalid('username')"
+                [(ngModel)]="loginData.username"
+                name="username"
+                required
+                minlength="3"
+                [class.is-invalid]="isFieldInvalid('username', loginForm)"
                 placeholder="Enter your username"
                 autocomplete="username"
+                #username="ngModel"
               />
-              @if (isFieldInvalid('username')) {
+              @if (isFieldInvalid('username', loginForm)) {
               <div class="invalid-feedback">
-                @if (loginForm.get('username')?.errors?.['required']) {
+                @if (username.errors?.['required']) {
                 <div>Username is required</div>
-                } @if (loginForm.get('username')?.errors?.['minlength']) {
+                } @if (username.errors?.['minlength']) {
                 <div>Username must be at least 3 characters long</div>
                 }
               </div>
@@ -42,16 +46,20 @@
                 type="password"
                 id="password"
                 class="form-control form-control-lg"
-                formControlName="password"
-                [class.is-invalid]="isFieldInvalid('password')"
+                [(ngModel)]="loginData.password"
+                name="password"
+                required
+                minlength="6"
+                [class.is-invalid]="isFieldInvalid('password', loginForm)"
                 placeholder="Enter your password"
                 autocomplete="current-password"
+                #password="ngModel"
               />
-              @if (isFieldInvalid('password')) {
+              @if (isFieldInvalid('password', loginForm)) {
               <div class="invalid-feedback">
-                @if (loginForm.get('password')?.errors?.['required']) {
+                @if (password.errors?.['required']) {
                 <div>Password is required</div>
-                } @if (loginForm.get('password')?.errors?.['minlength']) {
+                } @if (password.errors?.['minlength']) {
                 <div>Password must be at least 6 characters long</div>
                 }
               </div>
