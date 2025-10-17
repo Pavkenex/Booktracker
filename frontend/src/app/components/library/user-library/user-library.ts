@@ -121,6 +121,6 @@ export class UserLibraryComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(["/social/friends"]);
+    this.router.navigate(["/social"]);
   }
 }

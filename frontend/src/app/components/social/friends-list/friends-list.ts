@@ -108,7 +108,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
       next: () => {
         const user = this.searchResults.find(u => u.id === userId);
         if (user) {
-          user.hasPendingRequest = true;
+          user.pendingRequest = true;
         }
         this.socialApi.refreshNotifications();
       },
@@ -160,7 +160,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
     const friendIds = new Set(this.friends.map(f => f.friendId));
     return results.map(user => ({
       ...user,
-      isFriend: user.isFriend || friendIds.has(user.id)
+      friend: user.friend || friendIds.has(user.id)
     }));
   }
 

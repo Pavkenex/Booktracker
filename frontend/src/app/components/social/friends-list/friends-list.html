@@ -67,19 +67,19 @@
                     </div>
                   </div>
                   <div class="search-actions">
-                    @if (user.isFriend) {
+                    @if (user.friend) {
                       <span class="badge bg-success">
                         <i class="fas fa-check me-1"></i>
                         Friends
                       </span>
                     }
-                    @if (user.hasPendingRequest && !user.isFriend) {
+                    @if (user.pendingRequest && !user.friend) {
                       <span class="badge bg-warning">
                         <i class="fas fa-clock me-1"></i>
                         Pending
                       </span>
                     }
-                    @if (!user.isFriend && !user.hasPendingRequest) {
+                    @if (!user.friend && !user.pendingRequest) {
                       <button class="btn btn-sm btn-outline-primary" (click)="sendFriendRequest(user.id)">
                         <i class="fas fa-user-plus me-1"></i>
                         Add

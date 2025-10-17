@@ -1,7 +1,5 @@
 package com.booktracker.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class UserSearchResponse {
     private Long id;
     private String username;
@@ -55,7 +53,6 @@ public class UserSearchResponse {
         this.avatarUrl = avatarUrl;
     }
 
-    @JsonProperty("isFriend")
     public boolean isFriend() {
         return friend;
     }
@@ -64,7 +61,6 @@ public class UserSearchResponse {
         this.friend = friend;
     }
 
-    @JsonProperty("hasPendingRequest")
     public boolean hasPendingRequest() {
         return pendingRequest;
     }

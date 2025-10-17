@@ -60,8 +60,8 @@ export interface FriendSearchResult {
   username: string;
   email: string;
   avatarUrl?: string;
-  isFriend: boolean;
-  hasPendingRequest: boolean;
+  friend: boolean;
+  pendingRequest: boolean;
 }
 
 export interface NotificationCount {
