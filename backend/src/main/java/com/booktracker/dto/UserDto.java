@@ -4,10 +4,7 @@ import com.booktracker.entity.User;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO representing user information.
- * Used for both profiles and user listings.
- */
+
 public class UserDto {
     private Long id;
     private String username;
@@ -84,3 +81,4 @@ public class UserDto {
         this.avatarUrl = avatarUrl;
     }
 }
+

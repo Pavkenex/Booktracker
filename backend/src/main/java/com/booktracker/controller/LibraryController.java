@@ -30,9 +30,7 @@ public class LibraryController {
         this.securityUtils = securityUtils;
     }
     
-    /**
-     * Add a book to user's library
-     */
+    
     @PostMapping("/books")
     public ResponseEntity<UserBookResponse> addBookToLibrary(@Valid @RequestBody UserBookRequest request) {
         Long userId = securityUtils.getCurrentUserId();
@@ -40,9 +38,7 @@ public class LibraryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
-    /**
-     * Update a book in user's library
-     */
+    
     @PutMapping("/books/{userBookId}")
     public ResponseEntity<UserBookResponse> updateBookInLibrary(
             @PathVariable Long userBookId,
@@ -52,9 +48,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Remove a book from user's library
-     */
+    
     @DeleteMapping("/books/{userBookId}")
     public ResponseEntity<Void> removeBookFromLibrary(@PathVariable Long userBookId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -62,9 +56,7 @@ public class LibraryController {
         return ResponseEntity.ok().build();
     }
     
-    /**
-     * Get user's library with pagination
-     */
+    
     @GetMapping
     public ResponseEntity<PagedResponse<UserBookResponse>> getUserLibrary(
             @RequestParam(defaultValue = "0") int page,
@@ -77,9 +69,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Get user's library by reading status
-     */
+    
     @GetMapping("/status/{status}")
     public ResponseEntity<PagedResponse<UserBookResponse>> getUserLibraryByStatus(
             @PathVariable String status,
@@ -95,9 +85,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Get user's favorite books
-     */
+    
     @GetMapping("/favorites")
     public ResponseEntity<PagedResponse<UserBookResponse>> getUserFavoriteBooks(
             @RequestParam(defaultValue = "0") int page,
@@ -110,9 +98,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Toggle favorite status of a book
-     */
+    
     @PutMapping("/books/{userBookId}/favorite")
     public ResponseEntity<UserBookResponse> toggleFavorite(@PathVariable Long userBookId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -120,9 +106,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Get library statistics
-     */
+    
     @GetMapping("/stats")
     public ResponseEntity<LibraryStatsResponse> getLibraryStats() {
         Long userId = securityUtils.getCurrentUserId();
@@ -130,9 +114,7 @@ public class LibraryController {
         return ResponseEntity.ok(stats);
     }
     
-    /**
-     * Get a specific book from user's library
-     */
+    
     @GetMapping("/books/{userBookId}")
     public ResponseEntity<UserBookResponse> getUserBook(@PathVariable Long userBookId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -140,9 +122,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Check if user has a book in their library
-     */
+    
     @GetMapping("/books/check/{bookId}")
     public ResponseEntity<BookInLibraryCheckResponse> checkBookInLibrary(@PathVariable Long bookId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -152,9 +132,7 @@ public class LibraryController {
         return ResponseEntity.ok(new BookInLibraryCheckResponse(hasBook, userBook));
     }
     
-    /**
-     * Get recent library activity
-     */
+    
     @GetMapping("/recent")
     public ResponseEntity<List<UserBookResponse>> getRecentActivity(
             @RequestParam(defaultValue = "10") int limit) {
@@ -163,9 +141,7 @@ public class LibraryController {
         return ResponseEntity.ok(recentActivity);
     }
 
-    /**
-     * Get reviews for a specific book (public)
-     */
+    
     @GetMapping("/book/{bookId}/reviews")
     public ResponseEntity<PagedResponse<UserBookResponse>> getBookReviews(
             @PathVariable Long bookId,
@@ -176,9 +152,7 @@ public class LibraryController {
         return ResponseEntity.ok(response);
     }
     
-    /**
-     * Get another user's public library
-     */
+    
     @GetMapping("/user/{userId}")
     public ResponseEntity<PagedResponse<UserBookResponse>> getUserPublicLibrary(
             @PathVariable Long userId,

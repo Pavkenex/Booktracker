@@ -101,7 +101,7 @@ public class AuthService {
             Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
             
             if (userOptional.isEmpty()) {
-                // For security reasons, don't reveal if email exists or not
+               
                 return new AuthResponse(true, "If the email exists, a password reset link has been sent");
             }
 

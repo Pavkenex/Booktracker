@@ -37,3 +37,4 @@ public class NotificationCountResponse {
         this.total = total;
     }
 }
+

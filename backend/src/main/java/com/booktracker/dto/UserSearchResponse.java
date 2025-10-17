@@ -57,3 +57,4 @@ public class UserSearchResponse {
         this.hasPendingRequest = hasPendingRequest;
     }
 }
+

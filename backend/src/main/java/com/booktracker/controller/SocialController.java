@@ -27,9 +27,7 @@ public class SocialController {
     @Autowired
     private SecurityUtils securityUtils;
 
-    /**
-     * Get user's friends
-     */
+    
     @GetMapping
     public ResponseEntity<List<FriendshipResponse>> getFriends() {
         Long userId = securityUtils.getCurrentUserId();
@@ -39,9 +37,7 @@ public class SocialController {
         return ResponseEntity.ok(friendships);
     }
 
-    /**
-     * Send friend request
-     */
+    
     @PostMapping("/request")
     public ResponseEntity<FriendshipResponse> sendFriendRequest(
             @Valid @RequestBody FriendRequestActionDto request) {
@@ -51,9 +47,7 @@ public class SocialController {
         return ResponseEntity.ok(friendship);
     }
 
-    /**
-     * Accept or decline friend request
-     */
+    
     @PutMapping("/request/{friendshipId}")
     public ResponseEntity<FriendshipResponse> respondToFriendRequest(
             @PathVariable Long friendshipId,
@@ -70,9 +64,7 @@ public class SocialController {
         }
     }
 
-    /**
-     * Remove friend (unfriend)
-     */
+    
     @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> removeFriend(@PathVariable Long friendId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -80,9 +72,7 @@ public class SocialController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Get sent friend requests
-     */
+    
     @GetMapping("/requests/sent")
     public ResponseEntity<List<FriendshipResponse>> getSentFriendRequests() {
         Long userId = securityUtils.getCurrentUserId();
@@ -90,9 +80,7 @@ public class SocialController {
         return ResponseEntity.ok(sentRequests);
     }
 
-    /**
-     * Get friend requests (received)
-     */
+    
     @GetMapping("/requests")
     public ResponseEntity<List<FriendshipResponse>> getFriendRequests() {
         Long userId = securityUtils.getCurrentUserId();
@@ -102,9 +90,7 @@ public class SocialController {
         return ResponseEntity.ok(receivedRequests);
     }
 
-    /**
-     * Check if users are friends
-     */
+    
     @GetMapping("/check/{friendId}")
     public ResponseEntity<Boolean> checkFriendship(@PathVariable Long friendId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -112,9 +98,7 @@ public class SocialController {
         return ResponseEntity.ok(areFriends);
     }
 
-    /**
-     * Search users for friend requests
-     */
+    
     @GetMapping("/search")
     public ResponseEntity<List<UserSearchResponse>> searchUsers(@RequestParam("q") String query) {
         Long userId = securityUtils.getCurrentUserId();
@@ -128,9 +112,7 @@ public class SocialController {
         return ResponseEntity.ok(searchResults);
     }
 
-    /**
-     * Get notification count (friend requests + recommendations)
-     */
+    
     @GetMapping("/notifications/count")
     public ResponseEntity<NotificationCountResponse> getNotificationCount() {
         Long userId = securityUtils.getCurrentUserId();
@@ -143,9 +125,7 @@ public class SocialController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Mark all recommendations as read (clear notification badge)
-     */
+    
     @PostMapping("/notifications/recommendations/mark-all-read")
     public ResponseEntity<Void> markAllRecommendationsAsRead() {
         Long userId = securityUtils.getCurrentUserId();
@@ -153,3 +133,4 @@ public class SocialController {
         return ResponseEntity.noContent().build();
     }
 }
+

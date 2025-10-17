@@ -98,9 +98,7 @@ public class UserEngagementReportData {
         return reviewsWritten;
     }
     
-    /**
-     * Additional properties used when surfacing summary metrics in the UI.
-     */
+    
     private String metric;
     private Number value;
     

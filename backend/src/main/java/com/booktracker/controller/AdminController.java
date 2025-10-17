@@ -111,13 +111,7 @@ public class AdminController {
         return ResponseEntity.ok(data);
     }
     
-    /**
-     * Get daily activity report including user registrations, books created, reviews posted, etc.
-     * 
-     * @param startDate The start date for the report
-     * @param endDate The end date for the report
-     * @return List of daily activity data
-     */
+    
     @GetMapping("/reports/daily-activity")
     public ResponseEntity<List<DailyActivityReportData>> getDailyActivityReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,

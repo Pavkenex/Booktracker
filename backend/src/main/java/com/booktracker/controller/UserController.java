@@ -33,9 +33,7 @@ public class UserController {
     @Autowired
     private SecurityUtils securityUtils;
 
-    /**
-     * Get current user profile
-     */
+    
     @GetMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> getCurrentUserProfile() {
@@ -54,9 +52,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Get user profile by ID
-     */
+    
     @GetMapping("/{userId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable Long userId) {
@@ -69,9 +65,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Get user profile by username
-     */
+    
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> getUserProfileByUsername(@PathVariable String username) {
@@ -84,9 +78,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Update current user profile
-     */
+    
     @PutMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> updateUserProfile(
@@ -106,9 +98,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Upload or update user avatar
-     */
+    
     @PostMapping(value = "/profile/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
@@ -125,9 +115,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Change current user password
-     */
+    
     @PutMapping("/password")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> changePassword(
@@ -147,9 +135,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Delete current user account
-     */
+    
     @DeleteMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> deleteCurrentUser() {
@@ -168,9 +154,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Get all users (admin only)
-     */
+    
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
@@ -182,9 +166,7 @@ public class UserController {
         }
     }
 
-    /**
-     * Delete user by ID (admin only)
-     */
+    
     @DeleteMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> deleteUser(@PathVariable Long userId) {
@@ -197,18 +179,14 @@ public class UserController {
         }
     }
 
-    /**
-     * Check if username exists
-     */
+    
     @GetMapping("/check/username/{username}")
     public ResponseEntity<Boolean> checkUsernameExists(@PathVariable String username) {
         boolean exists = userService.usernameExists(username);
         return ResponseEntity.ok(exists);
     }
 
-    /**
-     * Check if email exists
-     */
+    
     @GetMapping("/check/email/{email}")
     public ResponseEntity<Boolean> checkEmailExists(@PathVariable String email) {
         boolean exists = userService.emailExists(email);

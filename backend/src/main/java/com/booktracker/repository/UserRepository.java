@@ -12,64 +12,42 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
-    /**
-     * Find user by username
-     */
+    
     Optional<User> findByUsername(String username);
     
-    /**
-     * Find user by email
-     */
+    
     Optional<User> findByEmail(String email);
     
-    /**
-     * Check if username exists
-     */
+    
     boolean existsByUsername(String username);
     
-    /**
-     * Check if email exists
-     */
+    
     boolean existsByEmail(String email);
     
-    /**
-     * Find user by username or email
-     */
+    
     @Query("SELECT u FROM User u WHERE u.username = :usernameOrEmail OR u.email = :usernameOrEmail")
     Optional<User> findByUsernameOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
     
-    /**
-     * Find all admin users
-     */
+    
     @Query("SELECT u FROM User u WHERE u.isAdmin = true")
     java.util.List<User> findAllAdmins();
     
-    /**
-     * Count total number of users
-     */
+    
     @Query("SELECT COUNT(u) FROM User u")
     long countTotalUsers();
     
-    /**
-     * Count users registered today
-     */
+    
     @Query("SELECT COUNT(u) FROM User u WHERE CAST(u.createdAt AS date) = CURRENT_DATE")
     long countUsersRegisteredToday();
     
-    /**
-     * Count users registered on specific date
-     */
+    
     @Query("SELECT COUNT(u) FROM User u WHERE CAST(u.createdAt AS date) = :date")
     long countUsersRegisteredOnDate(@Param("date") java.time.LocalDate date);
     
-    /**
-     * Search users by username or email containing query (case insensitive)
-     */
+    
     List<User> findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(String username, String email);
     
-    /**
-     * Get user engagement data for reports
-     */
+    
     @Query("SELECT u.username, u.email, " +
            "COUNT(DISTINCT ub.id) as totalBooks, " +
            "COUNT(DISTINCT CASE WHEN ub.status = 'read' THEN ub.id END) as booksRead, " +

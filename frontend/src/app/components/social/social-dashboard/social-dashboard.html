@@ -23,14 +23,15 @@
           <h2 class="sidebar-title">Social Hub</h2>
           <p class="sidebar-subtitle">Catch up with friends and share your latest reads.</p>
         </div>
+        @if (isMobileView) {
         <button
           type="button"
           class="sidebar-close"
-          *ngIf="isMobileView"
           (click)="closeSidebar()"
           aria-label="Close sidebar">
           <i class="fas fa-times"></i>
         </button>
+        }
         <div class="sidebar-metrics">
           @if (notificationCount.friendRequests > 0) {
           <span class="metric-pill">

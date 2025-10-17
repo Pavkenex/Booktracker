@@ -15,7 +15,7 @@ import java.util.Map;
 public class JwtUtil {
 
     private static final String PASSWORD_RESET_TOKEN_TYPE = "password_reset";
-    private static final long PASSWORD_RESET_TOKEN_EXPIRATION = 3600000L; // 1 hour in milliseconds
+    private static final long PASSWORD_RESET_TOKEN_EXPIRATION = 3600000L;
     private static final String USER_ID_CLAIM = "userId";
     private static final String USERNAME_CLAIM = "username";
     private static final String TOKEN_TYPE_CLAIM = "type";
@@ -23,7 +23,7 @@ public class JwtUtil {
     @Value("${jwt.secret:mySecretKey}")
     private String secret;
 
-    @Value("${jwt.expiration:86400000}") // 24 hours in milliseconds
+    @Value("${jwt.expiration:86400000}")
     private Long expiration;
 
     private SecretKey getSigningKey() {
@@ -88,7 +88,7 @@ public class JwtUtil {
         if (userId != null) {
             claims.put(USER_ID_CLAIM, userId);
         }
-        claims.put(USERNAME_CLAIM, username); // Explicitly store username in claims
+        claims.put(USERNAME_CLAIM, username);
         
         return Jwts.builder()
                 .setClaims(claims)

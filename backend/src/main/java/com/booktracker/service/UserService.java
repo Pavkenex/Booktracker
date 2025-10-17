@@ -28,9 +28,7 @@ public class UserService {
         this.avatarStorageService = avatarStorageService;
     }
 
-    /**
-     * Get user profile by ID
-     */
+    
     public UserProfileResponse getUserProfile(Long userId) {
         try {
             Optional<User> userOptional = userRepository.findById(userId);
@@ -47,9 +45,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Get user profile by username
-     */
+    
     public UserProfileResponse getUserProfileByUsername(String username) {
         try {
             Optional<User> userOptional = userRepository.findByUsername(username);
@@ -66,9 +62,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Update user profile
-     */
+    
     public UserProfileResponse updateUserProfile(Long userId, UpdateProfileRequest request) {
         try {
             Optional<User> userOptional = userRepository.findById(userId);
@@ -101,9 +95,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Change user password
-     */
+    
     public AuthResponse changePassword(Long userId, ChangePasswordRequest request) {
         try {
             Optional<User> userOptional = userRepository.findById(userId);
@@ -128,9 +120,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Update the avatar for the current user
-     */
+    
     public UserProfileResponse updateUserAvatar(Long userId, MultipartFile avatarFile) {
         try {
             if (avatarFile == null || avatarFile.isEmpty()) {
@@ -176,9 +166,7 @@ public class UserService {
         return new UserProfileResponse(true, message, userInfo);
     }
 
-    /**
-     * Delete user account
-     */
+    
     public AuthResponse deleteUser(Long userId) {
         try {
             Optional<User> userOptional = userRepository.findById(userId);
@@ -196,9 +184,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Get all users (admin only)
-     */
+    
     public List<UserDto> getAllUsers() {
         try {
             List<User> users = userRepository.findAll();
@@ -212,44 +198,32 @@ public class UserService {
         }
     }
 
-    /**
-     * Check if user exists by ID
-     */
+    
     public boolean userExists(Long userId) {
         return userRepository.existsById(userId);
     }
 
-    /**
-     * Check if username exists
-     */
+    
     public boolean usernameExists(String username) {
         return userRepository.existsByUsername(username);
     }
 
-    /**
-     * Check if email exists
-     */
+    
     public boolean emailExists(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    /**
-     * Get user by username (for internal use)
-     */
+    
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    /**
-     * Get user by email (for internal use)
-     */
+    
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    /**
-     * Get user by ID (for internal use)
-     */
+    
     public Optional<User> findById(Long userId) {
         return userRepository.findById(userId);
     }

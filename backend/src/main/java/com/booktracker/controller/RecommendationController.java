@@ -21,9 +21,7 @@ public class RecommendationController {
     @Autowired
     private SecurityUtils securityUtils;
     
-    /**
-     * Send a book recommendation
-     */
+    
     @PostMapping
     public ResponseEntity<RecommendationResponse> sendRecommendation(
             @Valid @RequestBody RecommendationRequest request) {
@@ -40,9 +38,7 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendation);
     }
     
-    /**
-     * Get recommendations sent by user
-     */
+    
     @GetMapping("/sent")
     public ResponseEntity<List<RecommendationResponse>> getSentRecommendations(
             @RequestParam(defaultValue = "0") int page,
@@ -55,9 +51,7 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendations);
     }
     
-    /**
-     * Get recommendations received by user
-     */
+    
     @GetMapping("/received")
     public ResponseEntity<List<RecommendationResponse>> getReceivedRecommendations(
             @RequestParam(defaultValue = "0") int page,
@@ -70,9 +64,7 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendations);
     }
     
-    /**
-     * Get recommendations between two users
-     */
+    
     @GetMapping("/between/{friendId}")
     public ResponseEntity<List<RecommendationResponse>> getRecommendationsBetweenUsers(
             @PathVariable Long friendId,
@@ -84,9 +76,7 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendations);
     }
     
-    /**
-     * Get recent recommendations for user
-     */
+    
     @GetMapping("/recent")
     public ResponseEntity<List<RecommendationResponse>> getRecentRecommendations(
             @RequestParam(defaultValue = "5") int limit) {
@@ -96,18 +86,14 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendations);
     }
     
-    /**
-     * Get recommendations for a specific book
-     */
+    
     @GetMapping("/book/{bookId}")
     public ResponseEntity<List<RecommendationResponse>> getRecommendationsForBook(@PathVariable Long bookId) {
         List<RecommendationResponse> recommendations = recommendationService.getRecommendationsForBook(bookId);
         return ResponseEntity.ok(recommendations);
     }
     
-    /**
-     * Mark recommendation as read
-     */
+    
     @PutMapping("/{recommendationId}/read")
     public ResponseEntity<Void> markRecommendationAsRead(@PathVariable Long recommendationId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -115,9 +101,7 @@ public class RecommendationController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Delete a recommendation
-     */
+    
     @DeleteMapping("/{recommendationId}")
     public ResponseEntity<Void> deleteRecommendation(@PathVariable Long recommendationId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -125,9 +109,7 @@ public class RecommendationController {
         return ResponseEntity.ok().build();
     }
     
-    /**
-     * Get recommendation statistics
-     */
+    
     @GetMapping("/stats")
     public ResponseEntity<RecommendationStatsResponse> getRecommendationStats() {
         Long userId = securityUtils.getCurrentUserId();
@@ -135,9 +117,7 @@ public class RecommendationController {
         return ResponseEntity.ok(new RecommendationStatsResponse(stats.getSentCount(), stats.getReceivedCount()));
     }
     
-    /**
-     * Check if user has recommended a book to another user
-     */
+    
     @GetMapping("/check")
     public ResponseEntity<Boolean> checkRecommendation(
             @RequestParam Long receiverId,
@@ -148,15 +128,13 @@ public class RecommendationController {
         return ResponseEntity.ok(hasRecommended);
     }
     
-    /**
-     * Get most recommended books
-     */
+    
     @GetMapping("/popular")
     public ResponseEntity<List<BookResponse>> getMostRecommendedBooks(
             @RequestParam(defaultValue = "10") int limit) {
         
         List<Object[]> mostRecommended = recommendationService.getMostRecommendedBooks(limit);
-        // Convert Object[] to BookResponse - assuming Object[] contains [Book, count]
+       
         List<BookResponse> bookResponses = mostRecommended.stream()
             .map(arr -> new BookResponse((com.booktracker.entity.Book) arr[0]))
             .toList();

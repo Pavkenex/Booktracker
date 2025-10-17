@@ -28,9 +28,7 @@ public class FriendshipResponse {
         this.createdAt = friendship.getCreatedAt();
     }
     
-    /**
-     * Builds a response that aligns the user/friend fields with the caller's perspective.
-     */
+    
     public FriendshipResponse(Friendship friendship, Long currentUserId) {
         this.id = friendship.getId();
         this.sender = new UserDto(friendship.getUser());
@@ -38,7 +36,7 @@ public class FriendshipResponse {
         this.status = friendship.getStatus().name();
         this.createdAt = friendship.getCreatedAt();
         
-        // Set user and friend based on current user's perspective
+       
         if (friendship.getUser().getId().equals(currentUserId)) {
             this.user = new UserDto(friendship.getUser());
             this.friend = new UserDto(friendship.getFriend());

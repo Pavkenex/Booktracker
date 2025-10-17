@@ -1,7 +1,7 @@
-<ng-container *ngIf="hasItems; else emptyState">
+@if (hasItems) {
   <div class="slider-container">
+    @if (showControls) {
     <button
-      *ngIf="showControls"
       type="button"
       class="slider-btn slider-btn-prev"
       [disabled]="!canGoPrevious"
@@ -10,6 +10,7 @@
     >
       <i [class]="prevIcon"></i>
     </button>
+    }
 
     <div
       class="slider-wrapper"
@@ -22,34 +23,36 @@
         [style.width.%]="trackWidthPercent"
         [style.transform]="trackTransform"
       >
+  @for (slide of slides; track $index; let slideIndex = $index) {
         <div
           class="slider-slide"
-          *ngFor="let slide of slides; let slideIndex = index"
           [style.width.%]="slideWidthPercent"
           [style.justifyContent]="justifyContent"
           [style.alignItems]="alignItems"
           [style.gridTemplateColumns]="getGridTemplate(slide.length)"
           [style.gap]="slideGap"
         >
-          <ng-container *ngIf="itemTemplate; else missingTemplate">
-            <ng-container
-              *ngFor="let item of slide; let itemIndex = index; trackBy: trackByItem"
-            >
-              <div
-                class="slider-item"
-              >
-                <ng-container
-                  *ngTemplateOutlet="itemTemplate.template; context: createContext(item, slideIndex, itemIndex)"
-                ></ng-container>
-              </div>
-            </ng-container>
-          </ng-container>
+          @if (itemTemplate) {
+            @for (item of slide; track trackByItem($index, item); let itemIndex = $index) {
+            <div class="slider-item">
+              <ng-container
+                *ngTemplateOutlet="itemTemplate.template; context: createContext(item, slideIndex, itemIndex)"
+              ></ng-container>
+            </div>
+            }
+          }
+          @else {
+          <div class="slider-empty">
+            <span>Provide an item template to render slider content.</span>
+          </div>
+          }
         </div>
+        }
       </div>
     </div>
 
+    @if (showControls) {
     <button
-      *ngIf="showControls"
       type="button"
       class="slider-btn slider-btn-next"
       [disabled]="!canGoNext"
@@ -58,28 +61,25 @@
     >
       <i [class]="nextIcon"></i>
     </button>
+    }
   </div>
 
-  <div class="slider-indicators" *ngIf="showIndicators && slides.length > 1">
+  @if (showIndicators && slides.length > 1) {
+  <div class="slider-indicators">
+    @for (indicator of slidesArray; let index = $index; track indicator) {
     <button
       type="button"
       class="indicator"
-      *ngFor="let indicator of slidesArray; let index = index"
       [class.active]="index === currentIndex"
       (click)="goToSlide(index)"
       [attr.aria-label]="'Go to slide ' + (index + 1)"
     ></button>
+    }
   </div>
-</ng-container>
-
-<ng-template #emptyState>
+  }
+}
+@else {
   <div class="slider-empty">
     <span>No items available.</span>
   </div>
-</ng-template>
-
-<ng-template #missingTemplate>
-  <div class="slider-empty">
-    <span>Provide an item template to render slider content.</span>
-  </div>
-</ng-template>
+}

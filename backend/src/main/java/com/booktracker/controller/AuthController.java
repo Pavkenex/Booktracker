@@ -38,9 +38,7 @@ public class AuthController {
         }
     }
 
-    /**
-     * Stateless JWT logout simply instructs the client to drop its token.
-     */
+    
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout() {
         return ResponseEntity.ok(new AuthResponse(true, "Logged out successfully"));

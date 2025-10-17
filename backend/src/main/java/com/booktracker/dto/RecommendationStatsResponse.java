@@ -27,3 +27,4 @@ public class RecommendationStatsResponse {
         this.receivedCount = receivedCount;
     }
 }
+

@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class AvatarStorageService {
 
-    private static final long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+    private static final long MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
     private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
             "image/jpeg",
             "image/png",
@@ -66,7 +66,7 @@ public class AvatarStorageService {
                 Files.delete(target);
             }
         } catch (IOException ex) {
-            // Log and ignore deletion failures to avoid blocking the user
+           
         }
     }
 
@@ -125,3 +125,4 @@ public class AvatarStorageService {
     return sanitized.isBlank() ? "upload" : sanitized;
     }
 }
+

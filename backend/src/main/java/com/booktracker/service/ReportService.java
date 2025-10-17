@@ -92,9 +92,7 @@ public class ReportService {
         return reportData;
     }
     
-    /**
-     * Aggregates engagement metrics that feed the admin dashboard cards.
-     */
+    
     public List<UserEngagementReportData> getUserEngagementData() {
         long totalUsers = userRepository.countTotalUsers();
         long totalBooksInLibraries = userBookRepository.count();
@@ -186,9 +184,7 @@ public class ReportService {
         return generateReport("daily_activity_report", data, format, parameters);
     }
     
-    /**
-     * Rebuilds the detailed user engagement dataset for report templates that expect per-user rows.
-     */
+    
     public byte[] exportUserEngagementReport(String format) throws JRException {
         List<UserEngagementReportData> data = buildUserEngagementDetails();
         return generateReport("user_engagement_report", data, format);
@@ -284,9 +280,7 @@ public class ReportService {
         return escaped;
     }
     
-    /**
-     * Hydrates user-level engagement metrics for Jasper templates that iterate over individual records.
-     */
+    
     private List<UserEngagementReportData> buildUserEngagementDetails() {
         return userRepository.getUserEngagementData().stream()
             .map(result -> {
@@ -305,3 +299,4 @@ public class ReportService {
             .collect(Collectors.toList());
     }
 }
+

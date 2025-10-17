@@ -30,3 +30,4 @@ public class MutualFriendsResponse {
         this.count = count;
     }
 }
+

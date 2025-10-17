@@ -37,9 +37,7 @@ public class BookService {
         this.popularityService = popularityService;
     }
 
-    /**
-     * Get all books with pagination
-     */
+    
     @Transactional(readOnly = true)
     public PagedResponse<BookResponse> getAllBooks(int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? 
@@ -55,9 +53,7 @@ public class BookService {
         return new PagedResponse<>(bookResponses, bookPage);
     }
 
-    /**
-     * Search books by title or author
-     */
+    
     @Transactional(readOnly = true)
     public PagedResponse<BookResponse> searchBooks(String searchTerm, int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? 
@@ -73,9 +69,7 @@ public class BookService {
         return new PagedResponse<>(bookResponses, bookPage);
     }
 
-    /**
-     * Filter books with multiple criteria
-     */
+    
     @Transactional(readOnly = true)
     public PagedResponse<BookResponse> filterBooks(String title, String author, Long genreId, 
                                                   Integer publishedYear, int page, int size, 
@@ -93,9 +87,7 @@ public class BookService {
         return new PagedResponse<>(bookResponses, bookPage);
     }
 
-    /**
-     * Get books by genre
-     */
+    
     @Transactional(readOnly = true)
     public PagedResponse<BookResponse> getBooksByGenre(Long genreId, int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? 
@@ -111,18 +103,14 @@ public class BookService {
         return new PagedResponse<>(bookResponses, bookPage);
     }
 
-    /**
-     * Get book by ID
-     */
+    
     @Transactional(readOnly = true)
     public Optional<BookResponse> getBookById(Long id) {
         return bookRepository.findById(id)
                 .map(BookResponse::new);
     }
 
-    /**
-     * Get book by ID (throws exception if not found) - for admin use
-     */
+    
     @Transactional(readOnly = true)
     public BookResponse getBookByIdRequired(Long id) {
         return bookRepository.findById(id)
@@ -130,9 +118,7 @@ public class BookService {
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
     }
 
-    /**
-     * Create a new book
-     */
+    
     public BookResponse createBook(BookRequestDto bookRequest) {
         Book book = new Book();
         book.setTitle(bookRequest.getTitle());
@@ -154,9 +140,7 @@ public class BookService {
         return new BookResponse(savedBook);
     }
 
-    /**
-     * Update an existing book
-     */
+    
     public Optional<BookResponse> updateBook(Long id, BookRequestDto bookRequest) {
         return bookRepository.findById(id)
                 .map(book -> {
@@ -179,18 +163,13 @@ public class BookService {
                 });
     }
 
-    /**
-     * Get most popular books with view counts
-     * Delegates to PopularityService to include view count data
-     */
+    
     @Transactional(readOnly = true)
     public List<BookResponse> getMostPopularBooks(int limit) {
         return popularityService.getMostPopularBooks(limit);
     }
 
-    /**
-     * Get recently added books
-     */
+    
     @Transactional(readOnly = true)
     public List<BookResponse> getRecentlyAddedBooks(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
@@ -200,17 +179,13 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get total book count
-     */
+    
     @Transactional(readOnly = true)
     public long getTotalBookCount() {
         return bookRepository.countTotalBooks();
     }
 
-    /**
-     * Get similar books based on shared genres
-     */
+    
     @Transactional(readOnly = true)
     public List<BookResponse> getSimilarBooks(Long bookId, int limit) {
     return bookRepository.findById(bookId)
@@ -229,9 +204,7 @@ public class BookService {
         }).orElse(List.of());
     }
 
-    /**
-     * Delete a book (admin only)
-     */
+    
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
@@ -239,9 +212,7 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    /**
-     * Get all books with pagination (admin version)
-     */
+    
     public Page<BookResponse> getAllBooksForAdmin(Pageable pageable) {
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(BookResponse::new);

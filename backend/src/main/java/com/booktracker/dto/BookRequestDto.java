@@ -7,10 +7,7 @@ import jakarta.validation.constraints.Max;
 
 import java.util.Set;
 
-/**
- * DTO for book creation and updates.
- * Used for both regular users and admin operations.
- */
+
 public class BookRequestDto {
     @NotBlank(message = "Book title is required")
     @Size(max = 255, message = "Title must not exceed 255 characters")
@@ -87,3 +84,4 @@ public class BookRequestDto {
         this.genreIds = genreIds;
     }
 }
+

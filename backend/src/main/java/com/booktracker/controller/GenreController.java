@@ -21,27 +21,21 @@ public class GenreController {
     @Autowired
     private GenreService genreService;
 
-    /**
-     * Get all genres
-     */
+    
     @GetMapping
     public ResponseEntity<List<GenreResponse>> getAllGenres() {
         List<GenreResponse> genres = genreService.getAllGenres();
         return ResponseEntity.ok(genres);
     }
 
-    /**
-     * Get genres that have books
-     */
+    
     @GetMapping("/with-books")
     public ResponseEntity<List<GenreResponse>> getGenresWithBooks() {
         List<GenreResponse> genres = genreService.getGenresWithBooks();
         return ResponseEntity.ok(genres);
     }
 
-    /**
-     * Get genre by ID
-     */
+    
     @GetMapping("/{id}")
     public ResponseEntity<GenreResponse> getGenreById(@PathVariable Long id) {
         Optional<GenreResponse> genre = genreService.getGenreById(id);
@@ -49,18 +43,14 @@ public class GenreController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Search genres by name
-     */
+    
     @GetMapping("/search")
     public ResponseEntity<List<GenreResponse>> searchGenres(@RequestParam String name) {
         List<GenreResponse> genres = genreService.searchGenres(name);
         return ResponseEntity.ok(genres);
     }
 
-    /**
-     * Get most popular genres
-     */
+    
     @GetMapping("/popular")
     public ResponseEntity<List<GenreResponse>> getMostPopularGenres(
             @RequestParam(defaultValue = "10") int limit) {
@@ -69,18 +59,14 @@ public class GenreController {
         return ResponseEntity.ok(genres);
     }
 
-    /**
-     * Get book count by genre
-     */
+    
     @GetMapping("/stats")
     public ResponseEntity<List<Object[]>> getBookCountByGenre() {
         List<Object[]> stats = genreService.getBookCountByGenre();
         return ResponseEntity.ok(stats);
     }
 
-    /**
-     * Create a new genre (Admin only)
-     */
+    
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody GenreRequestDto genreRequest) {
@@ -92,9 +78,7 @@ public class GenreController {
         }
     }
 
-    /**
-     * Update an existing genre (Admin only)
-     */
+    
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GenreResponse> updateGenre(
@@ -110,9 +94,7 @@ public class GenreController {
         }
     }
 
-    /**
-     * Delete a genre (Admin only)
-     */
+    
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
@@ -124,9 +106,7 @@ public class GenreController {
         }
     }
 
-    /**
-     * Check if genre exists by name
-     */
+    
     @GetMapping("/exists")
     public ResponseEntity<Boolean> existsByName(@RequestParam String name) {
         boolean exists = genreService.existsByName(name);

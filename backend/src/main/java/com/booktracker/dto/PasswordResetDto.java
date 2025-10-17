@@ -4,15 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * Consolidated DTO for password reset operations.
- * Handles both initial request (email only) and confirmation (token + new password)
- */
+
 public class PasswordResetDto {
     
     public enum ResetType {
-        REQUEST,     // Initial request with email only
-        CONFIRM      // Confirmation with token and new password
+        REQUEST,    
+        CONFIRM     
     }
     
     private ResetType type;
@@ -27,17 +24,13 @@ public class PasswordResetDto {
     
     public PasswordResetDto() {}
     
-    /**
-     * Creates a DTO for the initial email-only reset request.
-     */
+    
     public PasswordResetDto(String email) {
         this.type = ResetType.REQUEST;
         this.email = email;
     }
     
-    /**
-     * Creates a DTO for the token confirmation flow with the new password.
-     */
+    
     public PasswordResetDto(String token, String newPassword) {
         this.type = ResetType.CONFIRM;
         this.token = token;
@@ -76,17 +69,14 @@ public class PasswordResetDto {
         this.newPassword = newPassword;
     }
     
-    /**
-     * Indicates whether this payload represents the initial reset request.
-     */
+    
     public boolean isRequestType() {
         return ResetType.REQUEST.equals(type);
     }
     
-    /**
-     * Indicates whether this payload represents the confirmation step with a token.
-     */
+    
     public boolean isConfirmType() {
         return ResetType.CONFIRM.equals(type);
     }
 }
+

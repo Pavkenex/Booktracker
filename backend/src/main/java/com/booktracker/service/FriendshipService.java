@@ -26,9 +26,7 @@ public class FriendshipService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Send a friend request
-     */
+    
     public FriendshipResponse sendFriendRequest(Long userId, Long friendId) {
         if (userId.equals(friendId)) {
             throw new IllegalArgumentException("Cannot send friend request to yourself");
@@ -43,7 +41,7 @@ public class FriendshipService {
             throw new IllegalArgumentException("Friendship already exists between users");
         }
 
-        // Check if there's a rejected friendship and remove it to allow new request
+       
         friendshipRepository.findFriendshipBetweenUsers(user, friend).ifPresent(existingFriendship -> {
             if (existingFriendship.getStatus() == Friendship.FriendshipStatus.rejected) {
                 friendshipRepository.delete(existingFriendship);
@@ -56,9 +54,7 @@ public class FriendshipService {
         return new FriendshipResponse(friendship, userId);
     }
 
-    /**
-     * Accept a friend request
-     */
+    
     public FriendshipResponse acceptFriendRequest(Long userId, Long friendshipId) {
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
@@ -77,9 +73,7 @@ public class FriendshipService {
         return new FriendshipResponse(friendship, userId);
     }
 
-    /**
-     * Decline a friend request
-     */
+    
     public void declineFriendRequest(Long userId, Long friendshipId) {
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
@@ -96,9 +90,7 @@ public class FriendshipService {
         friendshipRepository.save(friendship);
     }
 
-    /**
-     * Remove a friend (unfriend)
-     */
+    
     public void removeFriend(Long userId, Long friendId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -112,9 +104,7 @@ public class FriendshipService {
         friendshipRepository.deleteFriendshipBetweenUsers(user, friend);
     }
 
-    /**
-     * Get user's friends
-     */
+    
     @Transactional(readOnly = true)
     public List<User> getFriends(Long userId) {
         User user = userRepository.findById(userId)
@@ -123,9 +113,7 @@ public class FriendshipService {
         return friendshipRepository.findFriendsOfUser(user);
     }
 
-    /**
-     * Get pending friend requests sent by user
-     */
+    
     @Transactional(readOnly = true)
     public List<FriendshipResponse> getSentFriendRequests(Long userId) {
         User user = userRepository.findById(userId)
@@ -138,9 +126,7 @@ public class FriendshipService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get pending friend requests received by user
-     */
+    
     @Transactional(readOnly = true)
     public List<FriendshipResponse> getReceivedFriendRequests(Long userId) {
         User user = userRepository.findById(userId)
@@ -153,9 +139,7 @@ public class FriendshipService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Check if two users are friends
-     */
+    
     @Transactional(readOnly = true)
     public boolean areFriends(Long userId1, Long userId2) {
         User user1 = userRepository.findById(userId1)
@@ -166,9 +150,7 @@ public class FriendshipService {
         return friendshipRepository.areFriends(user1, user2);
     }
 
-    /**
-     * Get friend count for user
-     */
+    
     @Transactional(readOnly = true)
     public long getFriendCount(Long userId) {
         User user = userRepository.findById(userId)
@@ -177,9 +159,7 @@ public class FriendshipService {
         return friendshipRepository.countFriendsOfUser(user);
     }
 
-    /**
-     * Get pending friend request count for user
-     */
+    
     @Transactional(readOnly = true)
     public long getPendingRequestCount(Long userId) {
         User user = userRepository.findById(userId)
@@ -191,9 +171,7 @@ public class FriendshipService {
         return count;
     }
 
-    /**
-     * Get user's friendships (with friend details)
-     */
+    
     @Transactional(readOnly = true)
     public List<FriendshipResponse> getFriendships(Long userId) {
         User user = userRepository.findById(userId)
@@ -205,9 +183,7 @@ public class FriendshipService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Search users by username or email
-     */
+    
     @Transactional(readOnly = true)
     public List<User> searchUsers(String query, Long currentUserId) {
         return userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query)
@@ -217,9 +193,7 @@ public class FriendshipService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Check if there's a pending friend request between users
-     */
+    
     @Transactional(readOnly = true)
     public boolean hasPendingRequest(Long userId1, Long userId2) {
         User user1 = userRepository.findById(userId1)

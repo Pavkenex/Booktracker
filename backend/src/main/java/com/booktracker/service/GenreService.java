@@ -22,9 +22,7 @@ public class GenreService {
         this.genreRepository = genreRepository;
     }
 
-    /**
-     * Get all genres
-     */
+    
     @Transactional(readOnly = true)
     public List<GenreResponse> getAllGenres() {
         return genreRepository.findAllByOrderByNameAsc().stream()
@@ -32,9 +30,7 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get genres with books only
-     */
+    
     @Transactional(readOnly = true)
     public List<GenreResponse> getGenresWithBooks() {
         return genreRepository.findGenresWithBooks().stream()
@@ -42,27 +38,21 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get genre by ID
-     */
+    
     @Transactional(readOnly = true)
     public Optional<GenreResponse> getGenreById(Long id) {
         return genreRepository.findById(id)
                 .map(GenreResponse::new);
     }
 
-    /**
-     * Get genre by name
-     */
+    
     @Transactional(readOnly = true)
     public Optional<GenreResponse> getGenreByName(String name) {
         return genreRepository.findByNameIgnoreCase(name)
                 .map(GenreResponse::new);
     }
 
-    /**
-     * Search genres by name
-     */
+    
     @Transactional(readOnly = true)
     public List<GenreResponse> searchGenres(String name) {
         return genreRepository.findByNameContainingIgnoreCase(name).stream()
@@ -70,9 +60,7 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Create a new genre
-     */
+    
     public GenreResponse createGenre(GenreRequestDto genreRequest) {
         if (genreRepository.existsByNameIgnoreCase(genreRequest.getName())) {
             throw new IllegalArgumentException("Genre with name '" + genreRequest.getName() + "' already exists");
@@ -85,9 +73,7 @@ public class GenreService {
         return new GenreResponse(savedGenre);
     }
 
-    /**
-     * Update an existing genre
-     */
+    
     public Optional<GenreResponse> updateGenre(Long id, GenreRequestDto genreRequest) {
         return genreRepository.findById(id)
                 .map(genre -> {
@@ -102,9 +88,7 @@ public class GenreService {
                 });
     }
 
-    /**
-     * Delete a genre
-     */
+    
     public boolean deleteGenre(Long id) {
         Optional<Genre> genre = genreRepository.findById(id);
         if (genre.isPresent()) {
@@ -117,17 +101,13 @@ public class GenreService {
         return false;
     }
 
-    /**
-     * Get book count by genre
-     */
+    
     @Transactional(readOnly = true)
     public List<Object[]> getBookCountByGenre() {
         return genreRepository.countBooksByGenre();
     }
 
-    /**
-     * Get most popular genres
-     */
+    
     @Transactional(readOnly = true)
     public List<GenreResponse> getMostPopularGenres(int limit) {
         return genreRepository.findMostPopularGenres(
@@ -137,17 +117,13 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Check if genre exists by name
-     */
+    
     @Transactional(readOnly = true)
     public boolean existsByName(String name) {
         return genreRepository.existsByNameIgnoreCase(name);
     }
 
-    /**
-     * Create a new genre (admin version)
-     */
+    
     public GenreResponse createGenreForAdmin(GenreRequestDto request) {
         if (genreRepository.existsByNameIgnoreCase(request.getName())) {
             throw new IllegalArgumentException("Genre with name '" + request.getName() + "' already exists");
@@ -160,9 +136,7 @@ public class GenreService {
         return new GenreResponse(savedGenre);
     }
 
-    /**
-     * Update an existing genre (admin version)
-     */
+    
     public GenreResponse updateGenreForAdmin(Long genreId, GenreRequestDto request) {
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
@@ -177,9 +151,7 @@ public class GenreService {
         return new GenreResponse(savedGenre);
     }
 
-    /**
-     * Delete a genre (admin version)
-     */
+    
     public void deleteGenreForAdmin(Long genreId) {
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));
@@ -191,9 +163,7 @@ public class GenreService {
         genreRepository.delete(genre);
     }
 
-    /**
-     * Get genre by ID (admin version)
-     */
+    
     public GenreResponse getGenreByIdForAdmin(Long genreId) {
         Genre genre = genreRepository.findById(genreId)
             .orElseThrow(() -> new ResourceNotFoundException("Genre not found with id: " + genreId));

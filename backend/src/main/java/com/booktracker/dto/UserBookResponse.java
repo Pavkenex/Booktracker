@@ -13,7 +13,7 @@ public class UserBookResponse {
     private String review;
     private LocalDate readDate;
     private Boolean isFavourite;
-    private String username; // reviewer username
+    private String username;
     
     public UserBookResponse() {}
     
@@ -28,9 +28,7 @@ public class UserBookResponse {
         this.username = userBook.getUser() != null ? userBook.getUser().getUsername() : null;
     }
     
-    /**
-     * Populates the response with a pre-calculated book rating to avoid circular loading.
-     */
+    
     public UserBookResponse(UserBook userBook, Double bookRating) {
         this.id = userBook.getId();
         this.book = new BookResponse(userBook.getBook(), bookRating);

@@ -149,7 +149,8 @@
   </div>
 
   <!-- Report Content Section -->
-  <div class="row mb-4" *ngIf="activeReport">
+  @if (activeReport) {
+  <div class="row mb-4">
     <div class="col-12">
       <!-- Books by Category Report -->
       @if (activeReport === 'books-by-category' && reportData.booksByCategory) {
@@ -297,6 +298,7 @@
       }
     </div>
   </div>
+  }
 
   <!-- Error State -->
   @if (error) {

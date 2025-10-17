@@ -44,9 +44,7 @@ public class LibraryService {
         this.friendshipRepository = friendshipRepository;
     }
     
-    /**
-     * Add a book to user's library
-     */
+    
     public UserBookResponse addBookToLibrary(Long userId, UserBookRequest request) {
         User user = validateAndFetchUser(userId);
         
@@ -75,9 +73,7 @@ public class LibraryService {
         return new UserBookResponse(savedUserBook, bookRating);
     }
     
-    /**
-     * Update book in user's library
-     */
+    
     public UserBookResponse updateBookInLibrary(Long userId, Long userBookId, UserBookRequest request) {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
@@ -101,9 +97,7 @@ public class LibraryService {
         return new UserBookResponse(savedUserBook, bookRating);
     }
     
-    /**
-     * Remove book from user's library
-     */
+    
     public void removeBookFromLibrary(Long userId, Long userBookId) {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
@@ -115,34 +109,20 @@ public class LibraryService {
         userBookRepository.delete(userBook);
     }
     
-    /**
-     * Helper method to validate and fetch user by ID
-     * @param userId The user ID to validate and fetch
-     * @return User entity if found
-     * @throws RuntimeException if user not found
-     */
+    
     private User validateAndFetchUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    /**
-     * Helper method to validate user ownership of a UserBook
-     * @param userBook The UserBook to validate ownership for
-     * @param userId The user ID that should own the book
-     * @throws RuntimeException if user doesn't own the book
-     */
+    
     private void validateUserBookOwnership(UserBook userBook, Long userId) {
         if (!userBook.getUser().getId().equals(userId)) {
             throw new RuntimeException("Unauthorized access to library item");
         }
     }
 
-    /**
-     * Helper method to efficiently fetch average ratings for multiple books
-     * @param userBooks List of UserBook entities to fetch ratings for
-     * @return Map of book ID to average rating
-     */
+    
     private Map<Long, Double> fetchBookRatings(List<UserBook> userBooks) {
         List<Long> bookIds = userBooks.stream()
                 .map(ub -> ub.getBook().getId())
@@ -160,9 +140,7 @@ public class LibraryService {
         return bookRatings;
     }
 
-    /**
-     * Get user's library with pagination
-     */
+    
     @Transactional(readOnly = true)
     public Page<UserBookResponse> getUserLibrary(Long userId, int page, int size, String sortBy, String sortDir) {
         User user = userRepository.findById(userId)
@@ -182,9 +160,7 @@ public class LibraryService {
         });
     }
     
-    /**
-     * Get user's library by status
-     */
+    
     @Transactional(readOnly = true)
     public Page<UserBookResponse> getUserLibraryByStatus(Long userId, UserBook.ReadingStatus status, 
                                                         int page, int size, String sortBy, String sortDir) {
@@ -205,9 +181,7 @@ public class LibraryService {
         });
     }
     
-    /**
-     * Get user's favorite books
-     */
+    
     @Transactional(readOnly = true)
     public Page<UserBookResponse> getUserFavoriteBooks(Long userId, int page, int size, String sortBy, String sortDir) {
         User user = userRepository.findById(userId)
@@ -227,9 +201,7 @@ public class LibraryService {
         });
     }
     
-    /**
-     * Toggle favorite status of a book
-     */
+    
     public UserBookResponse toggleFavorite(Long userId, Long userBookId) {
         UserBook userBook = userBookRepository.findById(userBookId)
                 .orElseThrow(() -> new RuntimeException("Book not found in library"));
@@ -246,9 +218,7 @@ public class LibraryService {
         return new UserBookResponse(savedUserBook, bookRating);
     }
     
-    /**
-     * Get library statistics for a user
-     */
+    
     @Transactional(readOnly = true)
     public LibraryStatsResponse getLibraryStats(Long userId) {
         User user = userRepository.findById(userId)
@@ -279,9 +249,7 @@ public class LibraryService {
                                        ratingDistribution, averageRating);
     }
     
-    /**
-     * Get a specific book from user's library
-     */
+    
     @Transactional(readOnly = true)
     public UserBookResponse getUserBook(Long userId, Long userBookId) {
         UserBook userBook = userBookRepository.findById(userBookId)
@@ -296,17 +264,13 @@ public class LibraryService {
         return new UserBookResponse(userBook, bookRating);
     }
     
-    /**
-     * Check if user has a book in their library
-     */
+    
     @Transactional(readOnly = true)
     public boolean hasBookInLibrary(Long userId, Long bookId) {
         return userBookRepository.existsByUserIdAndBookId(userId, bookId);
     }
     
-    /**
-     * Get recent library activity
-     */
+    
     @Transactional(readOnly = true)
     public List<UserBookResponse> getRecentActivity(Long userId, int limit) {
         User user = userRepository.findById(userId)
@@ -325,9 +289,7 @@ public class LibraryService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get reviews for a book (latest first)
-     */
+    
     @Transactional(readOnly = true)
     public Page<UserBookResponse> getBookReviews(Long bookId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
@@ -338,9 +300,7 @@ public class LibraryService {
         });
     }
     
-    /**
-     * Get user book by book ID
-     */
+    
     @Transactional(readOnly = true)
     public UserBookResponse getUserBookByBookId(Long userId, Long bookId) {
         User user = userRepository.findById(userId)
@@ -357,9 +317,7 @@ public class LibraryService {
         return null;
     }
     
-    /**
-     * Helper method to get user ID by username
-     */
+    
     @Transactional(readOnly = true)
     public Long getUserIdByUsername(String username) {
         User user = userRepository.findByUsername(username)
@@ -367,9 +325,7 @@ public class LibraryService {
         return user.getId();
     }
     
-    /**
-     * Check if two users are friends
-     */
+    
     @Transactional(readOnly = true)
     public boolean areUsersFriends(Long userId1, Long userId2) {
         User user1 = userRepository.findById(userId1)

@@ -15,18 +15,21 @@
           {{ recommendation.book.title }}
         </a>
         <div class="header-actions">
-          <span class="read-indicator" *ngIf="isRead">
+          @if (isRead) {
+          <span class="read-indicator">
             <i class="fas fa-check-circle"></i>
           </span>
+          }
+          @if (variant === 'compact' && canMarkAsRead) {
           <button
             class="mark-read-btn"
             type="button"
-            *ngIf="variant === 'compact' && canMarkAsRead"
             (click)="onMarkAsRead()"
             title="Mark recommendation as read"
           >
             <i class="fas fa-check"></i>
           </button>
+          }
         </div>
       </div>
 
@@ -41,81 +44,97 @@
           <i class="fas fa-clock me-1"></i>
           {{ getTimeAgo(recommendation.createdAt) }}
         </span>
-        <span class="meta-chip status" *ngIf="hasInLibrary && libraryStatusLabel">
+        @if (hasInLibrary && libraryStatusLabel) {
+        <span class="meta-chip status">
           <i class="fas fa-book me-1"></i>
           {{ libraryStatusLabel }}
         </span>
+        }
       </div>
 
-      <p class="recommendation-message" *ngIf="recommendation.message">
+      @if (recommendation.message) {
+      <p class="recommendation-message">
         “{{ recommendation.message }}”
       </p>
+      }
 
-      <div class="action-row" *ngIf="variant === 'compact'">
-        <button class="btn btn-sm btn-primary" type="button" *ngIf="canAddToLibrary" (click)="onAddToLibrary()">
+      @if (variant === 'compact') {
+      <div class="action-row">
+        @if (canAddToLibrary) {
+        <button class="btn btn-sm btn-primary" type="button" (click)="onAddToLibrary()">
           <i class="fas fa-plus me-1"></i>
           Add to Library
         </button>
+        }
         <a
           class="btn btn-sm btn-outline-secondary"
           [routerLink]="['/books', recommendation.book.id]"
         >
           View Book
         </a>
+        @if (canDelete) {
         <button
           class="btn btn-sm btn-outline-danger"
           type="button"
-          *ngIf="canDelete"
           (click)="onDelete()"
         >
           <i class="fas fa-times me-1"></i>
           {{ deleteButtonLabel }}
         </button>
+        }
       </div>
+      }
 
-      <div class="action-row detailed" *ngIf="variant === 'detailed'">
+      @if (variant === 'detailed') {
+      <div class="action-row detailed">
         <div class="left-group">
+          @if (canAddToLibrary) {
           <button
             class="btn btn-sm btn-outline-primary"
             type="button"
-            *ngIf="canAddToLibrary"
             (click)="onAddToLibrary()"
           >
             <i class="fas fa-plus me-1"></i>
             Add to Library
           </button>
-          <span class="library-pill" *ngIf="hasInLibrary && libraryStatusLabel">
+          }
+          @if (hasInLibrary && libraryStatusLabel) {
+          <span class="library-pill">
             <i class="fas fa-check me-1"></i>
             {{ libraryStatusLabel }}
           </span>
+          }
         </div>
         <div class="right-group">
+          @if (canMarkAsRead) {
           <button
             class="btn btn-sm btn-outline-secondary"
             type="button"
             (click)="onMarkAsRead()"
-            *ngIf="canMarkAsRead"
           >
             <i class="fas fa-check-double me-1"></i>
             Mark as Read
           </button>
+          }
           <a
             class="btn btn-sm btn-primary"
             [routerLink]="['/books', recommendation.book.id]"
           >
             View Book
           </a>
+          @if (canDelete) {
           <button
             class="btn btn-sm btn-outline-danger"
             type="button"
             (click)="onDelete()"
-            *ngIf="canDelete"
           >
             <i class="fas fa-trash me-1"></i>
             {{ deleteButtonLabel }}
           </button>
+          }
         </div>
       </div>
+      }
     </div>
   </div>
 </article>

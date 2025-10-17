@@ -36,9 +36,7 @@ public class AdminService {
     }
 
     
-    /**
-     * Get admin dashboard statistics
-     */
+    
     public AdminStatsResponseDto getAdminStats() {
         long totalUsers = userRepository.countTotalUsers();
         long totalBooks = bookRepository.countTotalBooks();

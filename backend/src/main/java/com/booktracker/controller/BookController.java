@@ -32,9 +32,7 @@ public class BookController {
     @Autowired
     private PopularityService popularityService;
 
-    /**
-     * Get all books with pagination and sorting
-     */
+    
     @GetMapping
     public ResponseEntity<PagedResponse<BookResponse>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
@@ -46,9 +44,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    /**
-     * Search books by title or author
-     */
+    
     @GetMapping("/search")
     public ResponseEntity<PagedResponse<BookResponse>> searchBooks(
             @RequestParam String q,
@@ -61,9 +57,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    /**
-     * Filter books with multiple criteria
-     */
+    
     @GetMapping("/filter")
     public ResponseEntity<PagedResponse<BookResponse>> filterBooks(
             @RequestParam(required = false) String title,
@@ -80,9 +74,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    /**
-     * Get books by genre
-     */
+    
     @GetMapping("/genre/{genreId}")
     public ResponseEntity<PagedResponse<BookResponse>> getBooksByGenre(
             @PathVariable Long genreId,
@@ -95,9 +87,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    /**
-     * Get book details by ID
-     */
+    
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getBookById(@PathVariable Long id) {
         Optional<BookResponse> book = bookService.getBookById(id);
@@ -106,9 +96,7 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Get similar books by shared genres
-     */
+    
     @GetMapping("/{id}/similar")
     public ResponseEntity<List<BookResponse>> getSimilarBooks(
             @PathVariable Long id,
@@ -119,9 +107,7 @@ public class BookController {
         return ResponseEntity.ok(similar);
     }
 
-    /**
-     * Get most popular books based on view count
-     */
+    
     @GetMapping("/popular")
     public ResponseEntity<List<BookResponse>> getMostPopularBooks(
             @RequestParam(defaultValue = "10") int limit) {
@@ -147,9 +133,7 @@ public class BookController {
         }
     }
 
-    /**
-     * Record a book view asynchronously
-     */
+    
     @PostMapping("/{id}/view")
     public ResponseEntity<Void> recordBookView(@PathVariable Long id) {
         try {
@@ -165,14 +149,12 @@ public class BookController {
             
         } catch (Exception e) {
             logger.error("Error initiating view recording for book ID: {}", id, e);
-            // Return success even if view recording fails to not break user experience
+           
             return ResponseEntity.ok().build();
         }
     }
 
-    /**
-     * Asynchronous method to record book view
-     */
+    
     @Async
     public CompletableFuture<Void> recordBookViewAsync(Long bookId) {
         try {
@@ -180,14 +162,12 @@ public class BookController {
             logger.debug("Successfully recorded view for book ID: {}", bookId);
         } catch (Exception e) {
             logger.error("Failed to record view for book ID: {}", bookId, e);
-            // Don't rethrow - view recording should not break the main functionality
+           
         }
         return CompletableFuture.completedFuture(null);
     }
 
-    /**
-     * Get recently added books
-     */
+    
     @GetMapping("/recent")
     public ResponseEntity<List<BookResponse>> getRecentlyAddedBooks(
             @RequestParam(defaultValue = "10") int limit) {
@@ -196,18 +176,14 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-    /**
-     * Get total book count
-     */
+    
     @GetMapping("/count")
     public ResponseEntity<Long> getTotalBookCount() {
         long count = bookService.getTotalBookCount();
         return ResponseEntity.ok(count);
     }
 
-    /**
-     * Create a new book (Admin only)
-     */
+    
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody BookRequestDto bookRequest) {
@@ -215,9 +191,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
     }
 
-    /**
-     * Update an existing book (Admin only)
-     */
+    
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookResponse> updateBook(
@@ -229,9 +203,7 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Delete a book (Admin only)
-     */
+    
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {

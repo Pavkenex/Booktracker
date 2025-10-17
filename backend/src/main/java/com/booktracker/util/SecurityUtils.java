@@ -16,11 +16,7 @@ public class SecurityUtils {
         this.jwtUtil = jwtUtil;
     }
     
-    /**
-     * Get current authenticated user ID
-     * @return User ID from authentication context
-     * @throws AuthenticationException if user is not authenticated
-     */
+    
     public Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || 
@@ -28,7 +24,7 @@ public class SecurityUtils {
             throw new AuthenticationException("User not authenticated");
         }
         
-        // Try to get user ID from CustomUserPrincipal first
+       
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomUserDetailsService.CustomUserPrincipal customPrincipal) {
             Long userId = customPrincipal.getId();
@@ -40,9 +36,7 @@ public class SecurityUtils {
         throw new AuthenticationException("Unable to extract user ID from authentication context");
     }
     
-    /**
-     * Check if current user is authenticated
-     */
+    
     public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication.isAuthenticated();

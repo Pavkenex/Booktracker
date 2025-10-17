@@ -30,31 +30,25 @@ public class BookResponse {
                 .map(GenreResponse::new)
                 .collect(Collectors.toSet());
         
-        // Don't calculate rating here to avoid circular loading
-        // Rating will be set separately when needed
+       
+       
         this.rating = 0.0;
     }
 
-    /**
-     * Creates a response enriched with popularity metrics.
-     */
+    
     public BookResponse(Book book, Long viewCount) {
         this(book);
         this.viewCount = viewCount;
     }
     
-    /**
-     * Creates a response that includes view count and a pre-computed rating.
-     */
+    
     public BookResponse(Book book, Long viewCount, Double rating) {
         this(book);
         this.viewCount = viewCount;
         this.rating = rating;
     }
     
-    /**
-     * Builds a response using an externally calculated rating to avoid circular loading.
-     */
+    
     public BookResponse(Book book, Double rating) {
         this(book);
         this.rating = rating != null ? Math.round(rating * 10.0) / 10.0 : 0.0;

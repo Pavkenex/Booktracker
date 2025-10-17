@@ -73,8 +73,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/api/test/**").permitAll() // Temporary for development
-                        .requestMatchers("/api/books/**").permitAll() // Temporary for development
+                        .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers("/api/books/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())

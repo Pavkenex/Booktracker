@@ -80,3 +80,4 @@ public class FriendRequestDto {
         this.createdAt = createdAt;
     }
 }
+
