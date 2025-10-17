@@ -30,7 +30,7 @@
   opacity: 0.75;
 }
 
-/* Mobile optimizations */
+
 @media (max-width: 767.98px) {
   .container-fluid {
     padding: 0.75rem;
@@ -73,7 +73,7 @@
   }
 }
 
-/* Improve touch targets */
+
 .btn {
   min-height: 44px;
   transition: all 0.2s ease-in-out;
@@ -83,7 +83,7 @@
   min-height: 36px;
 }
 
-/* Card hover effects for non-touch devices */
+
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     transform: translateY(-2px);

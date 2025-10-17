@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FallbackImageDirective } from '../../../directives/fallback-image';
 import { ClickOutsideDirective } from '../../../directives/click-outside';
-import { AvatarService } from '../../../services/avatar.service';
+import { UserApi } from '../../../services/user-api';
 
 @Component({
     selector: 'app-friends-list',
@@ -32,9 +32,9 @@ export class FriendsListComponent implements OnInit, OnDestroy {
     private socialApi: SocialApi,
     private router: Router,
     private route: ActivatedRoute,
-    private avatarService: AvatarService
+    private userApi: UserApi
   ) {
-    this.defaultAvatar = this.avatarService.fallback;
+    this.defaultAvatar = this.userApi.defaultAvatar;
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -165,7 +165,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   }
 
   getAvatar(avatarUrl?: string | null): string {
-    return this.avatarService.resolve(avatarUrl);
+    return this.userApi.resolveAvatarUrl(avatarUrl);
   }
 
   toggleMenu(friendship: Friendship): void {

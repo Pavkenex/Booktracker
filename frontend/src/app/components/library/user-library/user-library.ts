@@ -22,7 +22,7 @@ export class UserLibraryComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  // Stats
+  
   totalBooks: number = 0;
   completedBooks: number = 0;
   currentlyReadingBooks: number = 0;

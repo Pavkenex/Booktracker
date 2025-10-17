@@ -11,7 +11,7 @@
     <option value="read">Read</option>
   </select>
 
-  <!-- Loading indicator -->
+  
   @if (updating) {
   <div class="text-center mt-1">
     <div class="spinner-border spinner-border-sm" role="status">
@@ -20,7 +20,7 @@
   </div>
   }
 
-  <!-- Read date display -->
+  
   @if (userBook().status === 'read' && userBook().readDate) {
   <div class="mt-1">
     <small class="text-muted">

@@ -19,12 +19,12 @@ export class PopularityStatisticsComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  // Filter and sort options
+  
   searchTerm = "";
   sortBy = "viewCount";
   displayLimit = "25";
 
-  // Export status
+  
   exportStatus = {
     show: false,
     message: "",
@@ -57,7 +57,7 @@ export class PopularityStatisticsComponent implements OnInit {
   applyFilters(): void {
     let filtered = [...this.statistics];
 
-    // Apply search filter
+    
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase().trim();
       filtered = filtered.filter(
@@ -67,7 +67,7 @@ export class PopularityStatisticsComponent implements OnInit {
       );
     }
 
-    // Apply sorting
+    
     filtered.sort((a, b) => {
       switch (this.sortBy) {
         case "viewCount":
@@ -87,7 +87,7 @@ export class PopularityStatisticsComponent implements OnInit {
       }
     });
 
-    // Apply display limit
+    
     if (this.displayLimit !== "all") {
       const limit = parseInt(this.displayLimit, 10);
       filtered = filtered.slice(0, limit);
@@ -108,7 +108,7 @@ export class PopularityStatisticsComponent implements OnInit {
 
     this.adminApi.exportPopularityStatistics(format).subscribe({
       next: (blob) => {
-        // Create download link
+        
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;

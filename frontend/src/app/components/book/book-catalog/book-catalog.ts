@@ -38,7 +38,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   constructor(private bookApi: BookApi) {}
 
   ngOnInit(): void {
-    // Ensure genreId is properly initialized
+    
     this.searchParams.genreId = '';
     this.loadBooks();
   }

@@ -18,7 +18,6 @@ export class BookApi {
     if (params.page !== undefined) queryParams.append('page', params.page.toString());
     if (params.size !== undefined) queryParams.append('size', params.size.toString());
     
-    // Check if we have meaningful filter parameters (not empty strings or undefined)
     const hasTitle = params.title && params.title.trim() !== '';
     const hasAuthor = params.author && params.author.trim() !== '';
     const hasGenre = params.genreId && params.genreId !== '' && Number(params.genreId) > 0;
@@ -26,14 +25,12 @@ export class BookApi {
     const hasFilters = hasTitle || hasAuthor || hasGenre;
     
     if (hasFilters) {
-      // Use filter endpoint when we have search criteria
       if (hasTitle && params.title) queryParams.append('title', params.title.trim());
       if (hasAuthor && params.author) queryParams.append('author', params.author.trim());
       if (hasGenre && params.genreId) queryParams.append('genreId', params.genreId.toString());
       
       return this.http.get<PagedResponse<Book>>(`${this.API_URL}/books/filter?${queryParams.toString()}`);
     } else {
-      // Use regular books endpoint for simple pagination
       return this.http.get<PagedResponse<Book>>(`${this.API_URL}/books?${queryParams.toString()}`);
     }
   }

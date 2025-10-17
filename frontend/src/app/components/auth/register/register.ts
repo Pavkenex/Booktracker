@@ -54,7 +54,7 @@ export class RegisterComponent {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     } else {
-      // Remove the passwordMismatch error if passwords match
+      
       const errors = confirmPassword.errors;
       if (errors) {
         delete errors['passwordMismatch'];

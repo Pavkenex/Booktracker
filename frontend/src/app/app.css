@@ -20,10 +20,10 @@
 
 .main-content {
   padding: 1rem;
-  min-height: calc(100vh - 76px); /* Account for navbar height */
+  min-height: calc(100vh - 76px); 
 }
 
-/* Mobile-specific styles */
+
 @media (max-width: 991.98px) {
   .navbar-collapse {
     margin-top: 0.5rem;
@@ -57,7 +57,7 @@
   }
 }
 
-/* Ensure proper spacing for mobile navigation */
+
 .navbar-toggler {
   border: none;
   padding: 0.25rem 0.5rem;
@@ -67,7 +67,7 @@
   box-shadow: none;
 }
 
-/* Dropdown improvements */
+
 .dropdown {
   position: relative;
 }
@@ -95,7 +95,7 @@
   margin-left: 0.5rem;
 }
 
-/* Desktop dropdown positioning */
+
 @media (min-width: 992px) {
   .dropdown-menu {
     position: absolute;
@@ -111,7 +111,7 @@
   }
 }
 
-/* Mobile dropdown behavior */
+
 @media (max-width: 991.98px) {
   .dropdown-menu {
     position: static !important;
@@ -134,7 +134,7 @@
   }
 }
 
-/* Ensure dropdown doesn't get cut off */
+
 .navbar {
   overflow: visible;
 }

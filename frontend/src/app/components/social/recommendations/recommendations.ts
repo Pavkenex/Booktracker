@@ -31,7 +31,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   error: string = '';
   activeTab: 'received' | 'sent' | 'send' = 'received';
   
-  // Send recommendation form
   selectedFriendId: number | null = null;
   selectedBookId: number | null = null;
   recommendationMessage: string = '';
@@ -39,7 +38,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   filteredBooks: Book[] = [];
   isSending: boolean = false;
   isBookDropdownOpen = false;
-  // Query param handling
   private pendingBookId: number | null = null;
   private pendingAction: 'send' | null = null;
   private pendingFriendId: number | null = null;
@@ -53,7 +51,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Read query params for preselecting a book and switching to send tab
     this.route.queryParams
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
@@ -73,7 +70,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
         this.pendingFriendId = parsedFriendId;
         this.activeTab = 'send';
       }
-      // If books already loaded we can try selecting immediately
       if (this.books.length > 0 && this.pendingBookId) {
         this.applyPendingBookSelection();
       }
@@ -156,7 +152,6 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Ownership helpers
   getUserBook(book: Book): UserBook | undefined { return this.userBooksMap.get(book.id); }
 
   addRecommendationBookToLibrary(bookId: number): void {
@@ -181,11 +176,9 @@ export class RecommendationsComponent implements OnInit, OnDestroy {
       if (this.pendingAction === 'send') {
         this.activeTab = 'send';
       }
-      // Clear pending once applied
       this.pendingBookId = null;
       this.pendingAction = null;
     } else {
-      // If not in library fetch directly and add temporarily
       this.bookApi.getBookById(this.pendingBookId)
         .pipe(takeUntil(this.destroy$))
         .subscribe({

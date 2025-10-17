@@ -1,5 +1,5 @@
 <div class="book-actions mt-4">
-  <!-- User not authenticated -->
+  
   @if (!isAuthenticated) {
   <div class="text-center">
     <p class="text-muted mb-3">Sign in to add this book to your library</p>
@@ -17,10 +17,10 @@
   </div>
   }
 
-  <!-- User authenticated but book not in library -->
+  
   @if (isAuthenticated && !userBook) {
   <div>
-    <!-- Desktop / larger screens: split button group -->
+    
     <div class="btn-group dropdown d-none d-sm-inline-flex" role="group">
       <button
         class="btn btn-success"
@@ -75,7 +75,7 @@
         <i class="fas fa-share me-2"></i>Recommend
       </button>
     </div>
-    <!-- Mobile: single full-width dropdown button -->
+    
     <div class="dropdown d-sm-none">
       <button
         class="btn btn-success w-100"
@@ -130,7 +130,7 @@
   </div>
   }
 
-  <!-- User authenticated and book already in library -->
+  
   @if (isAuthenticated && userBook) {
   <div class="library-status-section">
     <div class="alert alert-info d-flex align-items-center mb-3">
@@ -183,7 +183,7 @@
   </div>
   }
 
-  <!-- Success/Error Messages -->
+  
   @if (libraryMessage) {
   <div class="alert alert-success mt-3">{{ libraryMessage }}</div>
   } @if (error) {

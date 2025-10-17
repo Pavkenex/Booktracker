@@ -27,7 +27,7 @@ export class BookFiltersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadGenres();
     
-    // Set up debounced search
+    
     this.searchSubject
       .pipe(
         debounceTime(500),
@@ -95,7 +95,7 @@ export class BookFiltersComponent implements OnInit, OnDestroy {
   }
 
   private emitSearchChange(): void {
-    this.searchParams.page = 0; // Reset to first page on search
+    this.searchParams.page = 0; 
     this.searchParamsChange.emit(this.searchParams);
     this.filtersChanged.emit();
   }

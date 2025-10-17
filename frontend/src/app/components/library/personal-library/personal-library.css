@@ -14,7 +14,7 @@
   transition: transform 0.2s ease-in-out;
 }
 
-/* Only apply hover effects on non-touch devices */
+
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     transform: translateY(-2px);
@@ -85,7 +85,7 @@
   text-decoration: underline;
 }
 
-/* Mobile optimizations */
+
 @media (max-width: 767.98px) {
   .container {
     padding-left: 0.75rem;
@@ -112,7 +112,7 @@
   }
 
   .form-select {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; 
   }
 
   .nav-tabs .nav-link {
@@ -135,7 +135,7 @@
   }
 }
 
-/* Improve touch targets */
+
 .btn {
   min-height: 44px;
   display: flex;

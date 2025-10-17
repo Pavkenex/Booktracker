@@ -10,7 +10,7 @@
     </button>
   </div>
 
-  <!-- Error Alert -->
+  
   @if (error) {
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
     {{ error }}
@@ -23,7 +23,7 @@
   </div>
   }
 
-  <!-- Loading State -->
+  
   @if (isLoading) {
   <div class="requests-loading">
     <div class="spinner-border" role="status">
@@ -33,7 +33,7 @@
   </div>
   }
 
-  <!-- No Requests State -->
+  
   @if (!isLoading && friendRequests.length === 0) {
   <div class="requests-empty">
     <i class="fas fa-user-friends fa-3x mb-3"></i>
@@ -42,7 +42,7 @@
   </div>
   }
 
-  <!-- Friend Requests List -->
+  
   @if (!isLoading && friendRequests.length > 0) {
   <ul class="request-list">
     @for (request of friendRequests; track request) {

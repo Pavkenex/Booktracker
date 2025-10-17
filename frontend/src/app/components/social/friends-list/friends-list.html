@@ -13,7 +13,7 @@
     </button>
   </div>
 
-  <!-- Error Alert -->
+  
   @if (error) {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       {{ error }}
@@ -21,7 +21,7 @@
     </div>
   }
 
-  <!-- Friend Search Section -->
+  
   @if (showSearch) {
     <div class="friend-search card">
       <div class="card-body">
@@ -46,7 +46,7 @@
             }
           </button>
         </div>
-        <!-- Search Results -->
+        
         @if (searchResults.length > 0) {
           <div class="search-results">
             <h6 class="mb-2">People</h6>

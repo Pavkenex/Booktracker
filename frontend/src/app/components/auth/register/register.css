@@ -6,7 +6,7 @@
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
-/*Force the row to take up the full width of the flex container */
+
 .container-fluid > .row {
   width: 100%;
 }
@@ -95,7 +95,7 @@
   color: #6c757d;
 }
 
-/* Mobile optimizations */
+
 @media (max-width: 767.98px) {
   .container-fluid {
     padding: 1rem 0.75rem;
@@ -111,7 +111,7 @@
   }
 
   .form-control-lg {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; 
   }
 
   h4 {
@@ -137,7 +137,7 @@
   }
 }
 
-/* Improve accessibility and touch targets */
+
 .btn {
   min-height: 48px;
   transition: all 0.2s ease-in-out;

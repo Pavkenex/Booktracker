@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get return url from route parameters or default to '/'
+    
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
           if (error.status === 401) {
             this.errorMessage = 'Invalid username or password.';
           } else {
-            // Let the error interceptor handle other errors
+            
             this.errorMessage = this.ErrorHandler.handleHttpError(error);
           }
         }

@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <!-- Mobile Filter Toggle -->
+    
     <app-mobile-filter-toggle
       [showMobileFilters]="showMobileFilters"
       [activeFiltersCount]="getActiveFiltersCount()"
@@ -8,7 +8,7 @@
     >
     </app-mobile-filter-toggle>
 
-    <!-- Search and Filter Sidebar -->
+    
     <div class="col-lg-3 col-md-4 mb-4">
       <app-book-filters
         [searchParams]="searchParams"
@@ -20,7 +20,7 @@
       </app-book-filters>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="col-lg-9 col-md-8">
       <app-book-list
         [booksResponse]="booksResponse"

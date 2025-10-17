@@ -67,7 +67,7 @@
   cursor: pointer;
 }
 
-/* Mobile optimizations */
+
 @media (max-width: 767.98px) {
   .card-body {
     padding: 1rem;

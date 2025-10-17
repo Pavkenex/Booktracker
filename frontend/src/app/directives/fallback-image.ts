@@ -1,11 +1,6 @@
 import { Directive, ElementRef, HostListener, Input } from "@angular/core";
 import { APP_CONSTANTS } from "../constants/app.constants";
 
-/**
- * Directive to handle image loading errors by setting a fallback image
- *
- * Usage: <img [src]="imageUrl" appFallbackImage [fallbackSrc]="customFallback" />
- */
 @Directive({
   selector: "[appFallbackImage]",
   standalone: true,

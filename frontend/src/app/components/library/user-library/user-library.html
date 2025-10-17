@@ -11,7 +11,7 @@
         </button>
       </div>
 
-      <!-- Loading State -->
+      
       @if (isLoading) {
       <div class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
@@ -21,7 +21,7 @@
       </div>
       }
 
-      <!-- Error State -->
+      
       @if (error) {
       <div class="alert alert-danger" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
@@ -29,10 +29,10 @@
       </div>
       }
 
-      <!-- Library Content -->
+      
       @if (!isLoading && !error) {
       <div>
-        <!-- Library Stats -->
+        
         <div class="row mb-4">
           <div class="col-md-3 col-sm-6 mb-3">
             <div class="card bg-primary text-white">
@@ -67,7 +67,7 @@
             </div>
           </div>
         </div>
-        <!-- Books List -->
+        
         @if (books.length > 0) {
         <div>
           <div class="row">
@@ -130,7 +130,7 @@
           </div>
         </div>
         }
-        <!-- Empty State -->
+        
         @if (books.length === 0) {
         <div class="text-center py-5">
           <i class="fas fa-book-open fa-3x text-muted mb-3"></i>

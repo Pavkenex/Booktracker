@@ -25,12 +25,12 @@ export class BookPaginationComponent {
     
     const current = response.page;
     const total = response.totalPages;
-    const delta = 2; // Number of pages to show on each side of current page
+    const delta = 2; 
     
     let start = Math.max(0, current - delta);
     let end = Math.min(total - 1, current + delta);
     
-    // Adjust if we're near the beginning or end
+    
     if (end - start < 2 * delta) {
       if (start === 0) {
         end = Math.min(total - 1, start + 2 * delta);

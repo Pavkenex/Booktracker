@@ -24,7 +24,6 @@ export class FriendRequestsComponent implements OnInit {
   ngOnInit(): void {
     this.loadFriendRequests();
     
-    // Force refresh notifications when component loads
     this.socialApi.forceRefreshNotifications();
   }
 

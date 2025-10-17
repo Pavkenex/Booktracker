@@ -1,6 +1,6 @@
 @if (pagedResponse() && pagedResponse()!.totalPages > 1) {
 <nav aria-label="Book catalog pagination" class="mt-4">
-  <!-- Mobile pagination (simplified) -->
+  
   <div class="d-flex d-md-none justify-content-between align-items-center">
     <button
       class="btn btn-outline-primary btn-sm"
@@ -20,7 +20,7 @@
       Next <i class="fas fa-chevron-right"></i>
     </button>
   </div>
-  <!-- Desktop pagination (full) -->
+  
   <ul class="pagination justify-content-center d-none d-md-flex">
     <li class="page-item" [class.disabled]="pagedResponse()!.first">
       <button

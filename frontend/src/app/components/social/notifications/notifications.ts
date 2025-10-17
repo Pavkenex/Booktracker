@@ -47,7 +47,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       })
     );
     
-    // Force an immediate refresh when component loads
     this.socialApi.forceRefreshNotifications();
   }
 
@@ -73,14 +72,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.isRefreshing = true;
     this.socialApi.forceRefreshNotifications();
     
-    // Reset refreshing state after a short delay if no update comes
     setTimeout(() => {
       this.isRefreshing = false;
     }, 2000);
   }
 
   onRecommendationsClick(): void {
-    // Mark all recommendations as read when clicking
     this.socialApi.markAllRecommendationsAsRead().subscribe({
       next: () => {
         this.closeDropdown();
@@ -93,7 +90,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   onFriendRequestsClick(): void {
-    // Navigate to social hub with the requests tab
     this.router.navigate(['/social'], { queryParams: { tab: 'requests' } });
     this.closeDropdown();
   }

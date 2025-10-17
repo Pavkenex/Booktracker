@@ -83,7 +83,7 @@
   border-top: 1px solid #dee2e6;
 }
 
-/* Animation for dropdown */
+
 .notification-dropdown-menu {
   animation: fadeInDown 0.2s ease-in-out;
 }
@@ -99,7 +99,7 @@
   }
 }
 
-/* Mobile responsiveness */
+
 @media (max-width: 768px) {
   .notification-dropdown-menu {
     min-width: 260px;

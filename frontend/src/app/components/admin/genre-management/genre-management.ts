@@ -16,17 +16,17 @@ export class GenreManagementComponent implements OnInit {
   genreForm: FormGroup;
   searchTerm = '';
   
-  // Modal states
+  
   isEditing = false;
   editingGenre: Genre | null = null;
   genreToDelete: Genre | null = null;
   
-  // Loading states
+  
   loading = false;
   submitting = false;
   deleting = false;
   
-  // Messages
+  
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
@@ -104,10 +104,10 @@ export class GenreManagementComponent implements OnInit {
             ? 'Genre updated successfully!' 
             : 'Genre created successfully!';
           
-          // Immediately close modal and clean up
+          
           this.closeModal('genreModal');
           
-          // Reload genres to show the new/updated entry
+          
           this.loadGenres();
         },
         error: (error) => {
@@ -151,21 +151,21 @@ export class GenreManagementComponent implements OnInit {
   private closeModal(modalId: string): void {
     const modal = document.getElementById(modalId);
     if (modal) {
-      // Get or create modal instance
+      
       let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
       if (!bsModal) {
         bsModal = new (window as any).bootstrap.Modal(modal);
       }
       
-      // Hide the modal
+      
       bsModal.hide();
       
-      // Force cleanup after modal animation
+      
       setTimeout(() => {
-        // Remove any lingering backdrops
+        
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
         
-        // Only reset body styles if no other modals are open
+        
         const openModals = document.querySelectorAll('.modal.show');
         if (openModals.length === 0) {
           document.body.classList.remove('modal-open');
@@ -173,7 +173,7 @@ export class GenreManagementComponent implements OnInit {
           document.body.style.removeProperty('padding-right');
         }
         
-        // Clean up form state
+        
         if (modalId === 'genreModal') {
           this.genreForm.reset();
           this.isEditing = false;

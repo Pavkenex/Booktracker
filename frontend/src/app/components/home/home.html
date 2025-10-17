@@ -31,14 +31,14 @@
      </div>
    </div>
 
-<!-- Popular Books Section -->
+
   <div class="row mt-5">
     <div class="col-12">
       <app-popular-books-section></app-popular-books-section>
     </div>
   </div>
 
-<!-- Recent Recommendations Section (only for authenticated users) -->
+
 @if (isAuthenticated$ | async) {
   <section class="home-recommendations mt-5">
     <div>

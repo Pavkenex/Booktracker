@@ -1,7 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* Global styles */
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8f9fa;
@@ -11,7 +11,7 @@ body {
   padding: 0;
 }
 
-/* Custom Bootstrap overrides */
+
 .btn-primary {
   background-color: #007bff;
   border-color: #007bff;
@@ -22,14 +22,14 @@ body {
   border-color: #0056b3;
 }
 
-/* Mobile-first responsive design */
+
 @media (max-width: 767.98px) {
   .container {
     padding-left: 15px;
     padding-right: 15px;
   }
   
-  /* Improve touch targets for mobile */
+  
   .btn {
     min-height: 44px;
     padding: 0.5rem 1rem;
@@ -40,29 +40,29 @@ body {
     padding: 0.375rem 0.75rem;
   }
   
-  /* Better form controls for mobile */
+  
   .form-control, .form-select {
     min-height: 44px;
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; 
   }
   
-  /* Improved navigation for mobile */
+  
   .navbar-nav .nav-link {
     padding: 0.75rem 1rem;
   }
   
-  /* Better spacing for mobile */
+  
   .card {
     margin-bottom: 1rem;
   }
   
-  /* Responsive tables */
+  
   .table-responsive {
     font-size: 0.875rem;
   }
 }
 
-/* Tablet responsive adjustments */
+
 @media (min-width: 768px) and (max-width: 991.98px) {
   .container {
     max-width: 100%;
@@ -71,23 +71,23 @@ body {
   }
 }
 
-/* Touch-friendly improvements */
+
 @media (hover: none) and (pointer: coarse) {
-  /* Increase touch targets */
+  
   .btn, .nav-link, .dropdown-item {
     min-height: 44px;
     display: flex;
     align-items: center;
   }
   
-  /* Remove hover effects on touch devices */
+  
   .card:hover {
     transform: none;
     box-shadow: inherit;
   }
 }
 
-/* Utility classes */
+
 .text-truncate-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -106,7 +106,7 @@ body {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
-/* Mobile-specific utility classes */
+
 .mobile-full-width {
   @media (max-width: 767.98px) {
     width: 100% !important;
@@ -125,7 +125,7 @@ body {
   }
 }
 
-/* Responsive grid adjustments */
+
 @media (max-width: 575.98px) {
   .col-sm-6 {
     flex: 0 0 100%;
@@ -133,7 +133,7 @@ body {
   }
 }
 
-/* Improved modal responsiveness */
+
 @media (max-width: 767.98px) {
   .modal-dialog {
     margin: 0.5rem;

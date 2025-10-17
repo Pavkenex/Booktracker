@@ -32,12 +32,10 @@ export class AdminApi {
     private bookApi: BookApi
   ) {}
 
-  // Dashboard stats
   getAdminStats(): Observable<AdminStats> {
     return this.http.get<AdminStats>(`${this.API_URL}/admin/stats`);
   }
 
-  // Book management
   createBook(book: Omit<Book, "id">): Observable<Book> {
     return this.http.post<Book>(`${this.API_URL}/admin/books`, book);
   }
@@ -50,7 +48,6 @@ export class AdminApi {
     return this.http.delete<void>(`${this.API_URL}/admin/books/${id}`);
   }
 
-  // Genre management
   createGenre(genre: Omit<Genre, "id">): Observable<Genre> {
     return this.http
       .post<Genre>(`${this.API_URL}/admin/genres`, genre);
@@ -70,13 +67,11 @@ export class AdminApi {
       .get<Genre[]>(`${this.API_URL}/genres`);
   }
 
-  // Reports
   getBooksByCategoryReport(): Observable<any> {
     return this.http.get<any>(`${this.API_URL}/admin/reports/books-by-category`);
   }
 
   getDailyActivityReport(): Observable<any> {
-    // Get data for the last 30 days
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(endDate.getDate() - 30);
@@ -91,7 +86,6 @@ export class AdminApi {
     return this.http.get<any>(`${this.API_URL}/admin/reports/user-engagement`);
   }
 
-  // Popularity statistics
   getPopularityStatistics(): Observable<PopularityStatistics[]> {
     return this.http.get<PopularityStatistics[]>(
       `${this.API_URL}/admin/popularity/statistics`
@@ -102,9 +96,7 @@ export class AdminApi {
     return this.http.get(`${this.API_URL}/admin/popularity/export?format=${format}`, { responseType: 'blob' });
   }
 
-  // Export reports
   exportReport(reportType: string, format: "pdf" | "excel"): Observable<Blob> {
-    // Map frontend report types to backend endpoints
     const endpointMap: { [key: string]: string } = {
       "books-by-category": "/admin/reports/books-by-category/export",
       "daily-activity": "/admin/reports/daily-activity/export",
@@ -113,7 +105,6 @@ export class AdminApi {
 
     const endpoint = endpointMap[reportType];
     if (!endpoint) {
-      // Fallback to mock for unknown report types
       const mockContent = `Mock ${reportType} report in ${format} format`;
       const blob = new Blob([mockContent], {
         type:
@@ -124,11 +115,10 @@ export class AdminApi {
       return of(blob);
     }
 
-    // For daily-activity report, we need to provide date parameters
     if (reportType === "daily-activity") {
       const endDate = new Date();
       const startDate = new Date();
-      startDate.setDate(endDate.getDate() - 30); // Last 30 days
+      startDate.setDate(endDate.getDate() - 30);
 
       const startDateStr = startDate.toISOString().split("T")[0];
       const endDateStr = endDate.toISOString().split("T")[0];
@@ -139,7 +129,6 @@ export class AdminApi {
       );
     }
 
-    // For other reports, just pass the format parameter
     return this.http.get(`${this.API_URL}${endpoint}?format=${format}`, { responseType: 'blob' });
   }
 }

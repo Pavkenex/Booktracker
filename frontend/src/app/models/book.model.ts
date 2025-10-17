@@ -36,6 +36,6 @@ export interface PagedResponse<T> {
 }
 export interface ApiResponse<T> {
   success: boolean;
-  message?: string; // Optional message
+  message?: string; 
   data: T;
 }

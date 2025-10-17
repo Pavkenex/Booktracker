@@ -49,7 +49,7 @@ export class ErrorHandler {
     if (autoHide) {
       setTimeout(() => {
         this.removeError(errorMessage.id);
-      }, 5000); // Auto-hide after 5 seconds
+      }, 5000); 
     }
   }
 
@@ -67,7 +67,6 @@ export class ErrorHandler {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  // Handle HTTP error responses
   handleHttpError(error: any): string {
     if (error.error && error.error.message) {
       return error.error.message;
@@ -93,7 +92,6 @@ export class ErrorHandler {
     }
   }
 
-  // Handle validation errors
   handleValidationErrors(errors: any): void {
     if (errors && typeof errors === 'object') {
       Object.keys(errors).forEach(field => {

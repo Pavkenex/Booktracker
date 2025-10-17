@@ -119,7 +119,6 @@ export class AuthStore {
   }
 
   requestPasswordReset(request: PasswordResetRequest): Observable<AuthResponse> {
-    // Map to backend DTO format
     const dto = {
       type: 'REQUEST',
       email: request.email
@@ -128,7 +127,6 @@ export class AuthStore {
   }
 
   resetPassword(request: PasswordResetConfirm): Observable<AuthResponse> {
-    // Map to backend DTO format  
     const dto = {
       type: 'CONFIRM',
       token: request.token,

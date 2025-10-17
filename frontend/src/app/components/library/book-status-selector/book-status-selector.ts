@@ -44,7 +44,7 @@ export class BookStatusSelectorComponent {
       },
       error: (error) => {
         console.error('Error updating book status:', error);
-        // Revert the select value on error
+        
         target.value = this.userBook().status;
         this.updating = false;
       }

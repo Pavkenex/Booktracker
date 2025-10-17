@@ -24,7 +24,7 @@ export class LibraryStatsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadStats();
     
-    // Listen for library update events
+    
     this.libraryEvents.libraryUpdated$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {

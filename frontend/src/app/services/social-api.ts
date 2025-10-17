@@ -31,14 +31,12 @@ export class SocialApi {
   private notificationInterval: any;
 
   constructor(private http: HttpClient, private authStore: AuthStore) {
-    // Subscribe to authentication changes and start/stop polling accordingly
     this.authStore.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
         this.loadNotificationCount();
         this.startNotificationPolling();
       } else {
         this.stopNotificationPolling();
-        // Reset notification count when user logs out
         this.notificationCountSubject.next({
           friendRequests: 0,
           recommendations: 0,
@@ -48,7 +46,6 @@ export class SocialApi {
     });
   }
 
-  // Friends Management
   getFriends(): Observable<Friendship[]> {
     return this.http.get<Friendship[]>(`${this.API_URL}/friends`);
   }
@@ -75,7 +72,6 @@ export class SocialApi {
     return this.http.get<FriendSearchResult[]>(`${this.API_URL}/friends/search?q=${encodeURIComponent(query)}`);
   }
 
-  // Recommendations
   getRecommendations(): Observable<Recommendation[]> {
     return this.http.get<Recommendation[]>(`${this.API_URL}/recommendations/received`);
   }
@@ -99,7 +95,6 @@ export class SocialApi {
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
-  // Notifications
   getNotificationCount(): Observable<NotificationCount> {
     return this.http.get<NotificationCount>(`${this.API_URL}/friends/notifications/count`);
   }
@@ -110,7 +105,6 @@ export class SocialApi {
   }
 
   private loadNotificationCount(): void {
-    // Only load notifications if user is authenticated
     if (!this.authStore.isAuthenticated()) {
       return;
     }
@@ -120,7 +114,6 @@ export class SocialApi {
         this.notificationCountSubject.next(count);
       },
       error: (error) => {
-        // If we get a 403, user is likely not authenticated - stop polling
         if (error.status === 403) {
           this.stopNotificationPolling();
         }
@@ -134,7 +127,6 @@ export class SocialApi {
   }
 
   private startNotificationPolling(): void {
-    // Poll for notifications every 30 seconds
     this.notificationInterval = setInterval(() => {
       this.loadNotificationCount();
     }, 30000);
@@ -146,25 +138,21 @@ export class SocialApi {
     }
   }
 
-  // Call this when user logs out
   onDestroy(): void {
     this.stopNotificationPolling();
   }
 
-  // Force immediate refresh - useful when user is actively using social features
   forceRefreshNotifications(): void {
     this.loadNotificationCount();
   }
 
-  // Start more frequent polling when user is on social pages
   startFrequentPolling(): void {
     this.stopNotificationPolling();
     this.notificationInterval = setInterval(() => {
       this.loadNotificationCount();
-    }, 10000); // Every 10 seconds
+    }, 10000);
   }
 
-  // Resume normal polling
   resumeNormalPolling(): void {
     this.stopNotificationPolling();
     this.startNotificationPolling();

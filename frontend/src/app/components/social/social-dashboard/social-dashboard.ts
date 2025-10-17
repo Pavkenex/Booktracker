@@ -39,7 +39,6 @@ export class SocialDashboardComponent implements OnInit, OnDestroy {
       this.notificationCount = count;
     });
 
-    // Check for query params to set the initial tab
     this.route.queryParams.subscribe(params => {
       if (params['tab'] === 'requests') {
         this.sidebarTab = 'requests';

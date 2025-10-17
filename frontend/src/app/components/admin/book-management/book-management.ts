@@ -17,19 +17,19 @@ export class BookManagementComponent implements OnInit {
   bookForm: FormGroup;
   selectedGenres: number[] = [];
   
-  // Search and pagination
+  
   searchTitle = '';
   searchAuthor = '';
   selectedGenreId = '';
   currentPage = 0;
   pageSize = 10;
   
-  // Modal states
+  
   isEditing = false;
   editingBook: Book | null = null;
   bookToDelete: Book | null = null;
   
-  // Loading states
+  
   loading = false;
   submitting = false;
   deleting = false;
@@ -166,7 +166,7 @@ export class BookManagementComponent implements OnInit {
         next: () => {
           this.submitting = false;
           this.loadBooks();
-          // Close modal using the centralized method
+          
           this.closeModal('bookModal');
         },
         error: (error) => {
@@ -191,7 +191,7 @@ export class BookManagementComponent implements OnInit {
         next: () => {
           this.deleting = false;
           this.loadBooks();
-          // Close modal using the centralized method
+          
           this.closeModal('deleteModal');
         },
         error: (error) => {
@@ -205,21 +205,21 @@ export class BookManagementComponent implements OnInit {
   closeModal(modalId: string): void {
     const modal = document.getElementById(modalId);
     if (modal) {
-      // Get or create modal instance
+      
       let bsModal = (window as any).bootstrap.Modal.getInstance(modal);
       if (!bsModal) {
         bsModal = new (window as any).bootstrap.Modal(modal);
       }
       
-      // Hide the modal
+      
       bsModal.hide();
       
-      // Force cleanup after modal animation
+      
       setTimeout(() => {
-        // Remove any lingering backdrops
+        
         document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
         
-        // Only reset body styles if no other modals are open
+        
         const openModals = document.querySelectorAll('.modal.show');
         if (openModals.length === 0) {
           document.body.classList.remove('modal-open');
@@ -227,7 +227,7 @@ export class BookManagementComponent implements OnInit {
           document.body.style.removeProperty('padding-right');
         }
         
-        // Clean up form state
+        
         if (modalId === 'bookModal') {
           this.bookForm.reset();
           this.isEditing = false;

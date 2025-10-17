@@ -34,11 +34,11 @@ export class ReportsPanelComponent implements OnInit {
   constructor(private adminApi: AdminApi) {}
 
   ngOnInit(): void {
-    // Component initialized
+    
   }
 
   loadReport(reportType: string): void {
-    // If this is the currently active report, toggle it off
+    
     if (this.activeReport === reportType) {
       this.activeReport = null;
       return;
@@ -47,10 +47,10 @@ export class ReportsPanelComponent implements OnInit {
     this.loadingReports[reportType] = true;
     this.error = null;
     
-    // Set as active report
+    
     this.activeReport = reportType as 'books-by-category' | 'daily-activity' | 'user-engagement';
 
-    // Check if we already have the data
+    
     if ((reportType === 'books-by-category' && this.reportData.booksByCategory) || 
         (reportType === 'daily-activity' && this.reportData.dailyActivity) ||
         (reportType === 'user-engagement' && this.reportData.userEngagement)) {
@@ -82,7 +82,7 @@ export class ReportsPanelComponent implements OnInit {
             this.reportData.booksByCategory = data;
             break;
           case 'daily-activity':
-            // Sort by date in reverse order (newest first)
+            
             this.reportData.dailyActivity = [...data].sort((a, b) => 
               new Date(b.date).getTime() - new Date(a.date).getTime()
             );
@@ -108,7 +108,7 @@ export class ReportsPanelComponent implements OnInit {
 
     this.adminApi.exportReport(reportType, format).subscribe({
       next: (blob) => {
-        // Create download link
+        
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -121,7 +121,7 @@ export class ReportsPanelComponent implements OnInit {
         this.exporting = false;
         this.exportSuccess = true;
         
-        // Hide success message after 3 seconds
+        
         setTimeout(() => {
           this.exportSuccess = false;
         }, 3000);
@@ -162,12 +162,12 @@ export class ReportsPanelComponent implements OnInit {
       return '0';
     }
     
-    // Format as decimal for values like average ratings
+    
     if (value % 1 !== 0) {
       return value.toFixed(1);
     }
     
-    // Format as integer for whole numbers
+    
     return value.toString();
   }
 }

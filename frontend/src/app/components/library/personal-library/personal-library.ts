@@ -83,7 +83,7 @@ export class PersonalLibraryComponent implements OnInit {
     const index = this.allBooks.findIndex(book => book.id === updatedBook.id);
     if (index !== -1) {
       this.allBooks[index] = updatedBook;
-      // Notify that library has been updated
+      
       this.libraryEvents.notifyLibraryUpdated();
     }
   }
@@ -94,7 +94,7 @@ export class PersonalLibraryComponent implements OnInit {
         const index = this.allBooks.findIndex(book => book.id === updatedBook.id);
         if (index !== -1) {
           this.allBooks[index] = updatedBook;
-          // Notify that library has been updated
+          
           this.libraryEvents.notifyLibraryUpdated();
         }
       },
@@ -116,7 +116,7 @@ export class PersonalLibraryComponent implements OnInit {
     const index = this.allBooks.findIndex(book => book.id === updatedBook.id);
     if (index !== -1) {
       this.allBooks[index] = updatedBook;
-      // Notify that library has been updated
+      
       this.libraryEvents.notifyLibraryUpdated();
     }
     this.closeReviewForm();
@@ -141,7 +141,7 @@ export class PersonalLibraryComponent implements OnInit {
       this.libraryApi.removeBookFromLibrary(userBook.id).subscribe({
         next: () => {
           this.allBooks = this.allBooks.filter(book => book.id !== userBook.id);
-          // Notify that library has been updated
+          
           this.libraryEvents.notifyLibraryUpdated();
         },
         error: (error) => {

@@ -1,7 +1,7 @@
-<!-- Modal Backdrop -->
+
 <div class="modal-backdrop fade show" (click)="closeModal()"></div>
 
-<!-- Modal -->
+
 <div class="modal fade show d-block" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -11,7 +11,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- Book Info -->
+        
         <div class="row mb-4">
           <div class="col-md-3">
             <img
@@ -29,9 +29,9 @@
           </div>
         </div>
 
-        <!-- Review Form -->
+        
         <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
-          <!-- Rating -->
+          
           <div class="mb-3">
             <label class="form-label">Rating</label>
             <div class="rating-input">
@@ -60,7 +60,7 @@
             }
           </div>
 
-          <!-- Review Text -->
+          
           <div class="mb-3">
             <label for="review" class="form-label">Review (Optional)</label>
             <textarea
@@ -76,7 +76,7 @@
             </div>
           </div>
 
-          <!-- Reading Status -->
+          
           <div class="mb-3">
             <label class="form-label">Reading Status</label>
             <select class="form-select" formControlName="status">
@@ -86,7 +86,7 @@
             </select>
           </div>
 
-          <!-- Favorite Toggle -->
+          
           <div class="mb-3">
             <div class="form-check">
               <input
