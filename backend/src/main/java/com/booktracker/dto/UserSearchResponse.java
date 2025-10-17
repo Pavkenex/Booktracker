@@ -1,20 +1,26 @@
 package com.booktracker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserSearchResponse {
     private Long id;
     private String username;
     private String email;
-    private boolean isFriend;
-    private boolean hasPendingRequest;
+    private String avatarUrl;
+    private boolean friend;
+    private boolean pendingRequest;
 
-    public UserSearchResponse() {}
+    public UserSearchResponse() {
+    }
 
-    public UserSearchResponse(Long id, String username, String email, boolean isFriend, boolean hasPendingRequest) {
+    public UserSearchResponse(Long id, String username, String email, String avatarUrl, boolean friend,
+            boolean pendingRequest) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.isFriend = isFriend;
-        this.hasPendingRequest = hasPendingRequest;
+        this.avatarUrl = avatarUrl;
+        this.friend = friend;
+        this.pendingRequest = pendingRequest;
     }
 
     public Long getId() {
@@ -41,20 +47,30 @@ public class UserSearchResponse {
         this.email = email;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    @JsonProperty("isFriend")
     public boolean isFriend() {
-        return isFriend;
+        return friend;
     }
 
     public void setFriend(boolean friend) {
-        isFriend = friend;
+        this.friend = friend;
     }
 
-    public boolean isHasPendingRequest() {
-        return hasPendingRequest;
+    @JsonProperty("hasPendingRequest")
+    public boolean hasPendingRequest() {
+        return pendingRequest;
     }
 
-    public void setHasPendingRequest(boolean hasPendingRequest) {
-        this.hasPendingRequest = hasPendingRequest;
+    public void setHasPendingRequest(boolean pendingRequest) {
+        this.pendingRequest = pendingRequest;
     }
+
 }
-

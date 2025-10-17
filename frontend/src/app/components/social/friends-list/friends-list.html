@@ -54,8 +54,12 @@
               @for (user of searchResults; track user) {
                 <li class="search-item">
                   <div class="search-info">
-                    <div class="avatar placeholder">
-                      <i class="fas fa-user"></i>
+                    <div class="avatar">
+                      <img
+                        [src]="getAvatar(user.avatarUrl)"
+                        [alt]="user.username + ' avatar'"
+                        appFallbackImage
+                        [fallbackSrc]="defaultAvatar" />
                     </div>
                     <div>
                       <strong>{{ user.username }}</strong>
@@ -124,7 +128,7 @@
           <li class="friend-item">
             <div class="friend-avatar">
               <img
-                [src]="getFriendAvatar(friendship)"
+                [src]="getAvatar(friendship.friend?.avatarUrl)"
                 alt="{{ friendship.friend?.username || 'Friend avatar' }}"
                 appFallbackImage
                 [fallbackSrc]="defaultAvatar" />

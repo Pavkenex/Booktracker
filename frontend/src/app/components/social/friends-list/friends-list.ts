@@ -7,8 +7,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FallbackImageDirective } from '../../../directives/fallback-image';
 import { ClickOutsideDirective } from '../../../directives/click-outside';
-import { APP_CONSTANTS } from '../../../constants/app.constants';
-import { environment } from '../../../../environments/environment';
+import { AvatarService } from '../../../services/avatar.service';
 
 @Component({
     selector: 'app-friends-list',
@@ -26,16 +25,16 @@ export class FriendsListComponent implements OnInit, OnDestroy {
   error: string = '';
   showSearch: boolean = false;
   openMenuFriendId: number | null = null;
-
-  readonly defaultAvatar = APP_CONSTANTS.DEFAULT_AVATAR_PLACEHOLDER;
-  private readonly assetsUrl = environment.assetsUrl;
+  readonly defaultAvatar: string;
   private searchSubject = new Subject<string>();
 
   constructor(
     private socialApi: SocialApi,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private avatarService: AvatarService
   ) {
+    this.defaultAvatar = this.avatarService.fallback;
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -63,6 +62,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
     this.socialApi.getFriends().subscribe({
       next: (friends) => {
         this.friends = friends;
+        this.searchResults = this.mapSearchResults(this.searchResults);
         this.isLoading = false;
       },
       error: (error) => {
@@ -93,7 +93,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
     this.isSearching = true;
     this.socialApi.searchUsers(query).subscribe({
       next: (results) => {
-        this.searchResults = results;
+        this.searchResults = this.mapSearchResults(results);
         this.isSearching = false;
       },
       error: (error) => {
@@ -124,6 +124,7 @@ export class FriendsListComponent implements OnInit, OnDestroy {
       this.socialApi.removeFriend(friendId).subscribe({
         next: () => {
           this.friends = this.friends.filter(f => f.friendId !== friendId);
+          this.searchResults = this.mapSearchResults(this.searchResults);
         },
         error: (error) => {
           console.error('Error removing friend:', error);
@@ -151,12 +152,20 @@ export class FriendsListComponent implements OnInit, OnDestroy {
     this.closeSidebarRequested.emit();
   }
 
-  getFriendAvatar(friendship: Friendship): string {
-    const avatarUrl = friendship.friend?.avatarUrl;
-    if (!avatarUrl) return this.defaultAvatar;
-    if (avatarUrl.startsWith('http')) return avatarUrl;
-    const prefix = avatarUrl.startsWith('/') ? '' : '/';
-    return `${this.assetsUrl}${prefix}${avatarUrl}`;
+  private mapSearchResults(results: FriendSearchResult[]): FriendSearchResult[] {
+    if (!results || results.length === 0) {
+      return results;
+    }
+
+    const friendIds = new Set(this.friends.map(f => f.friendId));
+    return results.map(user => ({
+      ...user,
+      isFriend: user.isFriend || friendIds.has(user.id)
+    }));
+  }
+
+  getAvatar(avatarUrl?: string | null): string {
+    return this.avatarService.resolve(avatarUrl);
   }
 
   toggleMenu(friendship: Friendship): void {

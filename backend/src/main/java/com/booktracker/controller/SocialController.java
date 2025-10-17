@@ -27,7 +27,6 @@ public class SocialController {
     @Autowired
     private SecurityUtils securityUtils;
 
-    
     @GetMapping
     public ResponseEntity<List<FriendshipResponse>> getFriends() {
         Long userId = securityUtils.getCurrentUserId();
@@ -37,7 +36,6 @@ public class SocialController {
         return ResponseEntity.ok(friendships);
     }
 
-    
     @PostMapping("/request")
     public ResponseEntity<FriendshipResponse> sendFriendRequest(
             @Valid @RequestBody FriendRequestActionDto request) {
@@ -47,7 +45,6 @@ public class SocialController {
         return ResponseEntity.ok(friendship);
     }
 
-    
     @PutMapping("/request/{friendshipId}")
     public ResponseEntity<FriendshipResponse> respondToFriendRequest(
             @PathVariable Long friendshipId,
@@ -64,7 +61,6 @@ public class SocialController {
         }
     }
 
-    
     @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> removeFriend(@PathVariable Long friendId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -72,7 +68,6 @@ public class SocialController {
         return ResponseEntity.noContent().build();
     }
 
-    
     @GetMapping("/requests/sent")
     public ResponseEntity<List<FriendshipResponse>> getSentFriendRequests() {
         Long userId = securityUtils.getCurrentUserId();
@@ -80,7 +75,6 @@ public class SocialController {
         return ResponseEntity.ok(sentRequests);
     }
 
-    
     @GetMapping("/requests")
     public ResponseEntity<List<FriendshipResponse>> getFriendRequests() {
         Long userId = securityUtils.getCurrentUserId();
@@ -90,7 +84,6 @@ public class SocialController {
         return ResponseEntity.ok(receivedRequests);
     }
 
-    
     @GetMapping("/check/{friendId}")
     public ResponseEntity<Boolean> checkFriendship(@PathVariable Long friendId) {
         Long userId = securityUtils.getCurrentUserId();
@@ -98,7 +91,6 @@ public class SocialController {
         return ResponseEntity.ok(areFriends);
     }
 
-    
     @GetMapping("/search")
     public ResponseEntity<List<UserSearchResponse>> searchUsers(@RequestParam("q") String query) {
         Long userId = securityUtils.getCurrentUserId();
@@ -107,12 +99,12 @@ public class SocialController {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getAvatarUrl(),
                 friendshipService.areFriends(userId, user.getId()),
                 friendshipService.hasPendingRequest(userId, user.getId()))).toList();
         return ResponseEntity.ok(searchResults);
     }
 
-    
     @GetMapping("/notifications/count")
     public ResponseEntity<NotificationCountResponse> getNotificationCount() {
         Long userId = securityUtils.getCurrentUserId();
@@ -125,7 +117,6 @@ public class SocialController {
         return ResponseEntity.ok(response);
     }
 
-    
     @PostMapping("/notifications/recommendations/mark-all-read")
     public ResponseEntity<Void> markAllRecommendationsAsRead() {
         Long userId = securityUtils.getCurrentUserId();
@@ -133,4 +124,3 @@ public class SocialController {
         return ResponseEntity.noContent().build();
     }
 }
-

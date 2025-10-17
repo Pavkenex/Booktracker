@@ -59,6 +59,7 @@ export interface FriendSearchResult {
   id: number;
   username: string;
   email: string;
+  avatarUrl?: string;
   isFriend: boolean;
   hasPendingRequest: boolean;
 }
