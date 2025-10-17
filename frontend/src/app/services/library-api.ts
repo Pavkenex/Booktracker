@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
+import { HttpClient } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { ApiClient } from './api-client';
 import {
   UserBook,
   LibraryStats,
@@ -9,63 +9,65 @@ import {
   UpdateBookStatusRequest,
 } from "../models/library.model";
 import { PagedResponse } from "../models/book.model";
-import { ApiResponse } from "../models/book.model";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: "root",
 })
 export class LibraryApi {
-  constructor(private apiClient: ApiClient) {}
+  private readonly API_URL = environment.apiUrl;
+
+  constructor(private http: HttpClient) {}
 
   getLibrary(): Observable<UserBook[]> {
-    return this.apiClient
-      .get<PagedResponse<UserBook>>("/library?size=1000")
+    return this.http
+      .get<PagedResponse<UserBook>>(`${this.API_URL}/library?size=1000`)
       .pipe(map((response) => response.content ?? []));
   }
 
   getLibraryStats(): Observable<LibraryStats> {
-    return this.apiClient
-      .get<LibraryStats>("/library/stats");
+    return this.http
+      .get<LibraryStats>(`${this.API_URL}/library/stats`);
   }
 
   addBookToLibrary(request: AddBookToLibraryRequest): Observable<UserBook> {
-    return this.apiClient
-      .post<UserBook>("/library/books", request);
+    return this.http
+      .post<UserBook>(`${this.API_URL}/library/books`, request);
   }
 
   updateBookStatus(
     userBookId: number,
     request: UpdateBookStatusRequest
   ): Observable<UserBook> {
-    return this.apiClient
-      .put<UserBook>(`/library/books/${userBookId}`, request);
+    return this.http
+      .put<UserBook>(`${this.API_URL}/library/books/${userBookId}`, request);
   }
 
   removeBookFromLibrary(userBookId: number): Observable<void> {
-    return this.apiClient
-      .delete<void>(`/library/books/${userBookId}`);
+    return this.http
+      .delete<void>(`${this.API_URL}/library/books/${userBookId}`);
   }
 
   toggleFavorite(userBookId: number): Observable<UserBook> {
-    return this.apiClient
-      .put<UserBook>(`/library/books/${userBookId}/favorite`, {});
+    return this.http
+      .put<UserBook>(`${this.API_URL}/library/books/${userBookId}/favorite`, {});
   }
 
   checkBookInLibrary(
     bookId: number
   ): Observable<{ hasBook: boolean; userBook?: UserBook }> {
-    return this.apiClient
-      .get<{ hasBook: boolean; userBook?: UserBook }>(`/library/books/check/${bookId}`);
+    return this.http
+      .get<{ hasBook: boolean; userBook?: UserBook }>(`${this.API_URL}/library/books/check/${bookId}`);
   }
 
   getUserLibrary(userId: number): Observable<UserBook[]> {
-    return this.apiClient
-      .get<PagedResponse<UserBook>>(`/library/user/${userId}?size=1000`)
+    return this.http
+      .get<PagedResponse<UserBook>>(`${this.API_URL}/library/user/${userId}?size=1000`)
       .pipe(map((response) => response.content ?? []));
   }
 
   getBookReviews(bookId: number, page: number = 0, size: number = 5): Observable<PagedResponse<UserBook>> {
-    return this.apiClient
-      .get<PagedResponse<UserBook>>(`/library/book/${bookId}/reviews?page=${page}&size=${size}`);
+    return this.http
+      .get<PagedResponse<UserBook>>(`${this.API_URL}/library/book/${bookId}/reviews?page=${page}&size=${size}`);
   }
 }

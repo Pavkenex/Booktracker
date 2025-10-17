@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ApiClient } from './api-client';
 import { AuthStore } from './auth-store';
+import { environment } from '../../environments/environment';
 import {
   Friendship,
   FriendRequest,
@@ -19,6 +20,7 @@ import {
   providedIn: 'root'
 })
 export class SocialApi {
+  private readonly API_URL = environment.apiUrl;
   private notificationCountSubject = new BehaviorSubject<NotificationCount>({
     friendRequests: 0,
     recommendations: 0,
@@ -28,7 +30,7 @@ export class SocialApi {
   public notificationCount$ = this.notificationCountSubject.asObservable();
   private notificationInterval: any;
 
-  constructor(private apiClient: ApiClient, private authStore: AuthStore) {
+  constructor(private http: HttpClient, private authStore: AuthStore) {
     // Subscribe to authentication changes and start/stop polling accordingly
     this.authStore.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
@@ -48,62 +50,62 @@ export class SocialApi {
 
   // Friends Management
   getFriends(): Observable<Friendship[]> {
-    return this.apiClient.get<Friendship[]>('/friends');
+    return this.http.get<Friendship[]>(`${this.API_URL}/friends`);
   }
 
   sendFriendRequest(request: SendFriendRequestRequest): Observable<any> {
-    return this.apiClient.post('/friends/request', request)
+    return this.http.post(`${this.API_URL}/friends/request`, request)
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   getFriendRequests(): Observable<FriendRequest[]> {
-    return this.apiClient.get<FriendRequest[]>('/friends/requests');
+    return this.http.get<FriendRequest[]>(`${this.API_URL}/friends/requests`);
   }
 
   respondToFriendRequest(request: RespondToFriendRequestRequest): Observable<any> {
-    return this.apiClient.put(`/friends/request/${request.requestId}`, { accept: request.accept })
+    return this.http.put(`${this.API_URL}/friends/request/${request.requestId}`, { accept: request.accept })
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   removeFriend(friendId: number): Observable<any> {
-    return this.apiClient.delete(`/friends/${friendId}`);
+    return this.http.delete(`${this.API_URL}/friends/${friendId}`);
   }
 
   searchUsers(query: string): Observable<FriendSearchResult[]> {
-    return this.apiClient.get<FriendSearchResult[]>(`/friends/search?q=${encodeURIComponent(query)}`);
+    return this.http.get<FriendSearchResult[]>(`${this.API_URL}/friends/search?q=${encodeURIComponent(query)}`);
   }
 
   // Recommendations
   getRecommendations(): Observable<Recommendation[]> {
-    return this.apiClient.get<Recommendation[]>('/recommendations/received');
+    return this.http.get<Recommendation[]>(`${this.API_URL}/recommendations/received`);
   }
 
   getSentRecommendations(): Observable<Recommendation[]> {
-    return this.apiClient.get<Recommendation[]>('/recommendations/sent');
+    return this.http.get<Recommendation[]>(`${this.API_URL}/recommendations/sent`);
   }
 
   sendRecommendation(request: SendRecommendationRequest): Observable<any> {
-    return this.apiClient.post('/recommendations', request)
+    return this.http.post(`${this.API_URL}/recommendations`, request)
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   markRecommendationAsRead(recommendationId: number): Observable<any> {
-    return this.apiClient.put(`/recommendations/${recommendationId}/read`, {})
+    return this.http.put(`${this.API_URL}/recommendations/${recommendationId}/read`, {})
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   deleteRecommendation(recommendationId: number): Observable<any> {
-    return this.apiClient.delete(`/recommendations/${recommendationId}`)
+    return this.http.delete(`${this.API_URL}/recommendations/${recommendationId}`)
       .pipe(tap(() => this.loadNotificationCount()));
   }
 
   // Notifications
   getNotificationCount(): Observable<NotificationCount> {
-    return this.apiClient.get<NotificationCount>('/friends/notifications/count');
+    return this.http.get<NotificationCount>(`${this.API_URL}/friends/notifications/count`);
   }
   
   markAllRecommendationsAsRead(): Observable<any> {
-    return this.apiClient.post('/friends/notifications/recommendations/mark-all-read', {})
+    return this.http.post(`${this.API_URL}/friends/notifications/recommendations/mark-all-read`, {})
       .pipe(tap(() => this.loadNotificationCount()));
   }
 

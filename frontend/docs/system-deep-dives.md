@@ -46,26 +46,29 @@ sequenceDiagram
 
 ### Components
 
-- `ApiClient` consolidates GET/POST/PUT/DELETE helpers and ensures headers include JSON + token.
-- `ErrorInterceptor` intercepts failing HTTP calls, runs custom logic, and feeds the `ErrorHandler` service.
-- `ErrorHandler` stores toast messages in a `BehaviorSubject` with metadata (type, timestamp, auto-hide).
-- `ToastNotificationsComponent` subscribes to the message stream and renders Bootstrap-styled toasts in the app shell.
+- API servisi (`BookApi`, `LibraryApi`, etc.) direktno koriste Angular's `HttpClient` sa `environment.apiUrl` za base URL.
+- `AuthInterceptor` automatski dodaje JWT token na sve HTTP zahteve.
+- `ErrorInterceptor` presreće neuspešne HTTP pozive i prosleđuje poruke `ErrorHandler` servisu.
+- `ErrorHandler` čuva toast poruke u `BehaviorSubject`-u sa metapodacima (tip, vreme, auto-hide).
+- `ToastNotificationsComponent` se pretplaćuje na poruke i renderuje Bootstrap toast notifikacije.
 
 ### Flow Diagram
 
 ```mermaid
 sequenceDiagram
   participant Component
-  participant ApiClient
+  participant ApiService
   participant HttpClient
+  participant AuthInterceptor
   participant Backend
   participant ErrorInterceptor
   participant Handler as ErrorHandler
   participant Toasts as ToastNotifications
 
-  Component->>ApiClient: apiClient.get('/books')
-  ApiClient->>HttpClient: GET /api/books
-  HttpClient->>Backend: request
+  Component->>ApiService: bookApi.getBooks()
+  ApiService->>HttpClient: http.get('/api/books')
+  HttpClient->>AuthInterceptor: adds JWT token
+  AuthInterceptor->>Backend: GET /api/books
   Backend-->>HttpClient: error 500
   HttpClient->>ErrorInterceptor: HttpErrorResponse
   ErrorInterceptor->>Handler: showError("Internal server error")

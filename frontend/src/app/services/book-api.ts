@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiClient } from './api-client';
 import { Book, Genre, BookSearchParams, PagedResponse } from '../models/book.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookApi {
+  private readonly API_URL = environment.apiUrl;
 
-  constructor(private apiClient: ApiClient) { }
+  constructor(private http: HttpClient) { }
 
   getBooks(params: BookSearchParams = {}): Observable<PagedResponse<Book>> {
     const queryParams = new URLSearchParams();
@@ -29,15 +31,15 @@ export class BookApi {
       if (hasAuthor && params.author) queryParams.append('author', params.author.trim());
       if (hasGenre && params.genreId) queryParams.append('genreId', params.genreId.toString());
       
-      return this.apiClient.get<PagedResponse<Book>>(`/books/filter?${queryParams.toString()}`);
+      return this.http.get<PagedResponse<Book>>(`${this.API_URL}/books/filter?${queryParams.toString()}`);
     } else {
       // Use regular books endpoint for simple pagination
-      return this.apiClient.get<PagedResponse<Book>>(`/books?${queryParams.toString()}`);
+      return this.http.get<PagedResponse<Book>>(`${this.API_URL}/books?${queryParams.toString()}`);
     }
   }
 
   getBookById(id: number): Observable<Book> {
-    return this.apiClient.get<Book>(`/books/${id}`);
+    return this.http.get<Book>(`${this.API_URL}/books/${id}`);
   }
 
   searchBooks(query: string, params: BookSearchParams = {}): Observable<PagedResponse<Book>> {
@@ -48,22 +50,22 @@ export class BookApi {
     if (params.size !== undefined) queryParams.append('size', params.size.toString());
     if (params.genreId) queryParams.append('genreId', params.genreId.toString());
 
-    return this.apiClient.get<PagedResponse<Book>>(`/books/search?${queryParams.toString()}`);
+    return this.http.get<PagedResponse<Book>>(`${this.API_URL}/books/search?${queryParams.toString()}`);
   }
 
   getGenres(): Observable<Genre[]> {
-    return this.apiClient.get<Genre[]>('/genres');
+    return this.http.get<Genre[]>(`${this.API_URL}/genres`);
   }
 
   getPopularBooks(limit: number = 10): Observable<Book[]> {
-    return this.apiClient.get<Book[]>(`/books/popular?limit=${limit}`);
+    return this.http.get<Book[]>(`${this.API_URL}/books/popular?limit=${limit}`);
   }
 
   recordBookView(bookId: number): Observable<void> {
-    return this.apiClient.post<void>(`/books/${bookId}/view`, {});
+    return this.http.post<void>(`${this.API_URL}/books/${bookId}/view`, {});
   }
 
   getSimilarBooks(bookId: number, limit: number = 12): Observable<Book[]> {
-    return this.apiClient.get<Book[]>(`/books/${bookId}/similar?limit=${limit}`);
+    return this.http.get<Book[]>(`${this.API_URL}/books/${bookId}/similar?limit=${limit}`);
   }
 }

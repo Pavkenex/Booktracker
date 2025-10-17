@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { ApiClient } from './api-client';
 import { BookApi } from './book-api';
 import { Book, Genre } from "../models/book.model";
+import { environment } from '../../environments/environment';
 
 export interface AdminStats {
   totalUsers: number;
@@ -24,52 +25,54 @@ export interface PopularityStatistics {
   providedIn: "root",
 })
 export class AdminApi {
+  private readonly API_URL = environment.apiUrl;
+
   constructor(
-    private apiClient: ApiClient,
+    private http: HttpClient,
     private bookApi: BookApi
   ) {}
 
   // Dashboard stats
   getAdminStats(): Observable<AdminStats> {
-    return this.apiClient.get<AdminStats>('/admin/stats');
+    return this.http.get<AdminStats>(`${this.API_URL}/admin/stats`);
   }
 
   // Book management
   createBook(book: Omit<Book, "id">): Observable<Book> {
-    return this.apiClient.post<Book>("/admin/books", book);
+    return this.http.post<Book>(`${this.API_URL}/admin/books`, book);
   }
 
   updateBook(id: number, book: Partial<Book>): Observable<Book> {
-    return this.apiClient.put<Book>(`/admin/books/${id}`, book);
+    return this.http.put<Book>(`${this.API_URL}/admin/books/${id}`, book);
   }
 
   deleteBook(id: number): Observable<void> {
-    return this.apiClient.delete<void>(`/admin/books/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/admin/books/${id}`);
   }
 
   // Genre management
   createGenre(genre: Omit<Genre, "id">): Observable<Genre> {
-    return this.apiClient
-      .post<Genre>("/admin/genres", genre);
+    return this.http
+      .post<Genre>(`${this.API_URL}/admin/genres`, genre);
   }
 
   updateGenre(id: number, genre: Partial<Genre>): Observable<Genre> {
-    return this.apiClient
-      .put<Genre>(`/admin/genres/${id}`, genre);
+    return this.http
+      .put<Genre>(`${this.API_URL}/admin/genres/${id}`, genre);
   }
 
   deleteGenre(id: number): Observable<void> {
-    return this.apiClient.delete<void>(`/admin/genres/${id}`);
+    return this.http.delete<void>(`${this.API_URL}/admin/genres/${id}`);
   }
 
   getAllGenres(): Observable<Genre[]> {
-    return this.apiClient
-      .get<Genre[]>("/genres");
+    return this.http
+      .get<Genre[]>(`${this.API_URL}/genres`);
   }
 
   // Reports
   getBooksByCategoryReport(): Observable<any> {
-    return this.apiClient.get<any>('/admin/reports/books-by-category');
+    return this.http.get<any>(`${this.API_URL}/admin/reports/books-by-category`);
   }
 
   getDailyActivityReport(): Observable<any> {
@@ -81,22 +84,22 @@ export class AdminApi {
     const startDateStr = startDate.toISOString().split('T')[0];
     const endDateStr = endDate.toISOString().split('T')[0];
     
-    return this.apiClient.get<any>(`/admin/reports/daily-activity?startDate=${startDateStr}&endDate=${endDateStr}`);
+    return this.http.get<any>(`${this.API_URL}/admin/reports/daily-activity?startDate=${startDateStr}&endDate=${endDateStr}`);
   }
 
   getUserEngagementReport(): Observable<any> {
-    return this.apiClient.get<any>('/admin/reports/user-engagement');
+    return this.http.get<any>(`${this.API_URL}/admin/reports/user-engagement`);
   }
 
   // Popularity statistics
   getPopularityStatistics(): Observable<PopularityStatistics[]> {
-    return this.apiClient.get<PopularityStatistics[]>(
-      "/admin/popularity/statistics"
+    return this.http.get<PopularityStatistics[]>(
+      `${this.API_URL}/admin/popularity/statistics`
     );
   }
 
   exportPopularityStatistics(format: "csv" | "pdf"): Observable<Blob> {
-    return this.apiClient.getBlob(`/admin/popularity/export?format=${format}`);
+    return this.http.get(`${this.API_URL}/admin/popularity/export?format=${format}`, { responseType: 'blob' });
   }
 
   // Export reports
@@ -130,12 +133,13 @@ export class AdminApi {
       const startDateStr = startDate.toISOString().split("T")[0];
       const endDateStr = endDate.toISOString().split("T")[0];
 
-      return this.apiClient.getBlob(
-        `${endpoint}?format=${format}&startDate=${startDateStr}&endDate=${endDateStr}`
+      return this.http.get(
+        `${this.API_URL}${endpoint}?format=${format}&startDate=${startDateStr}&endDate=${endDateStr}`,
+        { responseType: 'blob' }
       );
     }
 
     // For other reports, just pass the format parameter
-    return this.apiClient.getBlob(`${endpoint}?format=${format}`);
+    return this.http.get(`${this.API_URL}${endpoint}?format=${format}`, { responseType: 'blob' });
   }
 }

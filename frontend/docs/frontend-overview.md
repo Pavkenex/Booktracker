@@ -116,8 +116,9 @@ The application embraces Angular's **standalone component** architecture:
 
 ### 8.1 API Layer
 
-- `ApiClient` wraps Angular's `HttpClient`, automatically appending the base API URL (`environment.apiUrl`), JSON headers, and persisted tokens (from `localStorage`).
-- Feature-specific services (`BookApi`, `LibraryApi`, `UserApi`, `SocialApi`, `AdminApi`) encapsulate endpoint URLs and response typing. They return typed `Observable<T>` streams, simplifying consumption in components.
+- Feature-specific services (`BookApi`, `LibraryApi`, `UserApi`, `SocialApi`, `AdminApi`) direktno koriste Angular's `HttpClient` sa `environment.apiUrl` za base URL.
+- `AuthInterceptor` automatski dodaje JWT token iz `localStorage` na sve HTTP zahteve.
+- Servisi enkapsuliraju URL-ove endpointa i tipiziranje odgovora. Vraćaju tipizirane `Observable<T>` stream-ove, što pojednostavljuje upotrebu u komponentama.
 
 ### 8.2 Authentication Store
 

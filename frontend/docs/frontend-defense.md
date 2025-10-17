@@ -154,9 +154,10 @@ Ovaj dokument služi kao skripta za prezentaciju frontend dela BookTracker proje
 ## Komunikacija sa backendom
 
 - Svi HTTP pozivi idu preko servisa (`BookApi`, `LibraryApi`, `SocialApi`, `UserApi`, `AdminApi`).
-- Servisi koriste `ApiClient` (`frontend/src/app/services/api-client.ts`) koji standardizuje bazni URL, dodaje common zaglavlja i centralizuje error handling.
+- Servisi direktno koriste Angular's `HttpClient` sa `environment.apiUrl` za base URL i tipiziranje odgovora.
+- `AuthInterceptor` automatski dodaje JWT token na sve zahteve, dok `ErrorInterceptor` centralizuje error handling.
 - Observables se kombinuju sa RxJS operatorima (`map`, `tap`, `finalize`, `takeUntil`) da bi se upravljalo loading state-om, otkazivanjem poziva na `ngOnDestroy` i osvežavanjem UI-ja.
-- Token i refresh logika su enkapsulisani u `AuthStore`. Nakon uspešne autentikacije, `authStore.setSession` čuva token i podatke u `localStorage`, što omogućava da se stanje obnavi na reload-u.
+- Token i refresh logika su enkapsulisani u `AuthStore`. Nakon uspešne autentikacije, `authStore.setSession` čuva token i podatke u `localStorage`, što omogućava da se stanje obnovi na reload-u.
 
 ## UX i stilizacija
 
