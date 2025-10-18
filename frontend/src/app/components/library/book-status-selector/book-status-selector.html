@@ -25,7 +25,7 @@
   <div class="mt-1">
     <small class="text-muted">
       <i class="fas fa-calendar-check me-1"></i>
-      Read on {{ formatDate(userBook().readDate!) }}
+      Read on {{ userBook().readDate! | date: 'longDate' }}
     </small>
   </div>
   }

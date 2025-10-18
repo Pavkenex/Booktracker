@@ -1,12 +1,12 @@
 import { Component, input, output } from '@angular/core';
-
+import { CommonModule,DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LibraryApi } from '../../../services/library-api';
 import { UserBook } from '../../../models/library.model';
 
 @Component({
     selector: 'app-book-status-selector',
-    imports: [FormsModule],
+    imports: [FormsModule,DatePipe],
     templateUrl: './book-status-selector.html',
     styleUrls: ['./book-status-selector.css']
 })
@@ -51,12 +51,4 @@ export class BookStatusSelectorComponent {
     });
   }
 
-  formatDate(date: Date | string): string {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return dateObj.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  }
 }
