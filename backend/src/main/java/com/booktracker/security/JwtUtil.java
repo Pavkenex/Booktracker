@@ -117,15 +117,6 @@ public class JwtUtil {
         }
     }
 
-    public boolean isTokenValid(String token) {
-        try {
-            Claims claims = extractAllClaims(token);
-            return !isTokenExpired(token);
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
-
     public String generatePasswordResetToken(String email) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(TOKEN_TYPE_CLAIM, PASSWORD_RESET_TOKEN_TYPE);

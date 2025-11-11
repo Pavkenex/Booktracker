@@ -21,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
     @Autowired
@@ -37,18 +36,13 @@ public class UserController {
     @GetMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> getCurrentUserProfile() {
-        try {
-            Long userId = securityUtils.getCurrentUserId();
-            UserProfileResponse response = userService.getUserProfile(userId);
-            
-            if (response.isSuccess()) {
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new UserProfileResponse(false, "Unauthorized access"));
+        Long userId = securityUtils.getCurrentUserId();
+        UserProfileResponse response = userService.getUserProfile(userId);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
@@ -83,18 +77,13 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> updateUserProfile(
             @Valid @RequestBody UpdateProfileRequest request) {
-        try {
-            Long userId = securityUtils.getCurrentUserId();
-            UserProfileResponse response = userService.updateUserProfile(userId, request);
-            
-            if (response.isSuccess()) {
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new UserProfileResponse(false, "Unauthorized access"));
+        Long userId = securityUtils.getCurrentUserId();
+        UserProfileResponse response = userService.updateUserProfile(userId, request);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -102,17 +91,11 @@ public class UserController {
     @PostMapping(value = "/profile/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
-        try {
-            Long userId = securityUtils.getCurrentUserId();
-            UserProfileResponse response = userService.updateUserAvatar(userId, avatar);
+        Long userId = securityUtils.getCurrentUserId();
+        UserProfileResponse response = userService.updateUserAvatar(userId, avatar);
 
-            HttpStatus status = response.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-            return ResponseEntity.status(status).body(response);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new UserProfileResponse(false, "Unauthorized access"));
-        }
+        HttpStatus status = response.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(status).body(response);
     }
 
     
@@ -120,18 +103,13 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> changePassword(
             @Valid @RequestBody ChangePasswordRequest request) {
-        try {
-            Long userId = securityUtils.getCurrentUserId();
-            AuthResponse response = userService.changePassword(userId, request);
-            
-            if (response.isSuccess()) {
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse(false, "Unauthorized access"));
+        Long userId = securityUtils.getCurrentUserId();
+        AuthResponse response = userService.changePassword(userId, request);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -139,18 +117,13 @@ public class UserController {
     @DeleteMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> deleteCurrentUser() {
-        try {
-            Long userId = securityUtils.getCurrentUserId();
-            AuthResponse response = userService.deleteUser(userId);
-            
-            if (response.isSuccess()) {
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse(false, "Unauthorized access"));
+        Long userId = securityUtils.getCurrentUserId();
+        AuthResponse response = userService.deleteUser(userId);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 
@@ -158,12 +131,8 @@ public class UserController {
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        try {
-            List<UserDto> users = userService.getAllUsers();
-            return ResponseEntity.ok(users);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        List<UserDto> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     

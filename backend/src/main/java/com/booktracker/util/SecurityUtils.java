@@ -2,20 +2,12 @@ package com.booktracker.util;
 
 import com.booktracker.exception.AuthenticationException;
 import com.booktracker.security.CustomUserDetailsService;
-import com.booktracker.security.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SecurityUtils {
-    
-    private final JwtUtil jwtUtil;
-    
-    public SecurityUtils(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
-    
     
     public Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

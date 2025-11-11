@@ -6,25 +6,18 @@ import com.booktracker.dto.PagedResponse;
 import com.booktracker.service.BookService;
 import com.booktracker.service.PopularityService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/books")
-@CrossOrigin(origins = "*")
 public class BookController {
-
-    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @Autowired
     private BookService bookService;
@@ -112,59 +105,27 @@ public class BookController {
     public ResponseEntity<List<BookResponse>> getMostPopularBooks(
             @RequestParam(defaultValue = "10") int limit) {
         
-        try {
-            if (limit <= 0) {
-                logger.warn("Invalid limit parameter: {}", limit);
-                return ResponseEntity.badRequest().build();
-            }
-            
-            if (limit > 100) {
-                logger.warn("Limit parameter too large: {}, capping at 100", limit);
-                limit = 100;
-            }
-            
-            List<BookResponse> books = popularityService.getMostPopularBooks(limit);
-            logger.debug("Retrieved {} popular books", books.size());
-            return ResponseEntity.ok(books);
-            
-        } catch (Exception e) {
-            logger.error("Error retrieving popular books", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        if (limit <= 0) {
+            throw new IllegalArgumentException("Limit must be greater than 0");
         }
+        
+        if (limit > 100) {
+            limit = 100;
+        }
+        
+        List<BookResponse> books = popularityService.getMostPopularBooks(limit);
+        return ResponseEntity.ok(books);
     }
 
     
     @PostMapping("/{id}/view")
     public ResponseEntity<Void> recordBookView(@PathVariable Long id) {
-        try {
-            if (id == null || id <= 0) {
-                logger.warn("Invalid book ID for view recording: {}", id);
-                return ResponseEntity.badRequest().build();
-            }
-            
-            recordBookViewAsync(id);
-            
-            logger.debug("Initiated async view recording for book ID: {}", id);
-            return ResponseEntity.ok().build();
-            
-        } catch (Exception e) {
-            logger.error("Error initiating view recording for book ID: {}", id, e);
-           
-            return ResponseEntity.ok().build();
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Invalid book ID");
         }
-    }
-
-    
-    @Async
-    public CompletableFuture<Void> recordBookViewAsync(Long bookId) {
-        try {
-            popularityService.recordBookView(bookId);
-            logger.debug("Successfully recorded view for book ID: {}", bookId);
-        } catch (Exception e) {
-            logger.error("Failed to record view for book ID: {}", bookId, e);
-           
-        }
-        return CompletableFuture.completedFuture(null);
+        
+        popularityService.recordBookViewAsync(id);
+        return ResponseEntity.ok().build();
     }
 
     

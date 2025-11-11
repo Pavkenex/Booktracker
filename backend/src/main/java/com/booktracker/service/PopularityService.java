@@ -6,11 +6,13 @@ import com.booktracker.entity.BookView;
 import com.booktracker.exception.ResourceNotFoundException;
 import com.booktracker.repository.BookRepository;
 import com.booktracker.repository.BookViewRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +26,17 @@ public class PopularityService {
             BookRepository bookRepository) {
         this.bookViewRepository = bookViewRepository;
         this.bookRepository = bookRepository;
+    }
+
+    
+    @Async
+    public CompletableFuture<Void> recordBookViewAsync(Long bookId) {
+        try {
+            recordBookView(bookId);
+        } catch (Exception e) {
+            
+        }
+        return CompletableFuture.completedFuture(null);
     }
 
     

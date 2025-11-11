@@ -187,3 +187,4 @@ testem.log
 Thumbs.db
 backend/docs/CLEANUP_REPORT.md
 uploads/avatars/
+DTO_DOCUMENTATION.md

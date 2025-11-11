@@ -19,7 +19,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/library")
-@CrossOrigin(origins = "http://localhost:4200")
 public class LibraryController {
     
     private final LibraryService libraryService;

@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/genres")
-@CrossOrigin(origins = "*")
 public class GenreController {
 
     @Autowired
@@ -70,12 +69,8 @@ public class GenreController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody GenreRequestDto genreRequest) {
-        try {
-            GenreResponse createdGenre = genreService.createGenre(genreRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdGenre);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        GenreResponse createdGenre = genreService.createGenre(genreRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdGenre);
     }
 
     
@@ -85,25 +80,17 @@ public class GenreController {
             @PathVariable Long id,
             @Valid @RequestBody GenreRequestDto genreRequest) {
         
-        try {
-            Optional<GenreResponse> updatedGenre = genreService.updateGenre(id, genreRequest);
-            return updatedGenre.map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        Optional<GenreResponse> updatedGenre = genreService.updateGenre(id, genreRequest);
+        return updatedGenre.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
-        try {
-            boolean deleted = genreService.deleteGenre(id);
-            return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        boolean deleted = genreService.deleteGenre(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     

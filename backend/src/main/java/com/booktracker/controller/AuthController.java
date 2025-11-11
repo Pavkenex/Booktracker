@@ -1,6 +1,7 @@
 package com.booktracker.controller;
 
 import com.booktracker.dto.*;
+import com.booktracker.security.JwtUtil;
 import com.booktracker.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,32 +11,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
     @Autowired
     private AuthService authService;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse response = authService.register(request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
+        return ResponseEntity.ok(response);
     }
 
     
@@ -49,8 +42,8 @@ public class AuthController {
         if (!request.isRequestType()) {
             return ResponseEntity.badRequest().body(new AuthResponse(false, "Invalid request type"));
         }
-        AuthResponse response = authService.requestPasswordReset(request);
-        return ResponseEntity.ok(response);
+        authService.requestPasswordReset(request);
+        return ResponseEntity.ok(new AuthResponse(true, "If the email exists, a password reset link has been sent"));
     }
 
     @PostMapping("/reset-password")
@@ -58,22 +51,17 @@ public class AuthController {
         if (!request.isConfirmType()) {
             return ResponseEntity.badRequest().body(new AuthResponse(false, "Invalid request type"));
         }
-        AuthResponse response = authService.resetPassword(request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
+        authService.resetPassword(request);
+        return ResponseEntity.ok(new AuthResponse(true, "Password has been reset successfully"));
     }
 
     @GetMapping("/verify-token")
     public ResponseEntity<AuthResponse> verifyToken(@RequestHeader("Authorization") String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+            String username = jwtUtil.extractUsername(token);
             
-            if (authService.validateToken(token)) {
-                authService.getUsernameFromToken(token);
+            if (jwtUtil.validateToken(token, username)) {
                 return ResponseEntity.ok(new AuthResponse(true, "Token is valid"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
