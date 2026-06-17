@@ -12,11 +12,11 @@ Booktracker is a full-stack application for tracking books, managing personal li
 
 ### 1) Backend
 
-See `/home/runner/work/Booktracker/Booktracker/backend/README.md` for complete backend setup.
+See `backend/README.md` for complete backend setup.
 
 ### 2) Frontend
 
-See `/home/runner/work/Booktracker/Booktracker/frontend/README.md` for complete frontend setup.
+See `frontend/README.md` for complete frontend setup.
 
 ## Running locally
 

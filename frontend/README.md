@@ -24,14 +24,14 @@ Angular frontend for Booktracker.
 ## Install
 
 ```bash
-cd /home/runner/work/Booktracker/Booktracker/frontend
+cd frontend
 npm install
 ```
 
 ## Run (development)
 
 ```bash
-cd /home/runner/work/Booktracker/Booktracker/frontend
+cd frontend
 npm start
 ```
 
@@ -40,7 +40,7 @@ App URL: `http://localhost:4200`
 ## Build and test
 
 ```bash
-cd /home/runner/work/Booktracker/Booktracker/frontend
+cd frontend
 npm run build
 npm test -- --watch=false --browsers=ChromeHeadless
 ```

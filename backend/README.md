@@ -32,14 +32,14 @@ Spring Boot backend for Booktracker.
 
 Default configuration is in:
 
-- `/home/runner/work/Booktracker/Booktracker/backend/src/main/resources/application.yml`
+- `backend/src/main/resources/application.yml`
 
 Before running outside local development, replace hardcoded credentials/secrets with environment-specific values.
 
 ## Run
 
 ```bash
-cd /home/runner/work/Booktracker/Booktracker/backend
+cd backend
 mvn spring-boot:run
 ```
 
@@ -48,7 +48,7 @@ The API runs on `http://localhost:8080` by default.
 ## Build and test
 
 ```bash
-cd /home/runner/work/Booktracker/Booktracker/backend
+cd backend
 mvn test
 mvn package
 ```
