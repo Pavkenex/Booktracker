@@ -1,4 +1,6 @@
 # Booktracker
+<img width="1848" height="900" alt="image" src="https://github.com/user-attachments/assets/de91c42a-3fc2-43b9-a154-f876ff8b66da" />
+
 
 Booktracker is a full-stack application for tracking books, managing personal libraries, and social reading interactions.
 
